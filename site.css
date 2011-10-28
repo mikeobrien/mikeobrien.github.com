@@ -2,6 +2,10 @@ body {
     background-color: #71969F;
 }
 
+img {
+	border-width: 0;
+}
+
 .cube-menu-container {
     text-align: center;
     width: 100%;
@@ -14,4 +18,16 @@ body {
 
 .cube-menu {
 	margin-top: -200px;
+}
+
+.icon-cv {
+	padding-right:15px;
+}
+
+.icon-blog {
+	padding-right:10px;
+}
+
+.icon-lab {
+	padding-right:10px;
 }
