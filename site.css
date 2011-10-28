@@ -1,5 +1,7 @@
 body {
     background-color: #71969F;
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size: 11pt;
 }
 
 img {
@@ -30,4 +32,17 @@ img {
 
 .icon-lab {
 	padding-right:10px;
+}
+
+.cv-container {
+	background: #fff;
+	width: 700px;
+	margin: 70 auto;
+	padding: 15px 25px;
+}
+
+.footer {
+    text-align: center;
+	width: 700px;
+	margin: 0 auto;
 }
