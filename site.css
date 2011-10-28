@@ -1,4 +1,17 @@
-body
-{
+body {
     background-color: #71969F;
+}
+
+.cube-menu-container {
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+.cube-menu-padding {
+    height: 50%;
+}
+
+.cube-menu {
+	margin-top: -200px;
 }
