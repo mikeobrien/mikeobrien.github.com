@@ -35,6 +35,10 @@ img {
 	padding-right:10px;
 }
 
+.cv-info {
+	padding-bottom: 10px; 
+}
+
 .cv-container {
 	background: #fff;
 	width: 700px;
