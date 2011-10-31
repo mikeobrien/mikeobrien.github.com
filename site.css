@@ -41,6 +41,37 @@ img {
 	padding: 15px 25px;
 }
 
+.cv-container .print-button { 
+	float: right; 
+	font-weight: bold;
+	color: #ccc;
+}
+
+.cv-container a { color:#000; } 
+.cv-container a:link, .cv-container a:visited { text-decoration: none; }
+.cv-container a:active, .cv-container a:hover { text-decoration: underline; }
+
+.cv-container h3 { margin: 10 0; } 
+
+.tag-cloud { 
+	padding: 0 10px 5px 10px; 
+	text-align: center;
+}
+
+.tag-cloud span {
+	font-weight: bold;
+	vertical-align: middle;
+	margin: 0 10px;
+}
+
+.tag-cloud a { color: #666666; }
+
+.tag-cloud-item-1 { font-size: 13px; }
+.tag-cloud-item-2 { font-size: 14px; }		
+.tag-cloud-item-3 { font-size: 16px; }			
+.tag-cloud-item-4 { font-size: 18px; }
+.tag-cloud-item-5 { font-size: 20px; }
+
 .footer {
     text-align: center;
 	width: 700px;
