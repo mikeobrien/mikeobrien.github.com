@@ -2,6 +2,7 @@ body {
     background-color: #71969F;
 	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	font-size: 11pt;
+	text-align: center; /* Stupid IE hack grrrrr */
 }
 
 img {
@@ -39,6 +40,7 @@ img {
 	width: 700px;
 	margin: 70 auto;
 	padding: 30px 40px;
+	text-align: left; /* Stupid IE hack grrrrr */
 }
 
 .cv-container .print-button { 
