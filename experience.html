@@ -1,0 +1,126 @@
+<html>
+	<head>
+		<title>Mike O'Brien \ CV \ Experience</title>
+		<link href="site.css" rel="stylesheet" type="text/css" />
+
+		<script src="http://code.jquery.com/jquery-1.6.4.js"></script>
+		<script language="javascript">
+			var email = ['c', 'v', '@', 'm', 'i', 'k', 'e', 'o', 'b', 'r', 'i', 'e', 'n', '.', 'n', 'e', 't'].join('');
+			var phone = ['3', '3', '0', '.', '6', '0', '3', '.', '4', '1', '3', '8'].join('');
+			$(function () { 
+				$('#email').attr('href', 'mailto:' + email).text(email); 
+				$('#phone').text(phone); 
+				$('.print-button').click(function () { 
+					$('.print-button').hide();
+					$('.header').hide();
+					$('.footer').hide();
+					$('body').css('background-color', '#fff');
+					$('.cv-container').css('margin', '0 auto');
+					window.print();
+				});
+			});
+		</script>
+		
+	</head>
+
+	<body>
+		<div class="header">
+			<table><tr>
+				<td width="100%"><a href="/"><img src="images/logo-mikeobrien.png" alt="mikeobrien.net"/></a></td>
+				<td class="icon-cv"><a href="/cv"><img src="images/icon-cv-red.png" alt="Curriculum Vitae" /></a></td>
+				<td class="icon-blog"><a href="http://blog.mikeobrien.net"><img src="images/icon-blog-blue.png" alt="Blog" /></a></td>
+				<td class="icon-lab"><a href="https://github.com/mikeobrien"><img src="images/icon-lab-blue.png" alt="Lab" /></a></td>
+			</tr></table>
+		</div>
+
+		<div class="cv-container">
+		
+			<table>
+			<tr>
+			  <td>
+				<br />
+				<table>
+				  <tr>
+					<td>
+					  <span class="cv-experience-header">Reachmail - Chicago, IL - Senior Software Developer - March 2008 to Present<br /></span>
+					  <p class="cv-experience-employer">"<i>ReachMail offers a web based method of creating, deploying and measuring email marketing campaigns.</i>"</p>
+					  <UL>
+						<li class="cv-experience-detail">Technical Environment: Visual Studio 2010, .NET 4.0, C# 4.0, F# 2.0, ASP.NET MVC, WCF, WCF REST, WiX, ReSharper, Git, SVN, ThoughtWorks Go, Reflector, Fiddler, NHibernate, FluentNHibernate, NHProfiler, NUnit, Rhino Mocks, NAnt, Enterprise Library, StructureMap, DBGhost, HTML/DHTML/CSS, XML/XSL, Javascript, SQL Server 2008R2, IIS6/7/7.5, VMWare, PowerMTA, Windows Server 2003/2008 R2.</li>
+						<li class="cv-experience-detail">Develop and maintain our flagship product, Reachmail.</li>
+						<li class="cv-experience-detail">Developed a SOAPy and RESTful API using WCF.</li>
+						<li class="cv-experience-detail">Developed a continuous integration/deployment process using ThoughtWorks Go &amp; NAnt.</li>
+					  </UL>
+					  <hr />
+					</td>
+				  </tr>
+				  <tr>
+					<td>
+					  <span class="cv-experience-header">Triton Tek - Chicago, IL - Software Developer - April 2007 to March 2008<br /></span>
+					  <p class="cv-experience-employer">"<i>Consultants specializing in developing custom-designed software applications for a wide range of industries.</i>"</p>
+					  <UL>
+						<li class="cv-experience-detail">Technical Environment: C#, ASP.NET, Visual Studio 2005/2008, NUnit, NAnt, Reflector, Microsoft Enterprise Library, Subversion, CruiseControl.Net, Bamboo Build Server, HTML/DHTML/CSS, XML/XSL, Javascript, SQL Server 2005, IIS6, MOSS 2007, Virtual Server 2005, Windows 2000-2003.</li>
+						<li class="cv-experience-detail">Developed and maintained data driven, web applications for various clients.</li>
+						<li class="cv-experience-detail">Implemented continuous integration/deployment for clients using CC.NET &amp; NAnt.</li>
+					  </UL>
+					  <hr />
+					</td>
+				  </tr>
+				  <tr>
+					<td>
+					  <span class="cv-experience-header">Emerge Digital - Naperville, IL - Senior Software Architect - April 2005 to April 2007<br /></span>
+					  <p class="cv-experience-employer">"<i>An interactive marketing agency that specializes in email marketing, web/print design and branded desktop applications.</i>"</p>
+					  <UL>
+						<li class="cv-experience-detail">Technical Environment: VB.NET/C#, ASP/ASP.NET, Visual Studio 2003/2005, Subversion, HTML/DHTML/CSS, XML/XSL, VBScript, Javascript, SQL Server 2000/2005, IIS5/6, Virtual Server 2005, Windows XP/2K/2K3, PowerMTA.</li>
+						<li class="cv-experience-detail">Developed and maintained data driven, web applications for various clients.</li>
+						<li class="cv-experience-detail">Implemented continuous integration/deployment using CC.NET &amp; NAnt.</li>
+						<li class="cv-experience-detail">Developed a kiosk framework used to run tradeshow kiosks. Integrated peripherals such as bar code scanners and magnetic strip readers using USB HID.</li>
+					  </UL>
+					  <hr />
+					</td>
+				  </tr>
+				  <tr>
+					<td>
+					  <span class="cv-experience-header">Sentric - Pittsburgh, PA - Application Developer - February 2001 to April 2005<br /></span>
+					  <p class="cv-experience-employer">"<i>Sentric offers businesses in Western Pennsylvania and Southern California, PC and web based payroll, HR and time/attendance services.</i>"</p>
+					  <UL>
+						<li class="cv-experience-detail">Technical Environment: VB.NET/6, ASP/ASP.NET, HTML/DHTML/CSS, XML/DTD, VBScript, Javascript, IIS 6.0, Adobe Live Motion, Crystal Reports 9, SQL Server 2000, SQL Server DTS, Microsoft Access 97/2K/2K3.</li>
+						<li class="cv-experience-detail">Developed various data driven, rich client applications for tax and payroll operations.</li>
+						<li class="cv-experience-detail">Developed ETL tools to move data between disparate internal systems.</li>
+						<li class="cv-experience-detail">Developed company internet and intranet web sites.</li>
+					  </UL>
+					  <hr />
+					</td>
+				  </tr>
+				  <tr>
+					<td>
+					  <span class="cv-experience-header">RHI Consulting - Akron, OH - Consultant/Developer (Contract) - October 2000 to June 2001<br /></span>
+					  <p class="cv-experience-employer">"<i>Robert Half offers IT consulting solutions to organizations worldwide.</i>"</p>
+					  <UL>
+						<li class="cv-experience-detail">Technical Environment: VB6, ASP, HTML, VBScript, Javascript, Adobe Image Styler, Crystal Reports 8.5, XML, SQL Server, IIS 5.0, Microsoft Access, Windows NT/2K.</li>
+						<li class="cv-experience-detail">Developed data driven, rich client applications for chemical and payroll operations.</li>
+					  </UL>
+					  <hr />
+					</td>
+				  </tr>
+				  <tr>
+					<td>
+					  <span class="cv-experience-header">Watchtower - Wallkill, NY - Developer - October 1997 to October 2000<br /></span>
+					  <p class="cv-experience-employer">"<i>Watchtower, a publishing organization with 114 branch facilities worldwide, publishes hundreds of millions of pieces of literature annually in over 432 languages.</i>"</p>
+					  <UL>
+						<li class="cv-experience-detail">Technical Environment: VB6, ASP, HTML, VBScript, Javascript, Adobe Image Styler, XML, SQL Server 6.5/7.0, IIS 4.0/5.0, Microsoft Exchange Server, Microsoft Access97, Aperture, Erwin, MS-DOS 6.22, Windows 3.51/95/98/ME/NT/2K.</li>
+						<li class="cv-experience-detail">Developed and maintained rich client applications for internal operations.</li>
+					  </UL>
+					</td>
+				  </tr>
+				</table>
+			  </td>
+			</tr>
+		  </table>
+		</div>
+		
+		<div class="footer">
+			<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/">
+				<img alt="Creative Commons License" src="http://i.creativecommons.org/l/by-sa/3.0/us/88x31.png" /></a>
+		</div>
+	</body>
+</html>
