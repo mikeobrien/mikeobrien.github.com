@@ -1,8 +1,9 @@
 body {
-  background-color: #A0A0A0;
-  background-image: -moz-radial-gradient(center 45deg,circle cover, #EAEAEA, #A0A0A0);
-  background-image: -webkit-gradient(radial, 50% 50%, 0, 50% 50%,800, from(#EAEAEA), to(#A0A0A0));
-  background-image: radial-gradient(center 45deg,circle cover, #EAEAEA, #A0A0A0);
+    margin: 100px
+    background-color: #A0A0A0;
+    background-image: -moz-radial-gradient(center 45deg,circle cover, #EAEAEA, #A0A0A0);
+    background-image: -webkit-gradient(radial, 50% 50%, 0, 50% 50%,800, from(#EAEAEA), to(#A0A0A0));
+    background-image: radial-gradient(center 45deg,circle cover, #EAEAEA, #A0A0A0);
 }
 
 .error-text {
