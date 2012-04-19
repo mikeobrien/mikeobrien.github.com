@@ -2,8 +2,8 @@
 layout: chrome
 ---
 
-<div id="posts">
+<table>
   {% for post in site.posts %}
-    <span>{{ post.date | date_to_string }}</span> <a href="{{ post.url }}">{{ post.title }}</a>
+    <tr><td><span>{{ post.date | date_to_string }}</span> <a href="{{ post.url }}">{{ post.title }}</a></td></tr>
   {% endfor %}
-</div>
+</table>

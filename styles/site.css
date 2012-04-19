@@ -46,7 +46,7 @@ img {
 .cv-container {
 	background: #fff;
 	width: 700px;
-	margin: 70 auto;
+	margin: 70 auto 0 auto;
 	padding: 30px 40px;
 	text-align: left; /* Stupid IE hack grrrrr */
 }
@@ -99,5 +99,5 @@ img {
 .footer {
     text-align: center;
 	width: 700px;
-	margin: 0 auto 50px auto;
+	margin: 50px auto;
 }
