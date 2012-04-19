@@ -1,5 +1,5 @@
 ---
-layout: chrome
+layout: post
 title: "Test post 2"
 published: true
 ---
