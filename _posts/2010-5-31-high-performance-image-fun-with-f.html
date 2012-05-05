@@ -1,10 +1,10 @@
---
+---
 layout: post
 title: High Performance Image Fun with F#
 categories: [GDI+, F#]
 tags: [GDI+, F#]
---
-<p>I’m working on a project with a buddy of mine to analyze old reels of scientific data. We’re scanning them in and then doing an analysis. I’m not a real expert in the imaging domain so I thought I’d first give the managed GDI+ API a try using the Bitmap object and GetPixel/SetPixel. Needless to say the performance was less than stellar. After a quick search I stumbled upon a <a href="http://www.bobpowell.net/lockingbits.htm">page by Bob Powell describing the LockBits and UnlockBits methods</a> on the Bitmap object. Using this method improved performance by several orders of magnitude. I was able to analyze an 80mb tiff in about 15 seconds. Below is an implementation in F#; you can read about the details of using LockBits/UnlockBits on Bob’s page.</p>  <p>The following is the LockContext object. This is a disposable type that unlocks when disposed:</p>  <pre class="code"><span style="color: blue">open </span>System
+---
+<p>I'm working on a project with a buddy of mine to analyze old reels of scientific data. We're scanning them in and then doing an analysis. I'm not a real expert in the imaging domain so I thought I'd first give the managed GDI+ API a try using the Bitmap object and GetPixel/SetPixel. Needless to say the performance was less than stellar. After a quick search I stumbled upon a <a href="http://www.bobpowell.net/lockingbits.htm">page by Bob Powell describing the LockBits and UnlockBits methods</a> on the Bitmap object. Using this method improved performance by several orders of magnitude. I was able to analyze an 80mb tiff in about 15 seconds. Below is an implementation in F#; you can read about the details of using LockBits/UnlockBits on Bob's page.</p>  <p>The following is the LockContext object. This is a disposable type that unlocks when disposed:</p>  <pre class="code"><span style="color: blue">open </span>System
 <span style="color: blue">open </span>System.Drawing
 <span style="color: blue">open </span>System.Drawing.Imaging
 <span style="color: blue">open </span>Microsoft.FSharp.NativeInterop
@@ -46,7 +46,7 @@ tags: [GDI+, F#]
         member </span>this.Dispose() =
             bitmap.UnlockBits(data)</pre>
 
-<p>This only supports 24 bit images but you could easily add support for others. Bob’s page gives some example’s of the pointer arithmetic you would use for different images.</p>
+<p>This only supports 24 bit images but you could easily add support for others. Bob's page gives some example's of the pointer arithmetic you would use for different images.</p>
 
 <p>Then a couple of convenience type extensions for working with Bitmap:</p>
 

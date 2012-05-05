@@ -1,7 +1,7 @@
---
+---
 layout: post
 title: Assigining Rights to an Account to Stop/Start a Windows Service
 categories: [Windows Server 2003, Active Directory]
 tags: [Windows Server 2003, Active Directory]
---
+---
 <p>Our build AD account needed the ability stop/start Windows services so that it can deploy them. I looked all around and found a simple solution using the <a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=E8BA3E56-D8FE-4A91-93CF-ED6985E3927B&displaylang=en">subinacl utility from Microsoft</a> (For more info see "Method 3" on <a href="http://support.microsoft.com/kb/288129">this page</a>.) The following command will give an AD user full rights to the service specified. I tried to only give it stop and start permissions but couldn't figure out the right combination of flags to make this happen (And no its not 'TO').</p> <p><font face="Courier New">SUBINACL /SERVICE \\MyServer\MyServiceName /GRANT=MyDomain\MyUser=F</font></p>

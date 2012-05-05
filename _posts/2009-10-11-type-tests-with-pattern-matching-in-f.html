@@ -1,10 +1,10 @@
---
+---
 layout: post
 title: Type Tests with Pattern Matching in F#
 categories: [.NET, F#]
 tags: [.NET, F#]
---
-<p>I’m working on an application where I’m sending output to a console window. If the output is an integer or double I wanted the print function to perform special formatting. For everything else just call .ToString(). Page 115 in Expert F# shows an example of how to do this sort of thing with pattern matching, here is an example (Stripped down for clarity):</p>  <pre class="code"><span style="color: blue">let </span>Print (t:obj) =
+---
+<p>I'm working on an application where I'm sending output to a console window. If the output is an integer or double I wanted the print function to perform special formatting. For everything else just call .ToString(). Page 115 in Expert F# shows an example of how to do this sort of thing with pattern matching, here is an example (Stripped down for clarity):</p>  <pre class="code"><span style="color: blue">let </span>Print (t:obj) =
     <span style="color: blue">let </span>text =
         <span style="color: blue">match </span>t <span style="color: blue">with
         </span>| :? int <span style="color: blue">-> </span>(t :?> int).ToString(<span style="color: maroon">"#,###"</span>)
@@ -14,7 +14,7 @@ tags: [.NET, F#]
     Console.Write(text)</pre>
 <a href="http://11011.net/software/vspaste"></a>
 
-<p><em><font color="#ff0000">Update: Like Don mentioned in the comments there is a much more succinct way to write this using “:? int as i”. Thanks Don!</font></em></p>
+<p><em><font color="#ff0000">Update: Like Don mentioned in the comments there is a much more succinct way to write this using ":? int as i". Thanks Don!</font></em></p>
 
 <pre class="code"><span style="color: blue">let </span>Print (t:obj) =
     <span style="color: blue">let </span>text =
@@ -28,7 +28,7 @@ tags: [.NET, F#]
 <p>A few points:</p>
 
 <ol>
-  <li>The compiler complained that I didn’t have a type annotation on the parameter. Not sure why this is but book shows that annotating it as an obj does the trick. </li>
+  <li>The compiler complained that I didn't have a type annotation on the parameter. Not sure why this is but book shows that annotating it as an obj does the trick. </li>
 
   <li>The :? <type> construct looks at the type of the value. </li>
 

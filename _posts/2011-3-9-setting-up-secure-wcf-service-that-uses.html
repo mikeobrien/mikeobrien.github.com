@@ -1,10 +1,10 @@
---
+---
 layout: post
 title: Setting up a Secure WCF Service that uses a UserNamePasswordValidator and runs on Cassini
 categories: [.NET 4.0, WCF]
 tags: [.NET 4.0, WCF]
---
-<p>I spent the better part of today trying to figure this out so here is the brain dump. Basically I needed to do some prototyping that required a web service that used a custom UserNamePasswordValidator. Normally I have SSL setup in IIS and use credentials over a secured transport layer but I just wanted to whip up something simple for my prototype that would run in Cassini (Yes I know about IIS Express, haven't had time to try it out so it may have been a better route). Although WCF supposedly supports a <a href="http://msdn.microsoft.com/en-us/library/system.servicemodel.channels.securitybindingelement.allowinsecuretransport.aspx">new option to enable credentials over any transport</a>, unsecured or not, it’s the usual <a href="http://blogs.msdn.com/b/distributedservices/archive/2010/05/13/wcf-and-intermediate-devices.aspx">half baked Microsoft “feature” that doesn't really get you anywhere</a> and wont generate the WSDL (I’m lazy and I didn't want to wire up the client config by hand). In any event you can just use message security and forgo the transport level security with this configuration:</p>  <pre class="code">  <span style="color: blue">&lt;</span><span style="color: #a31515">system.serviceModel</span><span style="color: blue">&gt;
+---
+<p>I spent the better part of today trying to figure this out so here is the brain dump. Basically I needed to do some prototyping that required a web service that used a custom UserNamePasswordValidator. Normally I have SSL setup in IIS and use credentials over a secured transport layer but I just wanted to whip up something simple for my prototype that would run in Cassini (Yes I know about IIS Express, haven't had time to try it out so it may have been a better route). Although WCF supposedly supports a <a href="http://msdn.microsoft.com/en-us/library/system.servicemodel.channels.securitybindingelement.allowinsecuretransport.aspx">new option to enable credentials over any transport</a>, unsecured or not, it's the usual <a href="http://blogs.msdn.com/b/distributedservices/archive/2010/05/13/wcf-and-intermediate-devices.aspx">half baked Microsoft "feature" that doesn't really get you anywhere</a> and wont generate the WSDL (I'm lazy and I didn't want to wire up the client config by hand). In any event you can just use message security and forgo the transport level security with this configuration:</p>  <pre class="code">  <span style="color: blue">&lt;</span><span style="color: #a31515">system.serviceModel</span><span style="color: blue">&gt;
 </span><span style="color: blue">    &lt;</span><span style="color: #a31515">bindings</span><span style="color: blue">&gt;
       &lt;</span><span style="color: #a31515">wsHttpBinding</span><span style="color: blue">&gt;
         &lt;</span><span style="color: #a31515">binding </span><span style="color: red">name</span><span style="color: blue">=</span>&quot;<span style="color: blue">UsernameAuthentication</span>&quot;<span style="color: blue">&gt;
@@ -42,7 +42,7 @@ tags: [.NET 4.0, WCF]
 
 <p><font face="Courier New">certutil.exe -delstore My MyPrototype</font></p>
 
-<p><font face="Courier New">&quot;C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Bin\makecert.exe&quot; -sr LocalMachine -ss My -a sha1 -n CN=MyPrototype -sky exchange –pe</font></p>
+<p><font face="Courier New">&quot;C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Bin\makecert.exe&quot; -sr LocalMachine -ss My -a sha1 -n CN=MyPrototype -sky exchange &#8211;pe</font></p>
 
 <p>The last thing I needed was for the client not to try and validate the cert (As the CA cannot be validated):</p>
 

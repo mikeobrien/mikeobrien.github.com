@@ -1,9 +1,9 @@
---
+---
 layout: post
 title: Factoring Binomials Raised to a Power of n
 categories: [Math, Algebra]
 tags: [Math, Algebra]
---
+---
 <P>Factoring binomials raised to a particular power can be done easily when you follow a few patterns. We'll use the following binomial to demonstrate these patterns: <FONT size=2><FONT face="Courier New"><FONT color=#000080>(2a - b)<SUP>3</SUP></FONT></FONT></FONT>. I'm going to do this the long way to illustrate the mechanics.</P>
 <P>The first pattern has to do with the power the binomial is raised to. The factored form will first have the original terms multiplied by each other to form a new term. This new term will be added to itself the same number of times as the power of the unfactored binomial plus one; in this example it will be 4 (3 + 1). Since the operation in the unfactored binomial is subtraction the second term, b, will be negative.</P>
 <P><FONT face="Courier New" color=#000080 size=2>(2a)(-b) + (2a)(-b) + (2a)(-b) + (2a)(-b)</FONT></P>
@@ -13,7 +13,7 @@ tags: [Math, Algebra]
 <P>The next pattern involves the powers of the terms. The first term in the original unfactored binomial, 2a, starts with the power of the original unfactored binomial and decreases by one, in the factored form. The second term in the original unfactored binomial, b, starts with a power of zero and increases by one, in the factored form. </P>
 <P><FONT size=2><FONT face="Courier New"><FONT color=#000080>1(2a)</FONT><SUP><FONT color=#ff0000><STRONG>3</STRONG></FONT></SUP><FONT color=#000080>(-b)</FONT><SUP><STRONG><FONT color=#008000>0</FONT></STRONG></SUP> <FONT color=#000080>+ 3(2a)</FONT><SUP><STRONG><FONT color=#ff0000>2</FONT></STRONG></SUP><FONT color=#000080>(-b)</FONT><SUP><STRONG><FONT color=#008000>1</FONT></STRONG></SUP> <FONT color=#000080>+ 3(2a)</FONT><SUP><STRONG><FONT color=#ff0000>1</FONT></STRONG></SUP><FONT color=#000080>(-b)</FONT><SUP><STRONG><FONT color=#008000>2</FONT></STRONG></SUP> + <FONT color=#000080>1(2a)</FONT><SUP><STRONG><FONT color=#ff0000>0</FONT></STRONG></SUP><FONT color=#000080>(-b)</FONT><SUP><STRONG><FONT color=#008000>3</FONT></STRONG></SUP></FONT></FONT></P>
 <P>Now the factored form can be reduced. First, if the terms in the unfactored binomial are subtracted, every other operation in the factored binomial will be subtraction. This occurs because the power determines the sign of the term. Negative terms raised to an even number will be positive (IE: -2<SUP>2</SUP> == -2 * -2 == 4) and negative terms raised to an odd power will remain negative (IE: -2<SUP>3</SUP> == -2 * -2 * -2 == -8). The pattern ends up being the first first operation is subtraction, the second is addition and so on.</P>
-<P><FONT size=2><FONT face="Courier New"><FONT color=#000080>1(2a)<SUP><STRONG>3</STRONG></SUP>(b)<SUP><STRONG>0</STRONG></SUP></FONT> <STRONG><FONT color=#ff0000>-</FONT></STRONG> <FONT color=#000080>3(2a)<SUP><STRONG>2</STRONG></SUP>(b)<SUP><STRONG>1</STRONG></SUP></FONT> <STRONG><FONT color=#ff0000>+</FONT></STRONG> <FONT color=#000080>3(2a)<SUP><STRONG>1</STRONG></SUP>(b)<SUP><STRONG>2</STRONG></SUP></FONT> <STRONG><FONT color=#ff0000>-</FONT></STRONG> <FONT color=#000080>1(2a)<SUP><STRONG>0</STRONG></SUP>(b)<SUP><STRONG>3</STRONG></SUP></FONT></FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#000080>1(2a)<SUP><STRONG>3</STRONG></SUP>(b)<SUP><STRONG>0</STRONG></SUP></FONT>&#160;<STRONG><FONT color=#ff0000>-</FONT></STRONG> <FONT color=#000080>3(2a)<SUP><STRONG>2</STRONG></SUP>(b)<SUP><STRONG>1</STRONG></SUP></FONT> <STRONG><FONT color=#ff0000>+</FONT></STRONG> <FONT color=#000080>3(2a)<SUP><STRONG>1</STRONG></SUP>(b)<SUP><STRONG>2</STRONG></SUP></FONT>&#160;<STRONG><FONT color=#ff0000>-</FONT></STRONG> <FONT color=#000080>1(2a)<SUP><STRONG>0</STRONG></SUP>(b)<SUP><STRONG>3</STRONG></SUP></FONT></FONT></FONT></P>
 <P>Now reduce the terms:</P>
 <P><FONT size=2><FONT face="Courier New"><FONT color=#000080>8a<SUP>3</SUP> - 12a<SUP>2</SUP>b + 6ab<SUP>2</SUP> - b<SUP>3</SUP></FONT></FONT></FONT></P>
 <P>So a binomial raised to the third power, (a + b)<SUP>3</SUP>, will follow this pattern:</P>
@@ -157,7 +157,7 @@ function FactorCubedBinomial()
 <TR>
 <TD><SPAN class=Brackets>(</SPAN> <INPUT class=TermInput id=TermA> <SELECT class=TermInput id=Operator> <OPTION value=+ selected>+</OPTION> <OPTION value=->-</OPTION></SELECT> <INPUT class=TermInput id=TermB> <SPAN class=Brackets>)</SPAN></TD>
 <TD vAlign=top><SUP><SELECT class=Power id=Power> <OPTION value=0 selected>0</OPTION> <OPTION value=1>1</OPTION> <OPTION value=2>2</OPTION> <OPTION value=3>3</OPTION> <OPTION value=4>4</OPTION> <OPTION value=5>5</OPTION> <OPTION value=6>6</OPTION> <OPTION value=7>7</OPTION> <OPTION value=8>8</OPTION> <OPTION value=9>9</OPTION></SELECT></SUP></SPAN></TD>
-<TD>  <INPUT onclick="FactorCubedBinomial();return false;" type=submit value="Factor Me"> </TD></TR></TBODY></TABLE><BR><BR>
+<TD>&#160; <INPUT onclick="FactorCubedBinomial();return false;" type=submit value="Factor Me"> </TD></TR></TBODY></TABLE><BR><BR>
 <TABLE>
 <TBODY>
 <TR>

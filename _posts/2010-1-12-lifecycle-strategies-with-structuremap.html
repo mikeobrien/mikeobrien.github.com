@@ -1,10 +1,10 @@
---
+---
 layout: post
 title: Lifecycle Strategies with StructureMap
 categories: [.NET, StructureMap]
 tags: [.NET, StructureMap]
---
-<p><a href="http://structuremap.sourceforge.net/">StructureMap</a> is an excellent IoC tool; very powerful and easy to use. One thing that I think is lacking though is a way to create a custom lifecycle “strategy” (For lack of a better word). Currently you can specify a lifecycle and you can use one the hybrid lifecycles but this isn’t sufficient in some circumstances. In our code base we have ASP.NET web pages, WCF services, Windows services and console applications (And who knows what next, MVC?) and we have one registry for all these applications. We’re using NHibernate so we have different lifecycle needs for ISession in each type of application. Another side of a lifecycle is the end of it. We want to be able to explicitly end a lifecycle in our ASP.NET and WCF apps. So this is what I mean by a “strategy”.</p>  <p><strong>Solution</strong></p>  <p>One thing that’s really nice about StructureMap is that it’s really easy to extend. Jeremy et al have done a great job of creating a codebase that’s really easy to dive into and understand. So the following is a strategic lifecycle API that allows you to define a lifecycle strategy. I’ll first explain how to use it and then further down I’ll explain the code under the covers. Now I do want to give the disclaimer that I’m no StructureMap expert or anything, so there may be better or more “correct” ways to do this. If so, be sure to leave a comment if you know. </p>  <p>You can download the code <a href="https://docs.google.com/uc?id=0Bynmohn6qHD_NTMwMmM2MmMtNTg4MC00YmRlLTkxMjctNTAyYmQ3N2U3NTdj">here</a>. The code that matters is in the StructureMapContrib project.</p>  <p>Lifecycle strategies can be defined with the LifecycleStrategiesAre() method which takes any number of ILifecycleStrategy parameters:</p>  <pre class="code"><span style="color: #2b91af">ObjectFactory</span>.Configure(
+---
+<p><a href="http://structuremap.sourceforge.net/">StructureMap</a> is an excellent IoC tool; very powerful and easy to use. One thing that I think is lacking though is a way to create a custom lifecycle "strategy" (For lack of a better word). Currently you can specify a lifecycle and you can use one the hybrid lifecycles but this isn't sufficient in some circumstances. In our code base we have ASP.NET web pages, WCF services, Windows services and console applications (And who knows what next, MVC?) and we have one registry for all these applications. We're using NHibernate so we have different lifecycle needs for ISession in each type of application. Another side of a lifecycle is the end of it. We want to be able to explicitly end a lifecycle in our ASP.NET and WCF apps. So this is what I mean by a "strategy".</p>  <p><strong>Solution</strong></p>  <p>One thing that's really nice about StructureMap is that it's really easy to extend. Jeremy et al have done a great job of creating a codebase that's really easy to dive into and understand. So the following is a strategic lifecycle API that allows you to define a lifecycle strategy. I'll first explain how to use it and then further down I'll explain the code under the covers. Now I do want to give the disclaimer that I'm no StructureMap expert or anything, so there may be better or more "correct" ways to do this. If so, be sure to leave a comment if you know. </p>  <p>You can download the code <a href="https://docs.google.com/uc?id=0Bynmohn6qHD_NTMwMmM2MmMtNTg4MC00YmRlLTkxMjctNTAyYmQ3N2U3NTdj">here</a>. The code that matters is in the StructureMapContrib project.</p>  <p>Lifecycle strategies can be defined with the LifecycleStrategiesAre() method which takes any number of ILifecycleStrategy parameters:</p>  <pre class="code"><span style="color: #2b91af">ObjectFactory</span>.Configure(
     config => config.<font color="#000000"><span style="color: black">For</span><</font><span style="color: #2b91af">INumberGenerator</span>>().
               <font color="#ff0000">LifecycleStrategiesAre(...).</font>
               Use<<span style="color: #2b91af">NumberGenerator</span>>());</pre>
@@ -25,7 +25,7 @@ tags: [.NET, StructureMap]
     () => <span style="color: blue">new </span><span style="color: #2b91af">HttpContextLifecycle</span>(), 
     c => ((<span style="color: #2b91af">Page</span>)<span style="color: #2b91af">HttpContext</span>.Current.Handler).Unload += ((s,e) => c.DisposeAndClear())),</pre>
 
-<p>This strategy is only valid when there is a current HttpContext and when the handler is a Web.UI.Page. In this case we would use StructureMap’s HttpContextLifecycle. And we want to deterministically dispose of the object cache by hooking into the page Unload event. We can define other strategies to create a full lifecycle strategy as follows:</p>
+<p>This strategy is only valid when there is a current HttpContext and when the handler is a Web.UI.Page. In this case we would use StructureMap's HttpContextLifecycle. And we want to deterministically dispose of the object cache by hooking into the page Unload event. We can define other strategies to create a full lifecycle strategy as follows:</p>
 
 <pre class="code"><span style="color: #2b91af">ObjectFactory</span>.Configure(
     config => config.<span style="color: black">For</span><<span style="color: #2b91af">INumberGenerator</span>>().
@@ -44,7 +44,7 @@ tags: [.NET, StructureMap]
               <span style="color: black">Use</span><<span style="color: #2b91af">NumberGenerator</span>>());</pre>
 <a href="http://11011.net/software/vspaste"></a>
 
-<p>Here we have a strategy that defines lifecycles for ASP.NET pages, WCF services and a fallback or default strategy of thread local storage. BTW, the WcfOperatonLifecycle is explained <a href="/2010/01/creating-structuremap-lifecycle-for-wcf.html">here</a>. Notice that the thread local storage doesn't specify if it is valid or an explicit dispose handler. Since it’s a fall back strategy it is listed last and is always valid and the object cache will not be deterministically disposed. This registration looks a bit cluttered so I’ve encapsulated these strategies into their own classes which cleans things up a bit:</p>
+<p>Here we have a strategy that defines lifecycles for ASP.NET pages, WCF services and a fallback or default strategy of thread local storage. BTW, the WcfOperatonLifecycle is explained <a href="/2010/01/creating-structuremap-lifecycle-for-wcf.html">here</a>. Notice that the thread local storage doesn't specify if it is valid or an explicit dispose handler. Since it's a fall back strategy it is listed last and is always valid and the object cache will not be deterministically disposed. This registration looks a bit cluttered so I've encapsulated these strategies into their own classes which cleans things up a bit:</p>
 
 <pre class="code"><span style="color: #2b91af">ObjectFactory</span>.Configure(
     config => config.<span style="color: black">For</span><<span style="color: #2b91af">INumberGenerator</span>>().
@@ -55,7 +55,7 @@ tags: [.NET, StructureMap]
               Use<<span style="color: #2b91af">NumberGenerator</span>>());</pre>
 <a href="http://11011.net/software/vspaste"></a>
 
-<p>And that’s it. Now below, if you’re interested, we’ll examine the code behind this.</p>
+<p>And that's it. Now below, if you're interested, we'll examine the code behind this.</p>
 
 <p><strong>Implementation</strong></p>
 
@@ -89,7 +89,7 @@ tags: [.NET, StructureMap]
 }</pre>
 <a href="http://11011.net/software/vspaste"></a>
 
-<p>This lifecycle dynamically chooses a valid lifecycle by calling the IsValid() method on all the ILifecycleStrategy’s passed in. The first one it finds is the winner.</p>
+<p>This lifecycle dynamically chooses a valid lifecycle by calling the IsValid() method on all the ILifecycleStrategy's passed in. The first one it finds is the winner.</p>
 
 <p>Lifecycle strategies implement the ILifecycleStrategy interface which only has two members; IsValid() to determine it the lifecycle is valid in a particular circumstance and the Lifecycle property to return an instance of a lifecycle:</p>
 
@@ -100,7 +100,7 @@ tags: [.NET, StructureMap]
 }</pre>
 <a href="http://11011.net/software/vspaste"></a>
 
-<p>This is the implementation of ILifecycleStrategy that I’m using:</p>
+<p>This is the implementation of ILifecycleStrategy that I'm using:</p>
 
 <pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">LifecycleStrategy </span>: <span style="color: #2b91af">ILifecycleStrategy
 </span>{
@@ -137,7 +137,7 @@ tags: [.NET, StructureMap]
     }
 }</pre>
 
-<p>This is simply a container for the lambdas passed in and for the lifecycle. The lifecycle is created lazily and cached. You’ll notice that if a deterministic dispose lambda is passed, the lifecycle is wrapped in a DisposableLifecycleProxy class. Here is that class:</p>
+<p>This is simply a container for the lambdas passed in and for the lifecycle. The lifecycle is created lazily and cached. You'll notice that if a deterministic dispose lambda is passed, the lifecycle is wrapped in a DisposableLifecycleProxy class. Here is that class:</p>
 
 <pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">DisposableLifecycleProxy </span>: <span style="color: #2b91af">ILifecycle
 </span>{
@@ -178,7 +178,7 @@ tags: [.NET, StructureMap]
 
     <span style="color: blue">public string </span>Scope { <span style="color: blue">get </span>{ <span style="color: blue">return </span>_lifecycle.Scope; } }
 
-    <span style="color: green">// ────────────────────────── Nested Types ──────────────────────────
+    <span style="color: green">// &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472; Nested Types &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 
     </span><span style="color: blue">public class </span><span style="color: #2b91af">ObjectCacheProxy </span>: <span style="color: #2b91af">IObjectCache</span>, <span style="color: #2b91af">IDisposable
     </span>{
@@ -216,6 +216,6 @@ tags: [.NET, StructureMap]
 }</pre>
 <a href="http://11011.net/software/vspaste"></a>
 
-<p>This is the part I’m not all that fond of. It’s a bit too much acrobatics to do something really simple and I wasn't able to put any more effort into it because of time constraints. But it’s the only way I could figure out to <strong><em>transparently</em></strong> control the lifetime of an object cache. Essentially the dispose lambda is called the first time the FindCache() method is called. This class maintains a dictionary of all the object caches it’s called the dispose lambda on so that it only ever calls it <strong><em>once </em></strong>per object cache. Plus the object cache that is returned is wrapped in a proxy that will signal back that the object cache has been disposed and can be removed from the mapping. I wish there was something that indicated if the cache existed before you called FindCache(). That way you could tell if it was newly created and in this case call the explicit dispose lambda on it. For now this is my workaround.   </p>
+<p>This is the part I'm not all that fond of. It's a bit too much acrobatics to do something really simple and I wasn't able to put any more effort into it because of time constraints. But it's the only way I could figure out to <strong><em>transparently</em></strong> control the lifetime of an object cache. Essentially the dispose lambda is called the first time the FindCache() method is called. This class maintains a dictionary of all the object caches it's called the dispose lambda on so that it only ever calls it <strong><em>once </em></strong>per object cache. Plus the object cache that is returned is wrapped in a proxy that will signal back that the object cache has been disposed and can be removed from the mapping. I wish there was something that indicated if the cache existed before you called FindCache(). That way you could tell if it was newly created and in this case call the explicit dispose lambda on it. For now this is my workaround.&#160;&#160; </p>
 
-<p>The rest of the classes in the StructureMapContrib project are just simple convenience classes and shouldn’t require any explanation.</p>
+<p>The rest of the classes in the StructureMapContrib project are just simple convenience classes and shouldn't require any explanation.</p>

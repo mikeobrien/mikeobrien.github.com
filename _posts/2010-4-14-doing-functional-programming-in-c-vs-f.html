@@ -1,10 +1,10 @@
---
+---
 layout: post
 title: Doing Functional Programming in C# vs F#
 categories: [.NET, F#, C#]
 tags: [.NET, F#, C#]
---
-<p>I wanted to use the F# unfold construct in some C# code today (.NET 3.5) and of course Linq doesn't offer an equivalent. So just for fun I thought I’d hand craft what was needed to do it in C# (I know this has been done before, nothing new): </p>  <pre class="code"><span style="color: blue">public static class </span><span style="color: #2b91af">Functional
+---
+<p>I wanted to use the F# unfold construct in some C# code today (.NET 3.5) and of course Linq doesn't offer an equivalent. So just for fun I thought I'd hand craft what was needed to do it in C# (I know this has been done before, nothing new): </p>  <pre class="code"><span style="color: blue">public static class </span><span style="color: #2b91af">Functional
 </span>{
     <span style="color: blue">public static class </span><span style="color: #2b91af">Seq
     </span>{
@@ -56,7 +56,7 @@ tags: [.NET, F#, C#]
 }</pre>
 <a href="http://11011.net/software/vspaste"></a>
 
-<p>Let’s see how this is defined in F# (From the source, pre .NET 4.0 tuple definition):</p>
+<p>Let's see how this is defined in F# (From the source, pre .NET 4.0 tuple definition):</p>
 
 <pre class="code"><span style="color: blue">let </span>unfold f x : IEnumerator&lt;_&gt; =
   <span style="color: blue">let </span>state = ref x
@@ -93,7 +93,7 @@ tags: [.NET, F#, C#]
     <span style="color: blue">val </span>Item1 : 'T1 
     <span style="color: blue">val </span>Item2 : 'T2</pre>
 
-<p>Discriminated unions and tuples are a language feature (Not just a type in the BCL as with tuples in 4.0). F# is nice and terse, much less “noise”, esp. with type inference and the light syntax. </p>
+<p>Discriminated unions and tuples are a language feature (Not just a type in the BCL as with tuples in 4.0). F# is nice and terse, much less "noise", esp. with type inference and the light syntax. </p>
 
 <p>Here is the usage, and what really makes a big difference for me. C#:</p>
 
@@ -105,4 +105,4 @@ tags: [.NET, F#, C#]
 
 <pre class="code"><span style="color: blue">let </span>result = Seq.unfold (<span style="color: blue">fun </span>state <span style="color: blue">-&gt; if </span>(gimmie state) = <span style="color: blue">null then </span>None <span style="color: blue">else </span>Some(gimmie state, state + 1)) 0</pre>
 
-<p>Now I’m sure we can optimize and clean up the C# to be even terser (I’m sure my C# is a bit biased because I’m trying to make a point :) but the type inference and discriminated unions &amp; tuples as a language feature make a huge difference. People often ask “what can I do in F# that I cant in C#?”. And at first I had a hard time answering that question (Esp. with all the functional language features and constructs in C#/.NET these days). But the big difference is not necessarily what you can/cant do per se, but how easily and naturally you can do it. Functional programming is just much simpler and natural in F# because, well, its a functional language and therefore fully embraces the functional paradigm. In C#, which obviously is an imperative/OO language, you have to struggle to accomplish the same things you can naturally do in F#, and they can end up pretty ugly. </p>  
+<p>Now I'm sure we can optimize and clean up the C# to be even terser (I'm sure my C# is a bit biased because I'm trying to make a point :) but the type inference and discriminated unions &amp; tuples as a language feature make a huge difference. People often ask "what can I do in F# that I cant in C#?". And at first I had a hard time answering that question (Esp. with all the functional language features and constructs in C#/.NET these days). But the big difference is not necessarily what you can/cant do per se, but how easily and naturally you can do it. Functional programming is just much simpler and natural in F# because, well, its a functional language and therefore fully embraces the functional paradigm. In C#, which obviously is an imperative/OO language, you have to struggle to accomplish the same things you can naturally do in F#, and they can end up pretty ugly. </p>  

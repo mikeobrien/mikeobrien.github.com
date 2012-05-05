@@ -1,10 +1,10 @@
---
+---
 layout: post
 title: Thread Principal Propagation in Mutli Threaded Applications
 categories: [Threading, Security, .NET, .NET 3.5]
 tags: [Threading, Security, .NET, .NET 3.5]
---
-<p>I have been reading <a href="http://www.amazon.com/Developers-Windows-Security-Microsoft-Development/dp/0321228359">The .NET Developer's Guide to Windows Security</a> and it mentioned that as of .NET 1.1 a calling threads principal is not automatically propagated to a thread spun off by the ThreadPool using the QueueUserWorkItem method; it has to be manually set. Looks like this has changed as of .NET 2.0 as the following test shows. It automatically propagates when the ThreadPool initiates a call with a thread in the pool, when using the APM and manually creating threads:</p> <p> </p><a href="http://11011.net/software/vspaste"></a><pre class="code"><span style="color: green">// Set the executing threads principle\identity
+---
+<p>I have been reading <a href="http://www.amazon.com/Developers-Windows-Security-Microsoft-Development/dp/0321228359">The .NET Developer's Guide to Windows Security</a> and it mentioned that as of .NET 1.1 a calling threads principal is not automatically propagated to a thread spun off by the ThreadPool using the QueueUserWorkItem method; it has to be manually set. Looks like this has changed as of .NET 2.0 as the following test shows. It automatically propagates when the ThreadPool initiates a call with a thread in the pool, when using the APM and manually creating threads:</p> <p>&#160;</p><a href="http://11011.net/software/vspaste"></a><pre class="code"><span style="color: green">// Set the executing threads principle\identity
 </span><span style="color: #2b91af">Thread</span>.CurrentPrincipal = <span style="color: blue">new </span><span style="color: #2b91af">GenericPrincipal</span>(
     <span style="color: blue">new </span><span style="color: #2b91af">GenericIdentity</span>(<span style="color: #a31515">"Louis De Broglie"</span>), <span style="color: blue">null</span>);
 
@@ -32,7 +32,7 @@ asyncCall.BeginInvoke(ar => asyncCall.EndInvoke(ar), <span style="color: blue">n
 
         <span style="color: green">// Set a new principal
         </span><span style="color: #2b91af">Thread</span>.CurrentPrincipal = <span style="color: blue">new </span><span style="color: #2b91af">GenericPrincipal</span>(
-            <span style="color: blue">new </span><span style="color: #2b91af">GenericIdentity</span>(<span style="color: #a31515">"Erwin Schrödinger"</span>), <span style="color: blue">null</span>);
+            <span style="color: blue">new </span><span style="color: #2b91af">GenericIdentity</span>(<span style="color: #a31515">"Erwin Schr&#246;dinger"</span>), <span style="color: blue">null</span>);
 
         writeInfo.Invoke(<span style="color: #a31515">"Manually Created Thread, new identity"</span>);
 
@@ -52,5 +52,5 @@ asyncCall.BeginInvoke(ar => asyncCall.EndInvoke(ar), <span style="color: blue">n
             ).Start();
     }).Start();
 
-<span style="color: #2b91af">Console</span>.ReadKey();</pre><a href="http://11011.net/software/vspaste"></a><pre class="code"> </pre><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a>
+<span style="color: #2b91af">Console</span>.ReadKey();</pre><a href="http://11011.net/software/vspaste"></a><pre class="code">&#160;</pre><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a>
 <p><a href="http://blog.mikeobrien.net/content/binary/WindowsLiveWriter/ThreadPrinciplePropagationinMutliThreade_10CF9/image_7.png"><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="189" alt="image" src="/content/ec5a4574ea7f4f3eaeec9953511b0608.png" width="621" border="0"></a></p>

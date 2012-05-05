@@ -1,9 +1,9 @@
---
+---
 layout: post
 title: Why Return When You Can Yield?
 categories: [C#]
 tags: [C#]
---
+---
 <P>I cant believe I wasn't aware of this cool little feature but with the release of C# 2.0 came the <STRONG>yield</STRONG> keyword. Basically it allows you to create an enumerator that "yields" when it has the current value ready. It's much simpler and elegant than enumerator code you would normally have to write. As an example we will create an enumerable class that returns numbers in the Fibonacci sequence. </P><PRE class=code><SPAN style="COLOR: blue">public class </SPAN><SPAN style="COLOR: #2b91af">FibonacciSeries </SPAN>: <SPAN style="COLOR: #2b91af">IEnumerable
 </SPAN>{
     <SPAN style="COLOR: blue">int </SPAN>size;

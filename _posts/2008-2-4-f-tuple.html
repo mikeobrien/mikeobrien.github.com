@@ -1,9 +1,9 @@
---
+---
 layout: post
 title: F# Tuple
 categories: [F#]
 tags: [F#]
---
+---
 <P>There are much <A href="/2008/01/f-learning-resources.html">better explanations by people who really know about functional programming</A> so the next few posts on F# are more an exercise for my brain than anything else. But maybe you will find them useful...</P>
 <P>So I haven't heard of the tuple since watching boring educational videos on database theory 10 years ago. But alas the tuple appears again as I'm learning F# and also digging into some mathematical concepts again. It's actually been there all along as I declared a singleton or joined database tables. A tuple is basically a <STRONG><EM>finite sequence</EM></STRONG> of objects that are in a <STRONG><EM>particular order</EM></STRONG> and can <STRONG><EM>contain the same object more than once</EM></STRONG>. It is also <EM><STRONG>immutable</STRONG></EM> (Aka, cant be modified). An example of a tuple could be a first name, last name and age. In C# we may define it as a generic <EM>triple</EM> (a tuple with three items) class as follows:</P><PRE class=code><SPAN style="COLOR: blue">public class </SPAN><SPAN style="COLOR: #2b91af">Triple</SPAN><A,B,C>
 {

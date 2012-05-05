@@ -1,7 +1,7 @@
---
+---
 layout: post
 title: &quot;MS Build Error MSB4019: Microsoft.WebApplication.targets was not found&quot; Error When Building a Web Application Project on a Build Server
 categories: [Visual Studio 2008, MSBuild]
 tags: [Visual Studio 2008, MSBuild]
---
+---
 <p><a href="http://geekswithblogs.net/WillSmith/archive/2008/02/26/msbuild-server-gotcha.aspx">Will Smith so kindly pointed out</a> that the target file for web application projects is not installed by the .NET 3.5 redist (Along with msbuild). To fix this you can copy over the target file from a machine with VS2008 installed to the same folder on build server. The target file can be found under <ProgramFiles>\MSBuild\Microsoft\VisualStudio\v9.0\WebApplications.</p>

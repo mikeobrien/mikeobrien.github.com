@@ -1,15 +1,15 @@
---
+---
 layout: post
 title: &quot;Guid should contain 32 digits with 4 dashes&quot; Error in SharePoint, Visual Studio Properties Pane
 categories: [Visual Studio 2005, .NET, VSeWSS, SharePoint 2007, SharePoint Solution Deployment]
 tags: [Visual Studio 2005, .NET, VSeWSS, SharePoint 2007, SharePoint Solution Deployment]
---
-<P>This error almost drove me over the edge... The SharePoint properties pane in Visual Studio would show the error "An error occured trying to load the page. Guid should contain 32 digits with 4 dashes (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)"</P>
+---
+<P>This error almost drove me over the edge...&#160;The SharePoint properties pane in Visual Studio would show the error "An error occured trying to load the page. Guid should contain 32 digits with 4 dashes (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)"</P>
 <P><A href="http://blog.mikeobrien.net/content/binary/Guidshouldcontain32digitswith4dashesErro_9E09/image.png" atomicselection="true"><IMG style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" height=372 alt=image src="/content/215c0e9201814a33b9f8ba59bfa7548d.png" width=634 border=0></A> </P>
-<P> </P>
+<P>&#160;</P>
 <P>After pulling much of my hair out (And doing some trial & error testing) I realized that the problem was that the pane was looking to see if there were any new web parts added to the project each time it loaded. I had added an abstract WebPart base class which some of my other WebParts would inherit from. Problem was this abstract WebPart class was not decorated with the Guid attribute, which is evidently required by the SharePoint property page. I added the Guid attribute and the error goes away.</P>
 <DIV style="FONT-SIZE: 10pt; BACKGROUND: white; COLOR: black; FONT-FAMILY: courier new">
-<P style="MARGIN: 0px"> </P>
+<P style="MARGIN: 0px">&#160;</P>
 <P style="MARGIN: 0px">[<SPAN style="COLOR: teal">Guid</SPAN>(<SPAN style="COLOR: maroon">"9D5AFDE3-F3A3-4947-AC6F-5D66CEF0D2F6"</SPAN>)]</P>
 <P style="MARGIN: 0px"><SPAN style="COLOR: blue">public</SPAN> <SPAN style="COLOR: blue">abstract</SPAN> <SPAN style="COLOR: blue">class</SPAN> <SPAN style="COLOR: teal">ListBoundWebPart</SPAN> : System.Web.UI.WebControls.WebParts.<SPAN style="COLOR: teal">WebPart</SPAN></P>
 <P style="MARGIN: 0px">{ ... }</P>

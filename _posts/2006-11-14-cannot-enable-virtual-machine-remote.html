@@ -1,7 +1,7 @@
---
+---
 layout: post
 title: Cannot enable Virtual Machine Remote Control (VMRC)
 categories: [Infrastructure]
 tags: [Infrastructure]
---
+---
 <P>I ran into an issue where I could not enable the VMRC in MS Virtual Server 2005. I would check the box and save the settings but it would revert right back to being disabled. Turns out that <A href="http://www.realvnc.com/">VNC</A> server happens to run on the same port, 5900, as the VMRC. So if you are running VNC you have to change the port for either VNC or VMRC. I wish the control panel would have just thrown an error but it's those sort of things that keep life interesting... ;-)</P>

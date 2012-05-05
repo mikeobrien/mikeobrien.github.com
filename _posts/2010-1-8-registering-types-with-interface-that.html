@@ -1,10 +1,10 @@
---
+---
 layout: post
 title: Registering Types with an Interface that Derives from an Open Generic Type in StructureMap
 categories: [.NET, StructureMap]
 tags: [.NET, StructureMap]
---
-<p><a href="http://www.lostechies.com/blogs/jimmy_bogard/default.aspx">Jimmy Bogard</a> has written a couple of posts <a href="http://www.lostechies.com/blogs/jimmy_bogard/archive/2010/01/07/advanced-structuremap-custom-registration-conventions-for-partially-closed-types.aspx">here</a> and <a href="http://www.lostechies.com/blogs/jimmy_bogard/archive/2009/09/01/partially-closed-generic-types.aspx">here</a> discussing the registering partially closed generic types with <a href="http://structuremap.sourceforge.net">StructureMap</a>. These posts helped me solve a problem I was having which is a little bit different. To set the stage let me explain what we’re doing. First we have a generic repository interface:</p>  <pre class="code"><span style="color: blue">public interface </span><span style="color: #2b91af">IRepository</span><TEntity> : <span style="color: #2b91af">IQueryable</span><TEntity> <span style="color: blue">where </span>TEntity : <span style="color: blue">class
+---
+<p><a href="http://www.lostechies.com/blogs/jimmy_bogard/default.aspx">Jimmy Bogard</a> has written a couple of posts <a href="http://www.lostechies.com/blogs/jimmy_bogard/archive/2010/01/07/advanced-structuremap-custom-registration-conventions-for-partially-closed-types.aspx">here</a> and <a href="http://www.lostechies.com/blogs/jimmy_bogard/archive/2009/09/01/partially-closed-generic-types.aspx">here</a> discussing the registering partially closed generic types with <a href="http://structuremap.sourceforge.net">StructureMap</a>. These posts helped me solve a problem I was having which is a little bit different. To set the stage let me explain what we're doing. First we have a generic repository interface:</p>  <pre class="code"><span style="color: blue">public interface </span><span style="color: #2b91af">IRepository</span><TEntity> : <span style="color: #2b91af">IQueryable</span><TEntity> <span style="color: blue">where </span>TEntity : <span style="color: blue">class
 </span>{
     TEntity Get(<span style="color: #2b91af">Guid </span>id);
     <span style="color: blue">void </span>Save(TEntity entity);
@@ -33,7 +33,7 @@ tags: [.NET, StructureMap]
 </span>}</pre>
 <a href="http://11011.net/software/vspaste"></a>
 
-<p>So what I wanted is to scan our persistence assembly for any concrete types (IE: AccountRepository) that implement an interface (IE: IAccountRepository) that derives from a closed generic interface (IE: IRepository<Account>) that is of a particular open generic interface type (IE: IRepository<>). Clear as mud?? :) Simply put, I want to scan for IRepository<> and want to map IAccountRepository to AccountRepository. This is cake with StructureMap using a registration convention. BTW, I’m using StructureMap 2.5.4 and from what I understand you may need this version to do what I’m doing here. </p>
+<p>So what I wanted is to scan our persistence assembly for any concrete types (IE: AccountRepository) that implement an interface (IE: IAccountRepository) that derives from a closed generic interface (IE: IRepository<Account>) that is of a particular open generic interface type (IE: IRepository<>). Clear as mud?? :) Simply put, I want to scan for IRepository<> and want to map IAccountRepository to AccountRepository. This is cake with StructureMap using a registration convention. BTW, I'm using StructureMap 2.5.4 and from what I understand you may need this version to do what I'm doing here. </p>
 
 <p>I lifted the GenericConnectionScanner class (Which is what the ConnectImplementationsToTypesClosing convenience method uses) from the StructureMap code as my starting point and modified the logic:</p>
 
@@ -74,4 +74,4 @@ tags: [.NET, StructureMap]
 System.Diagnostics.<span style="color: #2b91af">Debug</span>.Assert(accountRepo != <span style="color: blue">null </span>&& accountRepo <span style="color: blue">is </span><span style="color: #2b91af">AccountRepository</span>);</pre>
 <a href="http://11011.net/software/vspaste"></a>
 
-<p><span style="color: #2b91af"></span>The above initialization scans the assembly containing our open generic interface type and specifies our registration convention using the With() method. That’s all there is to it!</p>
+<p><span style="color: #2b91af"></span>The above initialization scans the assembly containing our open generic interface type and specifies our registration convention using the With() method. That's all there is to it!</p>

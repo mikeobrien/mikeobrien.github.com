@@ -1,10 +1,10 @@
---
+---
 layout: post
 title: Enumerable Types in F#
 categories: [.NET, F#]
 tags: [.NET, F#]
---
-<p>Functional programming never ceases to amaze me. The more I code in F# the more I’ve come to appreciate how succinct and terse you can write your code. I’ll sometimes start out with an imperative solution but there always seems to be a functional one that is fewer lines of code and much clearer. I’m working on rewriting a <a href="http://hidlibrary.codeplex.com/">project</a> in F#, that allows you to interact with USB HID devices, in order to learn F#. One of the things I ran into is creating an enumerable and disposable type that wraps a couple of API calls.</p>  <pre class="code"><span style="color: blue">type </span>DeviceInfoSet(connectedOnly:bool) = 
+---
+<p>Functional programming never ceases to amaze me. The more I code in F# the more I've come to appreciate how succinct and terse you can write your code. I'll sometimes start out with an imperative solution but there always seems to be a functional one that is fewer lines of code and much clearer. I'm working on rewriting a <a href="http://hidlibrary.codeplex.com/">project</a> in F#, that allows you to interact with USB HID devices, in order to learn F#. One of the things I ran into is creating an enumerable and disposable type that wraps a couple of API calls.</p>  <pre class="code"><span style="color: blue">type </span>DeviceInfoSet(connectedOnly:bool) = 
     <span style="color: blue">let </span>handle = GetDeviceInfoSet connectedOnly
     <span style="color: blue">member private </span>c.ToSeq = 
         Seq.unfold (<span style="color: blue">fun </span>index <span style="color: blue">-> 
@@ -28,4 +28,4 @@ tags: [.NET, F#]
 <pre class="code"><span style="color: blue">let </span>enumerate = 
     <span style="color: blue">use </span>devices = <span style="color: blue">new </span>DeviceInfoSet(<span style="color: blue">false</span>)
     devices |> Seq.iter (<span style="color: blue">fun </span>item <span style="color: blue">-> </span>Console.WriteLine(item.ClassGuid.ToString()))</pre>
-The “use” keyword is equivalent to a using statement in C#. Once the “devices” value goes out of scope it is disposed of.  
+The "use" keyword is equivalent to a using statement in C#. Once the "devices" value goes out of scope it is disposed of.&#160; 

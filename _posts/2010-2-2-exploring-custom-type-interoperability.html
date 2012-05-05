@@ -1,10 +1,10 @@
---
+---
 layout: post
 title: Exploring Custom Type Interoperability between F# and C#
 categories: [F#, C#]
 tags: [F#, C#]
---
-<p>I’m currently working on an F# library that will be accessed from C#. When doing this the obvious question is; “How will this look from C#?” This wasn't quite clear to me at first so I’ll go through a couple custom F# types and show how they are compiled.</p>  <p>Record type, Fermion.fs:</p>  <pre class="code"><span style="color: blue">type </span>Spin = 
+---
+<p>I'm currently working on an F# library that will be accessed from C#. When doing this the obvious question is; "How will this look from C#?" This wasn't quite clear to me at first so I'll go through a couple custom F# types and show how they are compiled.</p>  <p>Record type, Fermion.fs:</p>  <pre class="code"><span style="color: blue">type </span>Spin = 
     | Up = <span style="color: brown">0
     </span>| Down = <span style="color: brown">1
 
@@ -91,7 +91,7 @@ tags: [F#, C#]
 <p>Some things to note:</p>
 
 <ul>
-  <li>This is a “record type” so a constructor is generated to set all the private fields. No initialization is performed other than this. So record types are essentially a DTO. </li>
+  <li>This is a "record type" so a constructor is generated to set all the private fields. No initialization is performed other than this. So record types are essentially a DTO. </li>
 
   <li>It is sealed.</li>
 
@@ -101,14 +101,14 @@ tags: [F#, C#]
 
   <li>A namespace was not explicitly defined in the example so the type has no namespace and the type is nested in a static class with the name of the file it was declared in. If a namespace had been defined then this would not have been nested in a static class and would have simply resided under said namespace. </li>
 
-  <li>The identifiers (“v”, “yada”, “stuff”) which are equivalent to the “this” keyword in C# are all converted to "this" in the output. And as an aside they do not need to be the same throughout the type, just in the method or property declaration. </li>
+  <li>The identifiers ("v", "yada", "stuff") which are equivalent to the "this" keyword in C# are all converted to "this" in the output. And as an aside they do not need to be the same throughout the type, just in the method or property declaration. </li>
 
-  <li>Fields are publicly exposed via a property that is named as you named the field in the F# source. The fields are suffixed with an “@”. </li>
+  <li>Fields are publicly exposed via a property that is named as you named the field in the F# source. The fields are suffixed with an "@". </li>
 
   <li>As an aside, enumerations <strong>must</strong> explicitly have a value defined or they will be compiled as discriminated unions.</li>
 </ul>
 
-<p>Now lets mix things up a bit…</p>
+<p>Now lets mix things up a bit...</p>
 
 <p>Constructed type, Fermion.fs:</p>
 
@@ -176,7 +176,7 @@ tags: [F#, C#]
 <p>Some things to note:</p>
 
 <ul>
-  <li>This is a “constructed type” so there is a constructor. You’re constructor code is simply put in the body of the type and not in a special function like C#.</li>
+  <li>This is a "constructed type" so there is a constructor. You're constructor code is simply put in the body of the type and not in a special function like C#.</li>
 
   <li>Requires you to explicitly new up the type and pass the parameters in. </li>
 

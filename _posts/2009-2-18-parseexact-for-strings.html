@@ -1,9 +1,9 @@
---
+---
 layout: post
 title: ParseExact for Strings?
 categories: [.NET, C#]
 tags: [.NET, C#]
---
+---
 <p>The DateTime.ParseExact() method has come in handy on a number of occasions. I really wish there was something similar for strings as sometimes you need to grab specific components of a string. You can use regex directly but that seems a little cumbersome. So here is an extension method that works like the DateTime.ParseExact() but returns an array of strings.</p><pre class="code"><span style="color: blue">string </span>value = <span style="color: #a31515">"2/17/2009 10:57:42 AM...Executing file 26 of 81 files"</span>;
 <span style="color: blue">string</span>[] parts = value.ParseExact(<span style="color: #a31515">"{0}...Executing file {1} of {2} files"</span>);
 <span style="color: blue">foreach </span>(<span style="color: blue">string </span>part <span style="color: blue">in </span>parts)

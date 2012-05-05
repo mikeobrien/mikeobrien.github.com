@@ -1,9 +1,9 @@
---
+---
 layout: post
 title: Why Updating a Clean Property with the NHibernate Pre Update Event Listener, with Dynamic Update Set on the Entity, Doesn't Work
 categories: [NHibernate]
 tags: [NHibernate]
---
+---
 <p>Wow, that's a mouthful. Anyways, if your trying to update a property in an NHibernate (2.1.2.4000) pre update event listener that is &quot;clean&quot; (In other words wasn't updated in the calling code) and your entity is set to dynamic update the update will not make it to the database. Here is why that is the case. The pre update event gets called in the NHibernate.Action.EntityUpdateAction class. Problem is that by the time the event is called the dirty field list has already been set in this class. So no matter what you do the dirty list is already set in stone as an invariant:</p>  <pre class="code"><span style="color: blue">public sealed class </span><span style="color: #2b91af">EntityUpdateAction </span>: <span style="color: #2b91af">EntityAction
 </span>{
     <span style="color: blue">private <font color="#ff0000"><strong>readonly</strong></font> int</span>[] <strong><font color="#ff0000">dirtyFields</font></strong>;

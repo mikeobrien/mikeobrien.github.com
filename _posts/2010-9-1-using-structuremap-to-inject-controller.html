@@ -1,9 +1,9 @@
---
+---
 layout: post
 title: Using StructureMap to inject Controller and Attribute Dependencies
 categories: [StructureMap, .NET 4.0, ASP.NET MVC]
 tags: [StructureMap, .NET 4.0, ASP.NET MVC]
---
+---
 <p>Injecting dependencies into controllers is a pretty simple task with a custom controller factory. Injecting them into attributes is a bit more work. <a href="http://codeclimber.net.nz/">Simone Chiaretta</a> has a <a href="http://codeclimber.net.nz/archive/2009/02/10/how-to-use-ninject-to-inject-dependencies-into-asp.net-mvc.aspx">nice post on how to do this with Ninject</a>; we'll do the same thing below with StructureMap.</p>  <p>First lets start with the controller factory:</p>  <pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">ExtensibleControllerFactory </span>: <span style="color: #2b91af">DefaultControllerFactory
 </span>{
     <span style="color: blue">private readonly </span><span style="color: #2b91af">Func</span>&lt;<span style="color: #2b91af">Type</span>, <span style="color: #2b91af">Controller</span>&gt; _factory;

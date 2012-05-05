@@ -1,9 +1,9 @@
---
+---
 layout: post
 title: Using Block Tidbits
 categories: [.NET, C#, .NET 3.5]
 tags: [.NET, C#, .NET 3.5]
---
+---
 <p>While reading <a href="http://www.amazon.com/CLR-via-Second-Pro-Developer/dp/0735621632">CLR via C#</a> I picked up a couple of interesting tidbits about the using block that I never realized. First you can declare/instantiate multiple objects as long as they are of the same type and second you can pass in objects that have been declared outside the block. Not sure how useful these would be but interesting none the less. I think more useful would be allowing the developer to declare/instantiate multiple objects of <em>different</em> types. </p><pre class="code"><span style="color: blue">class </span><span style="color: #2b91af">Program
 </span>{
     <span style="color: blue">static void </span>Main(<span style="color: blue">string</span>[] args)

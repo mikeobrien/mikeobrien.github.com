@@ -1,10 +1,10 @@
---
+---
 layout: post
 title: Adding Custom Token Handlers to the Enterprise Library Logging Application Block TextFormatter
 categories: [.NET, Logging, Logging Application Block, Enterprise Library]
 tags: [.NET, Logging, Logging Application Block, Enterprise Library]
---
-<P>Adding custom token handlers to the LAB TextFormatter is fairly simple. The following formatter adds an "arrow" token (" --> ") to  the formatter.</P><PRE class=code><SPAN style="COLOR: blue">using </SPAN>Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
+---
+<P>Adding custom token handlers to the LAB TextFormatter is fairly simple. The following formatter adds an "arrow" token (" --> ") to&#160; the formatter.</P><PRE class=code><SPAN style="COLOR: blue">using </SPAN>Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
 <SPAN style="COLOR: blue">using </SPAN>Microsoft.Practices.EnterpriseLibrary.Logging.Configuration;
 <SPAN style="COLOR: blue">using </SPAN>Microsoft.Practices.EnterpriseLibrary.Logging.Formatters;
 
@@ -42,7 +42,7 @@ tags: [.NET, Logging, Logging Application Block, Enterprise Library]
     </SPAN>}
 }
 </PRE>
-<P>A few things to note: 1) If you want to define the formatter in configuration, you must add the CustomFormatterData attribute to the class. Don't try to add the the TextFormatterData attribute as I did (Because I did not pay close enough attention to the documentation!) and spend hours in Reflector trying to figure out why a TextFormatter object is created and not the derived type... This, by the way, has to do with the Assembler attribute on the nnnFormatterData class. This attribute references an assembler class that will instantiate the specific type (In this case the XmlLogFormatter), NOT the one specified in configuration. You could also define your own custom FormatterData and Assembler classes but the using the CustomFormatterData class is much simpler. 2) Again, if you want to define the formatter in configuration, you will need to add the constructor that accepts the NameValueCollection of configuration parameters. You can then grab the template parameter from this collection. 3) Create a static list of handlers that gets initialized once by a static constructor. There is no need to keep recreating these objects every time the formatter is created.</P>
+<P>A few things to note: 1) If you want to define the formatter in configuration, you must add the CustomFormatterData attribute to the class. Don't try to add the the TextFormatterData attribute as I did (Because I did not pay close enough attention to the documentation!) and spend hours in Reflector trying to figure out why a TextFormatter object is created and not the derived type... This, by the way, has to do with the Assembler attribute on the&#160;nnnFormatterData class. This attribute references an assembler class that will instantiate the specific type (In this case the XmlLogFormatter), NOT the one specified in configuration.&#160;You could also define your own custom FormatterData and Assembler classes but the using the CustomFormatterData class is much simpler. 2) Again, if you want to define the formatter in configuration, you will need to add the constructor that accepts the NameValueCollection of configuration parameters. You can then grab the template parameter from this collection. 3) Create a static list of handlers that gets initialized once by a static constructor. There is no need to keep recreating these objects every time the formatter is created.</P>
 <P>To define the formatter in configuration, specify the class reference like you normally would, just point to the new class. You can now use the token you defined in your class. </P><PRE class=code><SPAN style="COLOR: blue"><</SPAN><SPAN style="COLOR: #a31515">formatters</SPAN><SPAN style="COLOR: blue">>
 </SPAN><SPAN style="COLOR: blue">  <</SPAN><SPAN style="COLOR: #a31515">add 
     </SPAN><SPAN style="COLOR: red">name</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">EventLogFormatter</SPAN>" 

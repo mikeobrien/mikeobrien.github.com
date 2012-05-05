@@ -1,9 +1,9 @@
---
+---
 layout: post
 title: WCF REST Per Method Basic Authentication
 categories: [REST, .NET 3.5, WCF]
 tags: [REST, .NET 3.5, WCF]
---
+---
 <p>One of the things I really wanted with our REST API is per method basic authentication. So lets say we have a library with a books resource. We want everyone to be able to read this resource but we want people to authenticate when modifying this resource. As far as I could tell there is no way to do this OOB with WCF REST without resorting to breaking your resource up into two parts, read and write and hosting the secure one in a separate IIS app with basic auth enabled. The only way I could figure out how to do this properly is implement basic auth in an operation invoker. This way you could define authentication on a per method basis as follows (With the BasicAuthenticationInvoker) without breaking the resource up:</p><pre class="code">[<span style="color: #2b91af">ServiceContract</span>]
 <span style="color: blue">public interface </span><span style="color: #2b91af">IBookService
 </span>{

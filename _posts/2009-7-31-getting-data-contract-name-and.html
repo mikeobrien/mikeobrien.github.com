@@ -1,9 +1,9 @@
---
+---
 layout: post
 title: Getting a Data Contract Name and Namespace From a Type
 categories: [.NET, WCF]
 tags: [.NET, WCF]
---
+---
 <p>I just had a requirement in the project I'm working on to get a data contract name and namespace from a type and found that there really isn't an easy, built in way to do it (Without actually serializing an instance of the type). After looking around with reflector I found the methods that the DataContractSerializer uses but found it was a little too complex and dangerous to try to strip the code from the framework or write my own (Especially when it comes to formulating generic type names). So I found a simple alterative which I don't really like but it works. Basically you instantiate the type in question and run it through the serializer and grab the root element name and namespace:</p><pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">DataContractTypeInfo
 </span>{
     <span style="color: blue">public </span>DataContractTypeInfo()

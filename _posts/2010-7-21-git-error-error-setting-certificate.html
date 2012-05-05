@@ -1,7 +1,7 @@
---
+---
 layout: post
 title: Git Error: “error setting certificate verify locations”
 categories: [Git]
 tags: [Git]
---
-<p>Recently I was trying to use the new “smart http” Git protocol. When I’d try to clone a repo I’d get the following:</p>  <p><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="image" border="0" alt="image" src="/content/eabe4ff6597d4cb6b514587605a7bc07.png" width="677" height="238" /> </p>  <p>A search on the Google and a little tinkering revealed the fix: <font face="Courier New">git config --system http.sslcainfo \bin/curl-ca-bundle.crt</font></p>  
+---
+<p>Recently I was trying to use the new "smart http" Git protocol. When I'd try to clone a repo I'd get the following:</p>  <p><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="image" border="0" alt="image" src="/content/eabe4ff6597d4cb6b514587605a7bc07.png" width="677" height="238" /> </p>  <p>A search on the Google and a little tinkering revealed the fix: <font face="Courier New">git config --system http.sslcainfo \bin/curl-ca-bundle.crt</font></p>  

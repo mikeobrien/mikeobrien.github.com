@@ -1,9 +1,9 @@
---
+---
 layout: post
 title: Removing the .svc Extension for RESTful WCF Services
 categories: [REST, WCF]
 tags: [REST, WCF]
---
+---
 <p>This has been done over and over on the web so I'll add my solution to the mix. Basically it automatically discovers the services in the web application and builds a static mapping table. Then it examines each request and attempts to find a mapping. If it finds one it performs the url rewriting, if not it lets it go though as is. Just register the module and your good to go.</p> <p>Http Module:</p><pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">ServiceAnonymityModule </span>: <span style="color: #2b91af">IHttpModule
 </span>{
     <span style="color: blue">#region </span>IHttpModule Implementation

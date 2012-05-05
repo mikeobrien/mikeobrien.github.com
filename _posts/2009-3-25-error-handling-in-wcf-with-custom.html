@@ -1,9 +1,9 @@
---
+---
 layout: post
 title: Error Handling in Wcf with a Custom Behavior
 categories: [Visual Studio 2008, .NET 3.5, WCF]
 tags: [Visual Studio 2008, .NET 3.5, WCF]
---
+---
 <p>Looks like this has been done already in various ways on the web, I'll add mine to the mix. I just wanted a behavior that would allow me to select the error handler for a particular service and would be configurable. So I start off by creating a behavior extension element:</p><pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">ErrorHandlerBehaviorElement </span>: <span style="color: #2b91af">BehaviorExtensionElement
 </span>{
     <span style="color: blue">#region </span>BehaviorExtensionElement Overrides

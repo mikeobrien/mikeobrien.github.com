@@ -1,10 +1,10 @@
---
+---
 layout: post
 title: Timer With Elapse Reentrance and Start Options
 categories: [C#]
 tags: [C#]
---
-<p>I needed a timer that I could set to elapse immediately when it was enabled (Instead of waiting for the first elapse event) and also not be reentrant on the elapsed event. I couldn’t seem to find anything out there so I rolled my own. Unfortunately the System.Timers.Timer doesn't offer a lot in the way of extension so I ended up just using composition over inheritance. Here is a quick test:</p>  <pre class="code"><span style="color: blue">static </span><span style="color: #2b91af">Timer </span>_timer = 
+---
+<p>I needed a timer that I could set to elapse immediately when it was enabled (Instead of waiting for the first elapse event) and also not be reentrant on the elapsed event. I couldn't seem to find anything out there so I rolled my own. Unfortunately the System.Timers.Timer doesn't offer a lot in the way of extension so I ended up just using composition over inheritance. Here is a quick test:</p>  <pre class="code"><span style="color: blue">static </span><span style="color: #2b91af">Timer </span>_timer = 
     <span style="color: blue">new </span><span style="color: #2b91af">Timer</span>(5000, 
         <span style="color: #2b91af">Timer</span>.<span style="color: #2b91af">TimerElapseStartMode</span>.Immediate,
         <span style="color: #2b91af">Timer</span>.<span style="color: #2b91af">TimerElapseReentranceMode</span>.NonReentrant);
@@ -31,7 +31,7 @@ tags: [C#]
 
 <pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">Timer
 </span>{
-    <span style="color: green">// ────────────────────────── Enumerations ──────────────────────────
+    <span style="color: green">// &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472; Enumerations &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 
     </span><span style="color: blue">public enum </span><span style="color: #2b91af">TimerElapseStartMode
     </span>{
@@ -45,17 +45,17 @@ tags: [C#]
         NonReentrant
     }
 
-    <span style="color: green">// ────────────────────────── Events ──────────────────────────
+    <span style="color: green">// &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472; Events &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 
     </span><span style="color: blue">public delegate void </span><span style="color: #2b91af">ElapsedEventHandler</span>(<span style="color: blue">object </span>sender, <span style="color: #2b91af">ElapsedEventArgs </span>e);
     <span style="color: blue">public event </span><span style="color: #2b91af">ElapsedEventHandler </span>Elapsed;
 
-    <span style="color: green">// ────────────────────────── Private Fields ──────────────────────────
+    <span style="color: green">// &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472; Private Fields &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 
     </span><span style="color: blue">private </span>System.Timers.<span style="color: #2b91af">Timer </span>_timer = <span style="color: blue">new </span>System.Timers.<span style="color: #2b91af">Timer</span>();
     <span style="color: blue">private int </span>_executing;
 
-    <span style="color: green">// ────────────────────────── Constructor ──────────────────────────
+    <span style="color: green">// &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472; Constructor &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 
     </span><span style="color: blue">public </span>Timer(<span style="color: blue">double </span>interval) : 
         <span style="color: blue">this</span>(
@@ -74,7 +74,7 @@ tags: [C#]
         ElapseReentranceMode = reentranceMode;
     }
 
-    <span style="color: green">// ────────────────────────── Public Members ──────────────────────────
+    <span style="color: green">// &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472; Public Members &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 
     </span><span style="color: blue">public bool </span>AutoReset
     {
@@ -110,7 +110,7 @@ tags: [C#]
     <span style="color: blue">public void </span>EndInit() { _timer.EndInit(); }
     <span style="color: blue">public void </span>Stop() { Enabled = <span style="color: blue">false</span>; }
 
-    <span style="color: green">// ────────────────────────── Private Members ──────────────────────────
+    <span style="color: green">// &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472; Private Members &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 
     </span><span style="color: blue">private void </span>OnElapsed(<span style="color: blue">object </span>sender, System.Timers.<span style="color: #2b91af">ElapsedEventArgs </span>e)
     { Elapse(<span style="color: blue">new </span><span style="color: #2b91af">ElapsedEventArgs</span>(e)); }
@@ -125,7 +125,7 @@ tags: [C#]
         _executing = 0;
     }
 
-    <span style="color: green">// ────────────────────────── Nested Types ──────────────────────────
+    <span style="color: green">// &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472; Nested Types &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 
     </span><span style="color: blue">public class </span><span style="color: #2b91af">ElapsedEventArgs </span>: <span style="color: #2b91af">EventArgs
     </span>{

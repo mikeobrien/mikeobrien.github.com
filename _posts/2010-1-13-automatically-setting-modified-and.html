@@ -1,9 +1,9 @@
---
+---
 layout: post
 title: Automatically Setting a Modified and Created Date on an Entity with NHibernate
 categories: [.NET, NHibernate]
 tags: [.NET, NHibernate]
---
+---
 <p>Our entities all have modified and created dates associated with them and we wanted these set automatically. I settled on using an interceptor which is discussed by Ray Houston <a href="http://www.lostechies.com/blogs/rhouston/archive/2008/03/27/creating-a-timestamp-interceptor-in-nhibernate.aspx">here</a> and a caveat (Actually just some fine print I would have missed) discussed <a href="http://elegantcode.com/2008/05/15/implementing-nhibernate-interceptors/">here</a> by Jan Van Ryswyck. </p>  <p>All you do is create a class that inherits from NHibernate.EmptyInterceptor (Which itself implements IInterceptor and allows you to only handle the things you want to handle) and override the the methods you want to handle. In our case we just needed inserts (OnSave) and updates (OnFlushDirty). Return true on those methods only if you made a modification otherwise return false. I created and interface that identifies an entity:</p>  <pre class="code"><span style="color: blue">public interface </span><span style="color: #2b91af">IEntity
 </span>{
     <span style="color: #2b91af">Guid </span>Id { <span style="color: blue">get</span>; }

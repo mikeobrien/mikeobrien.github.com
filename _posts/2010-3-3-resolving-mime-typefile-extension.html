@@ -1,10 +1,10 @@
---
+---
 layout: post
 title: Resolving Mime Type/File Extension Mapping From IIS
 categories: [.NET, IIS 6]
 tags: [.NET, IIS 6]
---
-We ran into a situation where we needed to resolve a mime type for a file extension in a RESTful service running under IIS6. We didn’t want to build a mapping ourselves somewhere but wanted to use a mapping that already existed. Here is a class that will do the mapping, using IIS as the source. You will need to add a reference to System.DirectoryServices and a reference to the “Active DS IIS Namespace Provider” COM component. <br />
+---
+We ran into a situation where we needed to resolve a mime type for a file extension in a RESTful service running under IIS6. We didn't want to build a mapping ourselves somewhere but wanted to use a mapping that already existed. Here is a class that will do the mapping, using IIS as the source. You will need to add a reference to System.DirectoryServices and a reference to the "Active DS IIS Namespace Provider" COM component. <br />
 <br />
 <pre class="code"><span style="color: blue;">public static class </span><span style="color: #000000;">MimeTypes
 {

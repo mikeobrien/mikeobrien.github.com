@@ -1,9 +1,9 @@
---
+---
 layout: post
 title: Rebinding error in Visual Source Safe
 categories: [.NET]
 tags: [.NET]
---
+---
 <P>I have been running into this problem lately where I try to create a VSS source control binding on a project that already has a binding (Albeit an incorrect one). When I try to bind the project I get this error:</P>
 <P><FONT face="Courier New">"One or more of the project's destination paths are invalid. To open this solution, you must specify valid paths for each project. The error was "The Web at 'http://localhost/yada-yada-yada' already contains a project. You need to choose another location for your Web project.".</FONT></P>
 <P>So I have found a solution in a number of blogs/forums that seems to work. Basically you need to remove the source control information for the project in question in the solution file. The lines will look like this:</P>

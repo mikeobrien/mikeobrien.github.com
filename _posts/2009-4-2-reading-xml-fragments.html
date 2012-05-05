@@ -1,10 +1,10 @@
---
+---
 layout: post
 title: Reading Xml Fragments
 categories: [XML/XSL, Logging, C#, .NET 3.5]
 tags: [XML/XSL, Logging, C#, .NET 3.5]
---
-<p>Today I wanted to setup a debugging page to read the trace log for our prototype WCF services and display the last 10 messages that have come across the wire. I'm using the XmlWriterTraceListener to write the entries. The XmlWriterTraceListener writes Xml fragments to the log file.  This is good and all but the problem is <strong>reading</strong> in the log. Since a well formed xml file can only have one root element the log cant be successfully parsed (As far as I could tell anyway's, if anyone knows of another way please let me know). So the only decent solution I could come up with was to create a reader that injects a root element.  The usage is simple, just pass in a stream or stream reader and the name of the root element:</p><pre class="code"><span style="color: #2b91af">XDocument </span>log = <span style="color: #2b91af">XDocument</span>.Load(
+---
+<p>Today I wanted to setup a debugging page to read the trace log for our prototype WCF services and display the last 10 messages that have come across the wire. I'm using the XmlWriterTraceListener to write the entries. The XmlWriterTraceListener writes Xml fragments to the log file.&#160; This is good and all but the problem is <strong>reading</strong> in the log. Since a well formed xml file can only have one root element the log cant be successfully parsed (As far as I could tell anyway's, if anyone knows of another way please let me know). So the only decent solution I could come up with was to create a reader that injects a root element.&#160; The usage is simple, just pass in a stream or stream reader and the name of the root element:</p><pre class="code"><span style="color: #2b91af">XDocument </span>log = <span style="color: #2b91af">XDocument</span>.Load(
     <span style="color: blue">new </span><span style="color: #2b91af">XmlFragmentTextReader</span>(
         <span style="color: blue">new </span><span style="color: #2b91af">FileStream</span>(
             <span style="color: #a31515">@"D:\Logs\Wcf.log"</span>, 

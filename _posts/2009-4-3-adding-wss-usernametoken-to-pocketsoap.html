@@ -1,9 +1,9 @@
---
+---
 layout: post
 title: Adding WSS UsernameToken to PocketSOAP Message
 categories: [SOAP, VBScript, WS-Security, Interoperability]
 tags: [SOAP, VBScript, WS-Security, Interoperability]
---
+---
 <p>As I <a href="/2009/04/weird-issue-with-pocketsoap-in-classic.html">mentioned earlier</a>, I'm testing our SOAP API on a few different platforms and am using <a href="http://www.pocketsoap.com/">PocketSOAP</a> as a COM solution for scripting languages (Like VBScript). It supports SOAP 1.2 but it doesn't support the WS-* standards out of the box. If you simply need to use the <a href="http://docs.oasis-open.org/wss/v1.1/wss-v1.1-spec-os-UsernameTokenProfile.pdf">UsernameToken part of the WSS spec</a> and you are sending your password as plain text (Over SSL right?) you can use the following VBScript method to add the headers:</p><pre class="code"><span style="color: blue">Sub </span>AddWSSUsernameToken(envelope, username, password)
 
     <span style="color: blue">Dim </span>WSSNamespace, Security, UsernameToken, Serializer
@@ -27,7 +27,7 @@ tags: [SOAP, VBScript, WS-Security, Interoperability]
 envelope.SetMethod <span style="color: #a31515">"SomeMethod"</span>, <span style="color: #a31515">"SomeNamespace"
 
 </span>AddWSSUsernameToken envelope, <span style="color: #a31515">"tony"</span>, <span style="color: #a31515">"clifton"</span></pre>
-<p> </p>
+<p>&#160;</p>
 <p>UPDATE: Here is the implementation in JScript:</p><pre class="code"><span style="color: blue">function </span>AddWSSUsernameToken(envelope, username, password)
 {
     <span style="color: blue">var </span>wssNamespace = <span style="color: #a31515">"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"</span>;

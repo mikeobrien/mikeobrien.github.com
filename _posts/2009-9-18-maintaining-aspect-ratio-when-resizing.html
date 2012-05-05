@@ -1,9 +1,9 @@
---
+---
 layout: post
 title: Maintaining Aspect Ratio when Resizing a WPF Window
 categories: [WPF, .NET]
 tags: [WPF, .NET]
---
+---
 <p>I needed to be able to resize a WPF window but keep the aspect ratio. After scouring the internets I found an approach that involves hooking into the window messages and scaling when the window is resized (Thanks to whoever it was that originally came up with it). The solution below is derived from that approach. It determines the aspect ratio from the original window size and maintains it.</p>  <p>Implement the following in the window:</p>  <p>Xaml:</p>  <pre class="code"><span style="color: blue"><</span><span style="color: #a31515">Window </span><span style="color: red">... </span><span style="color: red">SourceInitialized</span><span style="color: blue">="Window_SourceInitialized" ... </span><span style="color: blue">>
     ...</span><span style="color: blue">
 </</span><span style="color: #a31515">Window</span><span style="color: blue">></span></pre>

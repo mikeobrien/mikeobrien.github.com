@@ -1,23 +1,23 @@
---
+---
 layout: post
 title: Detailed SharePoint Errors
 categories: [.NET, Configuration, SharePoint 2007]
 tags: [.NET, Configuration, SharePoint 2007]
---
+---
 <P>This is posted around the web but it's easer just go to my blog than to Google it when I forget how to do it... OOB SharePoint will show some wack error message, for example:</P>
 <P><A href="http://blog.mikeobrien.net/content/binary/DetailedSharePointErrors_A9B3/image.png" atomicselection="true"><IMG style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" height=247 alt=image src="/content/2ffec92a429f48b6aa0f36182ba549f6.png" width=508 border=0></A> </P>
 <P>Setting the SharePoint/SafeMode CallStack attribute in the web.config to 'true' will show a detailed error message.</P>
 <DIV style="FONT-SIZE: 10pt; BACKGROUND: white; COLOR: black; FONT-FAMILY: courier new">
 <P style="MARGIN: 0px"><SPAN style="COLOR: blue"><</SPAN><SPAN style="COLOR: maroon">configuration</SPAN><SPAN style="COLOR: blue">></SPAN></P>
-<P style="MARGIN: 0px">  ...</P>
-<P style="MARGIN: 0px"><SPAN style="COLOR: blue">  <</SPAN><SPAN style="COLOR: maroon">SharePoint</SPAN><SPAN style="COLOR: blue">></SPAN></P>
-<P style="MARGIN: 0px"><SPAN style="COLOR: blue">    <</SPAN><SPAN style="COLOR: maroon">SafeMode</SPAN><SPAN style="COLOR: blue"> </SPAN><SPAN style="COLOR: red">CallStack</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">true</SPAN>"<SPAN style="COLOR: blue"> </SPAN><SPAN style="COLOR: red">...</SPAN><SPAN style="COLOR: blue"> ></SPAN></P>
-<P style="MARGIN: 0px">      ...</P>
-<P style="MARGIN: 0px"><SPAN style="COLOR: blue">    </</SPAN><SPAN style="COLOR: maroon">SafeMode</SPAN><SPAN style="COLOR: blue">></SPAN></P>
-<P style="MARGIN: 0px">    ...</P>
-<P style="MARGIN: 0px"><SPAN style="COLOR: blue">  </</SPAN><SPAN style="COLOR: maroon">SharePoint</SPAN><SPAN style="COLOR: blue">></SPAN></P>
-<P style="MARGIN: 0px">  ...</P>
+<P style="MARGIN: 0px">&#160; ...</P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">&#160; <</SPAN><SPAN style="COLOR: maroon">SharePoint</SPAN><SPAN style="COLOR: blue">></SPAN></P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">&#160; &#160; <</SPAN><SPAN style="COLOR: maroon">SafeMode</SPAN><SPAN style="COLOR: blue"> </SPAN><SPAN style="COLOR: red">CallStack</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">true</SPAN>"<SPAN style="COLOR: blue"> </SPAN><SPAN style="COLOR: red">...</SPAN><SPAN style="COLOR: blue"> ></SPAN></P>
+<P style="MARGIN: 0px">&#160; &#160; &#160; ...</P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">&#160; &#160; </</SPAN><SPAN style="COLOR: maroon">SafeMode</SPAN><SPAN style="COLOR: blue">></SPAN></P>
+<P style="MARGIN: 0px">&#160; &#160; ...</P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">&#160; </</SPAN><SPAN style="COLOR: maroon">SharePoint</SPAN><SPAN style="COLOR: blue">></SPAN></P>
+<P style="MARGIN: 0px">&#160; ...</P>
 <P style="MARGIN: 0px"><SPAN style="COLOR: blue"></</SPAN><SPAN style="COLOR: maroon">configuration</SPAN><SPAN style="COLOR: blue">></SPAN></P></DIV><!--EndFragment-->
 <P>Ahh, much better!</P>
 <P><A href="http://blog.mikeobrien.net/content/binary/DetailedSharePointErrors_A9B3/image_4.png" atomicselection="true"><IMG style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" height=304 alt=image src="/content/57ef2942f77e427281dcca2de0133751.png" width=640 border=0></A> </P>
-<P>Some posts on the web say that the customErrors mode attribute (Under system.web) needs to be set to 'Off' or 'RemoteOnly' for this to work. 'Studies have shown' that the SharePoint handles its own bidness when it comes to error handling so it doesn't care what you have set in customErrors, it's totally unrelated.</P>
+<P>Some posts on the web say that&#160;the customErrors mode attribute (Under system.web) needs&#160;to be set to&#160;'Off' or 'RemoteOnly' for this to work. 'Studies have shown' that the SharePoint handles its own bidness when it comes to error handling so it doesn't care what you have set in customErrors, it's totally unrelated.</P>

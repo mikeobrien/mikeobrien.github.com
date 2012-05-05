@@ -1,10 +1,10 @@
---
+---
 layout: post
 title: Referencing the namespace root in C#
 categories: [.NET, C#]
 tags: [.NET, C#]
---
-<P>I ran into an issue today where I was coding in a class under a particular namespace but couldn’t access a class in another namespace that only differed by its namespace root. Here is what it looked like:</P>
+---
+<P>I ran into an issue today where I was coding in a class under a particular namespace but couldn't access a class in another namespace that only differed by its namespace root. Here is what it looked like:</P>
 <P><SPAN style="FONT-SIZE: 11px; COLOR: black; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">MyApp.Common.MyClass <SPAN style="FONT-SIZE: 11px; COLOR: green; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">// Class I want to reference (For a unit test)</SPAN><BR><BR>TestSuite.MyApp.Common.MyClass <SPAN style="FONT-SIZE: 11px; COLOR: green; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">// the class I'm coding in (A unit test...)</SPAN><BR></SPAN></P>
-<P>When I referenced MyApp.Common.MyClass it was actually resolving to TestSuite.MyApp.Common.MyClass. So if you want to reference the former, you need to use the "global::" prefix as follows:</P>
+<P>When I referenced MyApp.Common.MyClass it was actually resolving to TestSuite.MyApp.Common.MyClass. So if&#160;you want to reference the former, you&#160;need to use the "global::" prefix as follows:</P>
 <P><SPAN style="FONT-SIZE: 11px; COLOR: black; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">global::MyApp.Common.MyClass<BR></SPAN></P>

@@ -1,16 +1,16 @@
---
+---
 layout: post
 title: VPC 2007 vs Virtual Server 2005
 categories: [VPC 2007, Virtual Server 2005]
 tags: [VPC 2007, Virtual Server 2005]
---
+---
 <P>A coworker had asked me today why I prefer VS 2005 over VPC 2007. Here are my personal reasons:</P>
 <OL>
-<LI>VS 2005 is geared towards hosting server operating systems and server processes while VPC is geared towards hosting desktop operating systems and applications (Similar to the difference between Server 200X and XP/Vista). If I have a VM running it will have one or more of the following running on a Server 2003 instance; SQL Server, IIS, WSS/MOSS, AD, DHCP/DNS Server or other server processes. I see no sense in running Server 2003 and these server processes on a VM host that is tuned for desktop applications. Especially when one exists (For free) that is tuned for server processes. Why use the <A href="http://en.wikipedia.org/wiki/BMW_7_Series" target=_blank>7 Series</A> for 4 wheeling when you have a <A href="http://en.wikipedia.org/wiki/Jeep_Wrangler" target=_blank>Wrangler</A> in the garage! That's what the Wrangler was designed for! :)  
+<LI>VS 2005 is geared towards hosting server operating systems and server processes while VPC is geared towards hosting desktop operating systems and applications (Similar to the difference between Server 200X and XP/Vista). If I have a VM running it will have one or more of the following running on a&#160;Server 2003 instance;&#160;SQL Server, IIS, WSS/MOSS, AD, DHCP/DNS Server or other server processes. I see no sense in running Server 2003 and&#160;these server processes on a VM host that is tuned for desktop applications. Especially&#160;when one exists (For free) that is tuned for server processes. Why use the <A href="http://en.wikipedia.org/wiki/BMW_7_Series" target=_blank>7 Series</A> for 4 wheeling when you have a <A href="http://en.wikipedia.org/wiki/Jeep_Wrangler" target=_blank>Wrangler</A> in the&#160;garage! That's what the Wrangler was designed for!&#160;:)&#160; 
 <LI>VS 2005 also offers some nice features that VPC 2007 does not, for example 
 <OL>
 <LI>Network virtualization. This is a VERY handy feature as it enables you to create and test scenarios that might not be possible otherwise because of lack of hardware or because of network restrictions. I think it is also a time saver as it takes time to setup physical hardware. I can create template images and when I need to put something together I can have it in a matter of minutes sometimes. 
 <LI>SCSI Support. It has been noted that <A href="http://blogs.msdn.com/virtual_pc_guy/archive/2006/02/06/525487.aspx" target=_blank>using the emulated SCSI adapter in conjunction with having the Virtual Machine additions installed on the VM "significantly" improves performance over using the emulated IDE channel</A>. </LI></OL></LI></OL>
-<P> </P>
+<P>&#160;</P>
 <P>These are some of my personal reasons, and I'm sure many could come up with reasons for and against each package and they would probably all be correct. Bottom line is there are no hard and fast rules as to what virtualization host a developer should use. The vhd files are compatible, they are both free and they both run on server and workstation hardware. IMO, use what feels more comfortable and enables you to be most productive and realize that may differ from developer to developer. </P>
 <P><A href="http://www.microsoft.com/windowsserversystem/virtualserver/techinfo/vsvsvpc.mspx" target=_blank>This whitepaper</A> compares Virtual Server 2005 and VPC 2004. Not sure how much it applies to VPC 2007.</P>
