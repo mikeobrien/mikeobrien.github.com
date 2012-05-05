@@ -11,7 +11,7 @@ layout: chrome
 </div>
 <hr/>
 <div>
-<div style="float: left;">Posted {{ page.date }}</div>
+<div style="float: left;">Posted {{ page.date | date_to_string }}</div>
 <div style="float: right;">{{ page.tags }}</div>
 </div>
 <div id="disqus_thread"></div>
