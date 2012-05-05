@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Shared Assignable; the best of both worlds?
-categories: [SaaS]
 tags: [SaaS]
 ---
 <P>When architecting a SaaS there are two ends of the spectrum when it comes to a data strategy; a shared multi-tenant schema where there is one database in which all tenants reside, then on the other end there is the isolated multi-tenant approach where each tenant has his/her own database in which schema can vary. In the whitepaper "<A href="http://msdn.microsoft.com/architecture/default.aspx?pull=/library/en-us/dnbda/html/MlttntDA.asp">Multi-Tenant Data Architecture</A>", the SaaS guys at MS describe the options as a "continuum" between these two sides (Which include a number of other important factors but I will focus on the data strategy in this entry). I think that's a great way to describe the architecture options, especially since both ends of the spectrum can be mixed to provide an optimal solution. In my analysis of the options I don't see either end by itself as being optimal. Let's look at a few of the pros and cons (This list is by no means all inclusive!):<BR></P>

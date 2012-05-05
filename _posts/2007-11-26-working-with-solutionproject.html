@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Working with Solution/Project Configurations in Visual Studio
-categories: [Visual Studio 2005, Configuration, Visual Studio 2008, MSBuild]
 tags: [Visual Studio 2005, Configuration, Visual Studio 2008, MSBuild]
 ---
 <P>I've tried playing with custom configurations (Outside the stock Debug/Release configurations) in the past and found it confusing. So today I tried it again and had much better success. One thing that had me confused is the relationship between Solution level configuration and Project level configuration. What I didn't realize is that they are all completely separate entities... The "Debug" configuration in SolutionA is different from the "Debug" configuration in ProjectA. The "Debug" configuration in ProjectA is different from the "Debug" configuration in ProjectB. They all just happen to have the same name for consistency (Which is where my confusion began; guess I should have read the manual...). Although they are different entities, project level configurations can be mapped to a solution level configuration.</P>

@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Monitoring Folder File/Folder Count
-categories: [.NET, C#]
 tags: [.NET, C#]
 ---
 <P>I needed an efficient and <A href="http://boulter.com/blog/2004/08/19/performant-is-not-a-word/">performant</A> way to keep track of the current number of files/folders in a folder. <A href="http://msdn2.microsoft.com/en-us/library/07wt70x2.aspx"><FONT face="Courier New" color=#006400>Directory.GetFiles()</FONT></A> was out of the question for a number of reasons. So I ended up using a two step process. First grab the current number of files/folders in the folder using the <A href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/fileio/fs/findfirstfile.asp"><FONT face="Courier New" color=#006400>FindFirstFile()</FONT></A> and <A href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/fileio/fs/FindNextFile.asp"><FONT face="Courier New" color=#006400>FindNextFile()</FONT></A> Win32 API calls (Which is what <A href="http://msdn2.microsoft.com/en-us/library/07wt70x2.aspx"><FONT face="Courier New" color=#006400>Directory.GetFiles()</FONT></A> uses under the covers.). These increment the file counter. Then immediately after that completes, activate a <A href="http://msdn2.microsoft.com/en-us/library/system.io.filesystemwatcher.aspx"><FONT face="Courier New" color=#006400>FileSystemWatcher</FONT></A> to monitor file creation and deletion. These events respectively increment or decrement the counter. I have been putting this through the ringer and it seems to do the job superbly.</P>

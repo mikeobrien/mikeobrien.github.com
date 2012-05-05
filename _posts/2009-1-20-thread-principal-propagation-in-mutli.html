@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Thread Principal Propagation in Mutli Threaded Applications
-categories: [Threading, Security, .NET, .NET 3.5]
 tags: [Threading, Security, .NET, .NET 3.5]
 ---
 <p>I have been reading <a href="http://www.amazon.com/Developers-Windows-Security-Microsoft-Development/dp/0321228359">The .NET Developer's Guide to Windows Security</a> and it mentioned that as of .NET 1.1 a calling threads principal is not automatically propagated to a thread spun off by the ThreadPool using the QueueUserWorkItem method; it has to be manually set. Looks like this has changed as of .NET 2.0 as the following test shows. It automatically propagates when the ThreadPool initiates a call with a thread in the pool, when using the APM and manually creating threads:</p> <p>&#160;</p><a href="http://11011.net/software/vspaste"></a><pre class="code"><span style="color: green">// Set the executing threads principle\identity

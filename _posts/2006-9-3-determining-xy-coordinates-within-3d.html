@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Determining (x,y) coordinates within a 3d perspective pie slice
-categories: [Graphics]
 tags: [Graphics]
 ---
 <P>The following function allows you to obtain (x,y) coordinates within a 3d perspective pie slice by specifying the pie dimensions, the radius (Distance from the pie origin out) and the inner angle (Degrees from the pie start angle, clockwise). The first step is to inverse our angle since our trig functions assume that degrees increase counter-clockwise from the x axis. The .NET pie function works in the opposite way, with degrees increasing clockwise from the x axis. Next we convert the degrees into radians. Then calulate the absolute coordinates of the pie origin so we can transform the relative corrdinates returned by the trig functions. Next we do the math; the the cosine of the target radian multipled by the radius gives us the X coordinate and the sine of the same gives us the Y coordinate. We need to inverse the Y coordinate since the trig functions assume a grid with an ascending Y axis above the X axis and Windows is the oppisite; ascending Y axis below the X axis. Note: This method does not work for the default pie behavior. This method only works when angles are transformed to a 3d perspective.&#160;</P>

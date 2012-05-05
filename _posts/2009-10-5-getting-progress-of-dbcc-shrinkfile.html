@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Getting the Progress of a DBCC SHRINKFILE
-categories: [TSQL/SQL Server]
 tags: [TSQL/SQL Server]
 ---
 <p>I'm running a DBCC SHRINKFILE on a HUGE database (315Gb) after a major prune (Around 60%) and it's taking forever. Anyways, found a helpful nugget on the internets for determining it's progress.</p>  <pre class="code"><span style="color: blue">SELECT </span>percent_complete<span style="color: gray">, * </span><span style="color: blue">FROM </span><span style="color: green">sys.dm_exec_requests</span></pre>

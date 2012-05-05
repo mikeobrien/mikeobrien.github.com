@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Removing the WSS Timestamp from WCF Responses
-categories: [SOAP, Apache Axis, WS-Security, Interoperability, ColdFusion, WCF]
 tags: [SOAP, Apache Axis, WS-Security, Interoperability, ColdFusion, WCF]
 ---
 <p>I have run into a couple of instances where I've had to manually add a WSS UsernameToken to consume a WCF service with the basicHttpBinding and a UsernameToken. The client could not understand the WSS timestamp returned by WCF (Notably ColdFusion/Axis1.2 w/ no wss4j). If you are trying to achieve improbability and want to just turn this off there isn't a way to disable the timestamp in the basicHttpBinding or wsHttpBinding through configuration but you can use the customBinding. To emulate basicHttpBinding with transport security and message credentials but with the timestamp off you can define the custom binding as follows:</p><pre class="code"><span style="color: blue">...</span></pre><pre class="code"><span style="color: blue"><</span><span style="color: #a31515">bindings</span><span style="color: blue">>

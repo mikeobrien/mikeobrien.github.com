@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Command Line Parameter Regex
-categories: [.NET, Regular Expressions]
 tags: [.NET, Regular Expressions]
 ---
 <p>Recently I needed a regex to parse the command line. Something like this:</p> <p>/param1="sfsdf&#160; sdf sdfsdf&#160; sdfsdf" /param2 =rstwertw /param3 = "rtwqert sdfas f"</p> <p>I found a <a href="http://regexlib.com/UserPatterns.aspx?authorId=ecfe249d-ed34-44e2-8257-0fa8861cd351">great regex on RegExLib</a> by Richard Hauer for doing this. I made one minor tweak to allow whitespace between the name/value delimiter:</p> <p><font size="2" face="Courier New">(?:\s*)(?<=[-|/])(?<name>\w*)\s*[:|=]\s*("((?<value>.*?)(?<!\\)")|(?<value>[\w]*))</font></p> <p>Here it is in action:</p><pre class="code"><span style="color: blue">string </span>commandLineRegEx = 

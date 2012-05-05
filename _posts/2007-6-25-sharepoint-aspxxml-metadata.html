@@ -1,7 +1,6 @@
 ---
 layout: post
 title: SharePoint aspx/xml MetaData
-categories: [VSeWSS, SharePoint 2007, SharePoint Solution Deployment]
 tags: [VSeWSS, SharePoint 2007, SharePoint Solution Deployment]
 ---
 <p>If you have worked with VSeWSS templates you will have probably noticed the comment added to the top of certain aspx/xml files:</p><font color="#008000" size="2"> <p><!-- _filecategory="ListDefinition" _filetype="File" _filename="editform.aspx" _uniqueid="0cfa6bc5-6fe6-47c2-b557-9b0f56475962" --></p> <p></font>First of all don't delete this! This "comment" is actually meta data that enables the VSeWSS solution builder to process the file. The "_filecategory" property identifies the file category (I have a gift for stating the obvious...). It is actually tied the the SolutionElementFileCategory in the SPDevTools.dll library under the Microsoft.SharePoint.Tools.SharePointSolutions namespace.</p> <p> <table style="margin-bottom: 0px" cellspacing="0" cellpadding="0" width="100%" unselectable="on"> <tbody> <tr> <td style="padding-right: 5px; padding-left: 5px; padding-bottom: 4px; padding-top: 4px" valign="top" colspan="2"><pre><font color="#1000a0">public</font> <font color="#1000a0">enum</font> <a class="bold" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://SPDevTools:12.0.0.0:71e9bce111e9429c/Microsoft.SharePoint.Tools.SharePointSolutions.SolutionElementFileCategory"><strong><font color="#000000">SolutionElementFileCategory</font></strong></a>

@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Working with MatchCollection in F#
-categories: [Regular Expressions, F#]
 tags: [Regular Expressions, F#]
 ---
 <p>Since the MatchCollection doesn't implement the generic IEnumerable<> so you cant use it OOB with the Seq functions. You can use the Seq.cast to convert it to a generic IEnumerable<> as follows:</p>  <pre class="code"><span style="color: blue">open </span>System

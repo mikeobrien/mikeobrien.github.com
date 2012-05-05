@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Conditional Linq Methods
-categories: [NHibernate, C#, Linq]
 tags: [NHibernate, C#, Linq]
 ---
 <p>Today I had to write some code that had nullable parameters that could filter the results of a Linq query. At first I was doing "if" statements on the nullable parameters to determine if they needed to be applied. This was pretty verbose so I came up with a more succinct approach with conditional Linq extension methods.</p>  <p>First define conditional extension methods on IQueryable<>:</p> <a href="http://11011.net/software/vspaste"></a>  <pre class="code"><span style="color: blue">public static class </span><span style="color: #2b91af">IQueryableExtensions

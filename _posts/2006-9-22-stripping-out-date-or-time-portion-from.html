@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Stripping out the date or time portion from a SQL datetime value
-categories: [TSQL/SQL Server]
 tags: [TSQL/SQL Server]
 ---
 <P>Here is a little trick that will "strip" (In reality zero out) the date or time portion from a datetime value. Basically the SQL datetime is just two 4 byte integers. When you convert a datetime to a float the integer portion represents the date (Which is the number of days since 1/1/1900) and the fractional portion represents the time (The number of 3 millisecond increments that have elapsed since midnight). To zero out one or the other simply requires removing the integer or fractional portion then converting that back into a datetime. The following illustrates this:</P><FONT color=#0000ff size=2>

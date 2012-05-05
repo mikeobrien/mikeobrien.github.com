@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Creating a StructureMap Lifecycle for WCF Operations
-categories: [.NET, StructureMap]
 tags: [.NET, StructureMap]
 ---
 <p>We have a RESTful and SOAPy API so having a WCF operation lifecycle in <a href="http://structuremap.sourceforge.net">StructureMap</a> was imperative. Creating lifecycles in StructureMap is cake. You can find some examples under the Pipeline namespace in the StructureMap source code. All you do is create a class that implements StructureMap.Pipeline.ILifecycle. Below is a lifecycle that is based on a WCF operation:</p>  <pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">WcfOperationLifecycle </span>: <span style="color: #2b91af">ILifecycle

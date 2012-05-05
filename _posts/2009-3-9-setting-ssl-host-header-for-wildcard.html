@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Setting SSL Host Header for Wildcard Cert in IIS6
-categories: [IIS 6]
 tags: [IIS 6]
 ---
 <p>I keep forgetting how to do this, here it is:</p><p><font face="Courier New" size="2">cscript C:\Inetpub\AdminScripts\adsutil.vbs set /w3svc/&lt;siteid&gt;/SecureBindings ":443:&lt;hostheader&gt;"</font></p><p>If you wanna know how to do it with IIS7 look <a href="/2008/09/creating-self-signed-wildcard.html">here</a>.</p>

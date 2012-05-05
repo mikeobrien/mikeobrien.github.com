@@ -1,7 +1,6 @@
 ---
 layout: post
 title: aspnet_compiler.exe and .refresh files
-categories: [NantContrib, .NET, Nant, ASP.NET]
 tags: [NantContrib, .NET, Nant, ASP.NET]
 ---
 <P>Evidently the aspnet_compiler.exe does not care about .refresh files (From my tests and what I read on the <A href="http://en.wikipedia.org/wiki/Internets" target=_blank>internets</A>). It would be nice if it did as it would reduce the steps needed to build a WSP (Web Site Project) on a build server. I ended up just manually copying the assemblies into the bin folder before the build&#160;as follows in this nant script:</P>

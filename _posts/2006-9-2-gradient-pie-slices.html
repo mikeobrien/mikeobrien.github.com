@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Gradient Pie Slices!
-categories: [Graphics]
 tags: [Graphics]
 ---
 <P><SPAN style="FONT-SIZE: 11px; COLOR: black; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent"><SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent"><FONT face=Verdana color=#003300 size=2>Recently I realized that the .NET&#160;LinearGradientBrush will not properly fill a pie slice with a sweep angle greater than 180 degrees. Instead you have to use a PathGradientBrush. It's pretty simple to do; just create a GraphicsPath which contains the path of your pie slice and pass it into the PathGradientBrush constructor. Then set your CenterPoint, CenterColor and SurroundColors, draw the slice with the PathGradientBrush and voil&#224;!</FONT></SPAN></SPAN></P>

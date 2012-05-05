@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Renaming Output to Contain the Assembly Version number
-categories: [WiX, Visual Studio 2008, MSBuild]
 tags: [WiX, Visual Studio 2008, MSBuild]
 ---
 <p>I have an WiX installer project that I wanted to produce the output as the product name and version number. This is pretty simple to do. First unload/edit your project file and then update the "AfterBuild" target as follows:</p><pre class="code"><span style="color: blue"><</span><span style="color: #a31515">Target </span><span style="color: red">Name</span><span style="color: blue">=</span>"<span style="color: blue">AfterBuild</span>"<span style="color: blue">>

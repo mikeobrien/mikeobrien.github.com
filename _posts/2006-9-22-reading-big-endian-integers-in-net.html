@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Reading big endian integers in .NET
-categories: [.NET]
 tags: [.NET]
 ---
 <P>Sometimes when reading binary files, integers will be stored in the big endian format, especially if the file or the application creating it was initially built on a Sun or Mac machine. Intel systems normally store integers in little endian format. Thus the .NET framework does not have built in functionality to read in big endian integers (As of v1.1). One simple solution is to read the integer into a byte array and use the Array.Reverse function to simply reverse the order of the bytes. Then use the BitConverter class to turn the bytes into an integer. For example:</P>

@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Dissecting the output of the CoffeeScript class and extends keyword
-categories: [JavaScript, CoffeeScript, Underscore.js]
 tags: [JavaScript, CoffeeScript, Underscore.js]
 ---
 <p>CoffeeScript has a convenient way of emulating class and inheritance semantics via the <a href="http://jashkenas.github.com/coffee-script/#classes">class and extends keyword</a>. I wanted to better understand what was happening under the covers so the following is an analysis of the transpiler output. We'll look at a simple relationship between two CS "classes":</p>  <pre class="csharpcode"><span class="kwrd">class</span> Parent

@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Adding the Current Time to the Git Bash Prompt on Windows
-categories: [Git, Windows]
 tags: [Git, Windows]
 ---
 <p>Many times I've wanted to look back a my git bash shell to see *when* I did something. Turns out its pretty trivial to modify the prompt to your liking. <a href="http://www.cyberciti.biz/tips/howto-linux-unix-bash-shell-setup-prompt.html">This page covers all sorts of things you can do</a>. In order to make the prompt format permanent you'll have to modify it in the profile here: [Program Files]\Git\etc\profile. Scroll down to about line 160 and you'll see the prompt format. I wanted to just replace the current user with the current time, \@ (See the highlighted portion):</p>  <p><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="image" border="0" alt="image" src="/content/a565f4a9d3b8416caaebe768fefe7dc0.png" width="659" height="374" /> </p>  <p><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="image" border="0" alt="image" src="/content/7dbb2e006a2c461ebc65baeae6d43ad4.png" width="659" height="374" /> </p>  <p>Save these changes and open a new git bash shell:</p>  <p><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="image" border="0" alt="image" src="/content/c8fe723eae414a96ab380dcf5310d466.png" width="597" height="227" /></p>  
