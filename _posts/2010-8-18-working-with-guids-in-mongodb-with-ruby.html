@@ -1,0 +1,14 @@
+--
+layout: post
+title: Working with Guids in MongoDB with Ruby and C#/NoRM
+categories: [MongoDB, .NET, Ruby, NoRM]
+tags: [MongoDB, .NET, Ruby, NoRM]
+--
+<p>So here is the scenario; I have data that needs to be imported into MongoDB that has a guid id. I'm using Ruby to import the data but the data will be consumed by a .NET app using NoRM. How do I represent that guid id in MongoDB and how do I work with it in Ruby and C# via NoRM? Easy. <a href="http://api.mongodb.org/ruby/1.0.3/BSON/Binary.html">Here</a> you can see the Ruby BSON Binary class enables you to work with binary data of a certain MongoDB sub type. The sub type that NoRM recognizes as a guid is UUID (Pretty obvious right? Don't say yes, I've been fighting with this for a couple of hours! :). So all you have to do is convert your guid into a binary type, with the UUID subtype specified, using the aforementioned class. Here is an example in Ruby (Noticed I've stripped the hyphens from the guid): </p>  <pre class="code"><span style="color: black">item </span>= {<span style="color: #a31515">&quot;_id&quot; </span>=&gt; <span style="color: black">BSON</span>::Binary.<span style="color: blue">new</span>(<span style="color: #a31515">&quot;fd4fc014ef2d48b092ccf17208ee29eb&quot;</span>, <span style="color: black">BSON</span>::Binary::SUBTYPE_UUID), ... }</pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>You can see what this looks like after it's been saved here in the MongoDB admin console:</p>
+
+<p><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="image" border="0" alt="image" src="/content/60e28b7044fb417bb087857c5e79e34f.png" width="629" height="107" /> </p>
+
+<p>The &quot;3&quot; in the BinData value is the MongoDB binary sub classification (Which in this case is UUID). Now this is exactly how NoRM persists .NET Guids in MongoDB. So on the .NET side just create a property on your entity called &quot;Id&quot; (Or _id) that is of type Guid and NoRM will take care of everything else.</p>  

@@ -1,0 +1,61 @@
+--
+layout: post
+title: Adding a WSS UsernameToken with the Native PHP SoapClient
+categories: [PHP, SOAP, WS-Security, Interoperability]
+tags: [PHP, SOAP, WS-Security, Interoperability]
+--
+<p>Adding a WSS UsernameToken with the native PHP SoapClient is pretty straight forward (Mind you, this is just the plain text credentials so you should use transport security). Here is the usage:</p><pre class="code">$wsdl = <span style="color: #a31515">"https://services.yada.net/Yada.svc?wsdl"</span>;
+
+<span style="color: green">// Or 'soap_version' => SOAP_1_1 if your using SOAP 1.1
+</span>$options = array(
+    <span style="color: #a31515">'location' </span>=> <span style="color: #a31515">'https://services.yada.net/Yada.svc'</span>,
+    <span style="color: #a31515">'soap_version' </span>=> SOAP_1_2);
+
+$client = <span style="color: blue">new </span>SoapClient($wsdl, $options);
+
+<span style="color: green">// Add the WSS username token headers
+</span>AddWSSUsernameToken($client, <span style="color: #a31515">'tony'</span>, <span style="color: #a31515">'clifton'</span>);
+
+<span style="color: blue">try
+</span>{
+    $client->GetVersion();
+
+    echo str_replace(<span style="color: #a31515">'>'</span>, <span style="color: #a31515">'&gt;<br/>'</span>, 
+        str_replace(<span style="color: #a31515">'<'</span>, <span style="color: #a31515">'&lt;'</span>, 
+            str_replace(<span style="color: #a31515">'&'</span>, <span style="color: #a31515">'&amp;'</span>, 
+                $client->__getLastResponse())));
+}
+<span style="color: blue">catch</span>(Exception $e)
+{
+    echo $e;
+}</pre><a href="http://11011.net/software/vspaste"></a>
+<p>Here is the implementation:</p><pre class="code">function AddWSSUsernameToken($client, $username, $password)
+{
+    $wssNamespace = <span style="color: #a31515">"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"</span>;
+    
+    $username = <span style="color: blue">new </span>SoapVar($username, 
+                            XSD_STRING, 
+                            <span style="color: blue">null</span>, <span style="color: blue">null</span>, 
+                            <span style="color: #a31515">'Username'</span>, 
+                            $wssNamespace);
+                            
+    $password = <span style="color: blue">new </span>SoapVar($password, 
+                            XSD_STRING, 
+                            <span style="color: blue">null</span>, <span style="color: blue">null</span>, 
+                            <span style="color: #a31515">'Password'</span>, 
+                            $wssNamespace);
+    
+    $usernameToken = <span style="color: blue">new </span>SoapVar(array($username, $password), 
+                                    SOAP_ENC_OBJECT, 
+                                    <span style="color: blue">null</span>, <span style="color: blue">null</span>, <span style="color: #a31515">'UsernameToken'</span>, 
+                                    $wssNamespace);
+                            
+    $usernameToken = <span style="color: blue">new </span>SoapVar(array($usernameToken), 
+                            SOAP_ENC_OBJECT, 
+                            <span style="color: blue">null</span>, <span style="color: blue">null</span>, <span style="color: blue">null</span>, 
+                            $wssNamespace);
+    
+    $wssUsernameTokenHeader = <span style="color: blue">new </span>SoapHeader($wssNamespace, <span style="color: #a31515">'Security'</span>, $usernameToken);
+    
+    $client->__setSoapHeaders($wssUsernameTokenHeader); 
+}</pre><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a>

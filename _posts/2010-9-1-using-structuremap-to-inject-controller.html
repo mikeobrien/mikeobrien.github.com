@@ -1,0 +1,165 @@
+--
+layout: post
+title: Using StructureMap to inject Controller and Attribute Dependencies
+categories: [StructureMap, .NET 4.0, ASP.NET MVC]
+tags: [StructureMap, .NET 4.0, ASP.NET MVC]
+--
+<p>Injecting dependencies into controllers is a pretty simple task with a custom controller factory. Injecting them into attributes is a bit more work. <a href="http://codeclimber.net.nz/">Simone Chiaretta</a> has a <a href="http://codeclimber.net.nz/archive/2009/02/10/how-to-use-ninject-to-inject-dependencies-into-asp.net-mvc.aspx">nice post on how to do this with Ninject</a>; we'll do the same thing below with StructureMap.</p>  <p>First lets start with the controller factory:</p>  <pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">ExtensibleControllerFactory </span>: <span style="color: #2b91af">DefaultControllerFactory
+</span>{
+    <span style="color: blue">private readonly </span><span style="color: #2b91af">Func</span>&lt;<span style="color: #2b91af">Type</span>, <span style="color: #2b91af">Controller</span>&gt; _factory;
+    <span style="color: blue">private readonly </span><span style="color: #2b91af">ControllerActionInvoker </span>_actionInvoker;
+
+    <span style="color: blue">public </span>ExtensibleControllerFactory(<span style="color: #2b91af">Func</span>&lt;<span style="color: #2b91af">Type</span>, <span style="color: #2b91af">Controller</span>&gt; factory, <span style="color: #2b91af">ControllerActionInvoker </span>actionInvoker)
+    {
+        _factory = factory;
+        _actionInvoker = actionInvoker;
+    }
+
+    <span style="color: blue">protected override </span><span style="color: #2b91af">IController </span>GetControllerInstance(
+        <span style="color: #2b91af">RequestContext </span>requestContext,
+        <span style="color: #2b91af">Type </span>controllerType)
+    {
+        <span style="color: blue">var </span>controller = _factory(controllerType);
+        controller.ActionInvoker = _actionInvoker;
+        <span style="color: blue">return </span>controller;
+    }
+}</pre>
+
+<p><a href="http://11011.net/software/vspaste"></a>This controller factory allows us to pass in a lambda that creates controllers as well as a custom action invoker. Here is where we can inject our controller and action filter dependencies. Next we have an extensible action invoker (That we'll pass into the controller above):</p>
+
+<pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">ExtensibleActionInvoker </span>: <span style="color: #2b91af">ControllerActionInvoker
+</span>{
+    <span style="color: blue">private readonly </span><span style="color: #2b91af">Action</span>&lt;<span style="color: #2b91af">IActionFilter</span>&gt; _actionFilter;
+    <span style="color: blue">private readonly </span><span style="color: #2b91af">Action</span>&lt;<span style="color: #2b91af">IAuthorizationFilter</span>&gt; _authorizationFilter;
+
+    <span style="color: blue">private </span>ExtensibleActionInvoker(<span style="color: #2b91af">Action</span>&lt;<span style="color: #2b91af">IActionFilter</span>&gt; actionFilter, <span style="color: #2b91af">Action</span>&lt;<span style="color: #2b91af">IAuthorizationFilter</span>&gt; authorizationFilter)
+    {
+        _actionFilter = actionFilter;
+        _authorizationFilter = authorizationFilter;
+    }
+
+    <span style="color: blue">public static </span><span style="color: #2b91af">ExtensibleActionInvoker </span>Create(<span style="color: #2b91af">Action</span>&lt;<span style="color: #2b91af">IActionFilter</span>&gt; actionFilter)
+    {
+        <span style="color: blue">return new </span><span style="color: #2b91af">ExtensibleActionInvoker</span>(actionFilter, <span style="color: blue">null</span>);
+    }
+
+    <span style="color: blue">public static </span><span style="color: #2b91af">ExtensibleActionInvoker </span>Create(<span style="color: #2b91af">Action</span>&lt;<span style="color: #2b91af">IAuthorizationFilter</span>&gt; authenticationFilter)
+    {
+        <span style="color: blue">return new </span><span style="color: #2b91af">ExtensibleActionInvoker</span>(<span style="color: blue">null</span>, authenticationFilter);
+    }
+
+    <span style="color: blue">public static </span><span style="color: #2b91af">ExtensibleActionInvoker </span>Create(<span style="color: #2b91af">Action</span>&lt;<span style="color: #2b91af">IActionFilter</span>&gt; actionFilter, 
+                                                 <span style="color: #2b91af">Action</span>&lt;<span style="color: #2b91af">IAuthorizationFilter</span>&gt; authenticationFilter)
+    {
+        <span style="color: blue">return new </span><span style="color: #2b91af">ExtensibleActionInvoker</span>(actionFilter, authenticationFilter);
+    }
+
+    <span style="color: blue">protected override </span><span style="color: #2b91af">AuthorizationContext </span>InvokeAuthorizationFilters(<span style="color: #2b91af">ControllerContext </span>controllerContext, 
+                                        <span style="color: #2b91af">IList</span>&lt;<span style="color: #2b91af">IAuthorizationFilter</span>&gt; filters, <span style="color: #2b91af">ActionDescriptor </span>actionDescriptor)
+    {
+        <span style="color: blue">if </span>(_authorizationFilter != <span style="color: blue">null</span>) filters.Run(f =&gt; _authorizationFilter(f));
+        <span style="color: blue">return base</span>.InvokeAuthorizationFilters(controllerContext, filters, actionDescriptor);
+    }
+
+    <span style="color: blue">protected override </span><span style="color: #2b91af">ActionExecutedContext </span>InvokeActionMethodWithFilters(
+            <span style="color: #2b91af">ControllerContext </span>controllerContext,
+            <span style="color: #2b91af">IList</span>&lt;<span style="color: #2b91af">IActionFilter</span>&gt; filters,
+            <span style="color: #2b91af">ActionDescriptor </span>actionDescriptor,
+            <span style="color: #2b91af">IDictionary</span>&lt;<span style="color: blue">string</span>, <span style="color: blue">object</span>&gt; parameters)
+    {
+        <span style="color: blue">if </span>(_actionFilter != <span style="color: blue">null</span>) filters.Run(f =&gt; _actionFilter(f));
+        <span style="color: blue">return base</span>.InvokeActionMethodWithFilters(controllerContext, filters, actionDescriptor, parameters);
+    }
+}</pre>
+<a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a>In the example above we can act on ActionFilters and AuthorizationFilters before an action is executes. This gives us an extensibility point where we can inject dependencies. Again we are passing in lambdas to do this. This keeps these classes <a href="http://en.wikipedia.org/wiki/Open/closed_principle">open for extension but closed for modification</a>. Attributes are created by .NET, using the parameters we supply at compile time, so we cant inject the dependencies into the attribute constructor. Our only option is to use parameter injection. <span style="widows: 2; text-transform: none; text-indent: 0px; border-collapse: separate; font: medium &#39;Times New Roman&#39;; white-space: normal; orphans: 2; letter-spacing: normal; color: rgb(0,0,0); word-spacing: 0px; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px" class="Apple-style-span"><span style="text-align: left; line-height: 18px; font-family: &#39;Trebuchet MS&#39;, arial; font-size: small; -webkit-border-horizontal-spacing: 2px; -webkit-border-vertical-spacing: 2px" class="Apple-style-span">As an aside, the example above uses the <a href="http://community.bartdesmet.net/blogs/bart/archive/2009/12/26/more-linq-with-system-interactive-the-ultimate-imperative.aspx">Run method</a> in the <a href="http://msdn.microsoft.com/en-us/devlabs/ee794896.aspx">Reactive Extensions library</a>.</span></span>&#160; <p>To demonstrate how to use the above two classes we'll implement an authentication scheme. Below is an action filter that we'll use to see if the user is authenticated and if not redirect them to the login page (The one that ships with MVC uses forms auth and we don't want to use that):</p>
+
+<pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">SecureAttribute </span>: <span style="color: #2b91af">FilterAttribute</span>, <span style="color: #2b91af">IAuthorizationFilter
+</span>{
+    <span style="color: blue">public </span><span style="color: #2b91af">IAuthenticationService</span>&lt;<span style="color: #2b91af">Credentials</span>&gt; AuthenticationService { <span style="color: blue">get</span>; <span style="color: blue">set</span>; }
+    <span style="color: blue">public </span><span style="color: #2b91af">IAppSettings </span>AppSettings { <span style="color: blue">get</span>; <span style="color: blue">set</span>; }
+
+    <span style="color: blue">public void </span>OnAuthorization(<span style="color: #2b91af">AuthorizationContext </span>filterContext)
+    {
+        <span style="color: blue">if </span>(!AuthenticationService.IsAuthenticated)
+        {
+            <span style="color: blue">var </span>url = <span style="color: blue">string</span>.Format(AppSettings[<span style="color: #a31515">&quot;LoginUrl&quot;</span>], 
+                                    filterContext.HttpContext.Request.Url.AbsolutePath);
+            filterContext.Result = <span style="color: blue">new </span><span style="color: #2b91af">RedirectResult</span>(url);
+        }  
+    }
+}</pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>This attribute depends on the authentication service (Not shown) and the app settings (Also not show) in order to work. We have public properties to where we can inject these dependencies. Here is how we'd use it on our actions; pretty simple:</p>
+
+<pre class="code">[<span style="color: #2b91af">Secure</span>]
+<span style="color: blue">public </span><span style="color: #2b91af">ActionResult </span>Edit(<span style="color: blue">int </span>id) { ... }
+
+[<span style="color: #2b91af">Secure</span>]
+[<span style="color: #2b91af">HttpPost</span>]
+<span style="color: blue">public </span><span style="color: #2b91af">ActionResult </span>Edit(<span style="color: #2b91af">Problem </span>problem) { ... }</pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>Next we have a controller that does the actual authentication:</p>
+
+<pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">HomeController </span>: <span style="color: #2b91af">Controller
+</span>{
+    <span style="color: blue">private readonly </span><span style="color: #2b91af">IAuthenticationService</span>&lt;<span style="color: #2b91af">Credentials</span>&gt; _authenticationService;
+
+    <span style="color: blue">public </span>HomeController(<span style="color: #2b91af">IAuthenticationService</span>&lt;<span style="color: #2b91af">Credentials</span>&gt; authenticationService)
+    {
+        _authenticationService = authenticationService;
+    }
+
+    <span style="color: blue">public </span><span style="color: #2b91af">ActionResult </span>Index()
+    {
+        <span style="color: blue">return </span>View();
+    }
+
+    <span style="color: blue">public </span><span style="color: #2b91af">ActionResult </span>Login()
+    {
+        <span style="color: blue">return </span>View();
+    }
+
+    [<span style="color: #2b91af">HttpPost</span>]
+    <span style="color: blue">public </span><span style="color: #2b91af">ActionResult </span>Login(<span style="color: #2b91af">UserCredentials </span>credentials, <span style="color: blue">string </span>returnUrl)
+    {
+        <span style="color: blue">if </span>(!_authenticationService.Authenticate(credentials.Username, credentials.Password).IsAuthenticated)
+        {
+            ViewData.ModelState.AddModelError(<span style="color: #a31515">&quot;username&quot;</span>, <span style="color: #a31515">&quot;Username or password incorrect.&quot;</span>);
+            <span style="color: blue">return </span>View();
+        }
+
+        <span style="color: blue">if </span>(returnUrl != <span style="color: blue">null</span>) <span style="color: blue">return </span>Redirect(returnUrl);        
+        <span style="color: blue">return </span>RedirectToAction&lt;<span style="color: #2b91af">HomeController</span>&gt;(x =&gt; x.Index());
+    }
+}</pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>This controller depends on the authentication service (Not shown) which we can inject via the constructor. Now lets register these dependencies with StructureMap in our bootstrap:</p>
+
+<pre class="code"><span style="color: #2b91af">ObjectFactory</span>.Initialize(x =&gt;
+                {
+                    x.ForSingletonOf&lt;<span style="color: #2b91af">IAppSettings</span>&gt;().Use&lt;<span style="color: #2b91af">AppSettings</span>&gt;();
+                    x.SetAllProperties(y =&gt; y.OfType&lt;<span style="color: #2b91af">IAppSettings</span>&gt;());
+
+                    x.ForSingletonOf&lt;<span style="color: #2b91af">IAuthenticationService</span>&lt;<span style="color: #2b91af">Credentials</span>&gt;&gt;().Use&lt;<span style="color: #2b91af">AuthenticationService</span>&gt;();
+                    x.SetAllProperties(y =&gt; y.OfType&lt;<span style="color: #2b91af">IAuthenticationService</span>&lt;<span style="color: #2b91af">Credentials</span>&gt;&gt;());
+                });</pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>Now that these are registered we can wire everything up. We'll do this in the application start event in the Global.asax:</p>
+
+<pre class="code"><span style="color: blue">protected void </span>Application_Start()
+{
+    // ...
+
+    <span style="color: #2b91af">ControllerBuilder</span>.Current.SetControllerFactory(
+        <span style="color: blue">new </span><span style="color: #2b91af">ExtensibleControllerFactory</span>(t =&gt; (<span style="color: #2b91af">Controller</span>)<span style="color: #2b91af">ObjectFactory</span>.GetInstance(t),
+                                        <span style="color: #2b91af">ExtensibleActionInvoker</span>.Create((<span style="color: #2b91af">Action</span>&lt;<span style="color: #2b91af">IAuthorizationFilter</span>&gt;)(<span style="color: #2b91af">ObjectFactory</span>.BuildUp))));
+}</pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>The first parameter in our extensible controller factory constructor is the lambda that creates our controller. The second is the custom action invoker. In the custom action invoker constructor we pass the StructureMap BuildUp method to inject parameter dependencies into authorization filters. Now both our controllers and action filters are completely decoupled. </p>
+
+<p>The complete source can be found <a href="http://github.com/mikeobrien/ProjectEuler.NET">here</a>.</p>  

@@ -1,0 +1,270 @@
+--
+layout: post
+title: FubuMVC Automatic Binding of Request Properties
+categories: [FubuMVC]
+tags: [FubuMVC]
+--
+<p>One very nifty feature of FubuMVC is the automatic binding of request properties to your input model. From what I can tell, any item in the <a href="https://github.com/DarthFubuMVC/fubumvc/blob/master/src/FubuMVC.Core/Http/AspNet/AspNetAggregateDictionary.cs">AspNetAgregateDictionary</a> will be bound if the name/type of your input model property match. So for example, the following input model would have the user agent bound to the UserAgent property, talk about loose coupling:</p>  <pre class="csharpcode"><span class="kwrd">public</span> <span class="kwrd">class</span> InputModel
+{
+    <span class="kwrd">public</span> <span class="kwrd">string</span> UserAgent { get; set; }
+}</pre>
+<style type="text/css">
+
+
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	background-color: #ffffff;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style>The following items can be bound to your model: 
+
+<br />
+
+<br />
+
+<table style="border-bottom: #000 1px solid; border-left: #000 1px solid; border-collapse: collapse; border-top: #000 1px solid; border-right: #000 1px solid"><thead>
+    <tr>
+      <th style="padding-left: 10px; background: #006; color: #fff">Name</th>
+
+      <th style="padding-left: 10px; background: #006; color: #fff">Type</th>
+    </tr>
+  </thead></thead><tbody>
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">AcceptTypes</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">string[]</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">ApplicationPath</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">string</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">AppRelativeCurrentExecutionFilePath</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">string</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">Browser</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">System.Web.HttpBrowserCompatibilityBase</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">ClientCertificate</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">System.Web.HttpClientCertificate</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">ContentEncoding</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">System.Text.Encoding</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">ContentLength</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">int</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">ContentType</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">string</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">Cookies</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">System.Web.HttpCookieCollection</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">CurrentExecutionFilePath</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">string</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">FilePath</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">string</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">Files</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">System.Web.HttpFileCollectionBase</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">Filter</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">System.IO.Stream</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">Form</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">System.Collections.Specialized.NameValueCollection</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">Headers</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">System.Collections.Specialized.NameValueCollection</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">HttpMethod</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">string</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">IsAuthenticated</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">bool</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">IsLocal</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">bool</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">IsSecureConnection</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">bool</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">LogonUserIdentity</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">system.Security.Principal.WindowsIdentity</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">Params</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">System.Collections.Specialized.NameValueCollection</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">Path</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">string</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">PathInfo</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">string</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">PhysicalApplicationPath</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">string</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">PhysicalPath</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">string</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">QueryString</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">System.Collections.Specialized.NameValueCollection</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">RawUrl</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">string</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">RequestType</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">string</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">ServerVariables</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">System.Collections.Specialized.NameValueCollection</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">TotalBytes</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">int</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">Url</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">Uri</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">UrlReferrer</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">Uri</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">UserAgent</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">string</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">UserHostAddress</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">string</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">UserHostName</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">string</td>
+    </tr>
+
+    <tr>
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">UserLanguages</td>
+
+      <td style="border-bottom: #000 1px solid; text-align: left; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px">string[]</td>
+    </tr>
+  </tbody></table>  

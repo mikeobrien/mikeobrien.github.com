@@ -1,0 +1,7 @@
+--
+layout: post
+title: SharePoint Lookup Field Not Changing When Updated
+categories: [.NET, SharePoint 2007]
+tags: [.NET, SharePoint 2007]
+--
+<p>If you are programmatically updating the value of a lookup field and it doesn't seem to update, you need to trip "dirty" flag on that field. If you don't, SP wont know that the list item needs to be updated. Basically all you do is set the field to itself and this will mark the field as dirty. Here is an example:</p> <div style="font-size: 10pt; background: white; color: black; font-family: courier new"> <p style="margin: 0px"><span style="color: teal">SPFieldLookupValueCollection</span> lookupValues;</p> <p style="margin: 0px">lookupValues = (<span style="color: teal">SPFieldLookupValueCollection</span>)listItem[<span style="color: maroon">"MyLookupField"</span>];</p> <p style="margin: 0px">lookupValues.Add(<span style="color: blue">new</span> <span style="color: teal">SPFieldLookupValue</span>(1, <span style="color: maroon">"SomeLookupValue"</span>));</p> <p style="margin: 0px"><span style="color: green">// Set the lookup field back to itself to mark it dirty</span></p> <p style="margin: 0px">listItem[<span style="color: maroon">"MyLookupField"</span>] = lookupValues;</p> <p style="margin: 0px">listItem.Update();</p></div>

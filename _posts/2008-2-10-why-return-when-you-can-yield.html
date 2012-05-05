@@ -1,0 +1,98 @@
+--
+layout: post
+title: Why Return When You Can Yield?
+categories: [C#]
+tags: [C#]
+--
+<P>I cant believe I wasn't aware of this cool little feature but with the release of C# 2.0 came the <STRONG>yield</STRONG> keyword. Basically it allows you to create an enumerator that "yields" when it has the current value ready. It's much simpler and elegant than enumerator code you would normally have to write. As an example we will create an enumerable class that returns numbers in the Fibonacci sequence. </P><PRE class=code><SPAN style="COLOR: blue">public class </SPAN><SPAN style="COLOR: #2b91af">FibonacciSeries </SPAN>: <SPAN style="COLOR: #2b91af">IEnumerable
+</SPAN>{
+    <SPAN style="COLOR: blue">int </SPAN>size;
+
+    <SPAN style="COLOR: blue">internal </SPAN>FibonacciSeries(<SPAN style="COLOR: blue">int </SPAN>size)
+    { <SPAN style="COLOR: blue">this</SPAN>.size = size; }
+
+    <SPAN style="COLOR: blue">public </SPAN><SPAN style="COLOR: #2b91af">IEnumerator </SPAN>GetEnumerator()
+    {
+        <SPAN style="COLOR: blue">int </SPAN>termA = -1;
+        <SPAN style="COLOR: blue">int </SPAN>termB = 1;
+
+        <SPAN style="COLOR: blue">for </SPAN>(<SPAN style="COLOR: blue">int </SPAN>index = 0; index < size; index++)
+        {
+            <SPAN style="COLOR: blue">int </SPAN>current = termA + termB;
+            termA = termB;
+            termB = current;
+            <STRONG><FONT size=2><SPAN style="COLOR: blue">yield return </SPAN>current;</FONT></STRONG>
+        }
+    }
+}</PRE><A href="http://11011.net/software/vspaste"></A>
+<P>Instead of creating a separate class that implements IEnumerable and keeps track of iterator state, we simply put our enumerator code in the GetEnumerator() method and <STRONG>call yield return ...; </STRONG>when we have a value ready. This allows the iterator to be written as if we were pushing the value out, much cleaner and simpler. Behind the scenes, when our code is compiled, the compiler builds what we would have normally had to write . Below is the compiled version of the above code in Reflector (Albeit cleaned it up a bit): </P><PRE class=code><SPAN style="COLOR: blue">public class </SPAN><SPAN style="COLOR: #2b91af">FibonacciSeries </SPAN>: <SPAN style="COLOR: #2b91af">IEnumerable
+</SPAN>{
+    <SPAN style="COLOR: blue">private int </SPAN>size;
+
+    <SPAN style="COLOR: blue">internal </SPAN>FibonacciSeries(<SPAN style="COLOR: blue">int </SPAN>size)
+    {
+        <SPAN style="COLOR: blue">this</SPAN>.size = size;
+    }
+
+    <SPAN style="COLOR: blue">public </SPAN><SPAN style="COLOR: #2b91af">IEnumerator </SPAN>GetEnumerator()
+    {
+        <SPAN style="COLOR: #2b91af">Enumerator </SPAN>enumerator = <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">Enumerator</SPAN>(0);
+        enumerator.parent = <SPAN style="COLOR: blue">this</SPAN>;
+        <SPAN style="COLOR: blue">return </SPAN>enumerator;
+    }
+
+    <SPAN style="COLOR: blue">private sealed class </SPAN><SPAN style="COLOR: #2b91af">Enumerator </SPAN>: <SPAN style="COLOR: #2b91af">IEnumerator</SPAN><<SPAN style="COLOR: blue">object</SPAN>>, <SPAN style="COLOR: #2b91af">IEnumerator</SPAN>, <SPAN style="COLOR: #2b91af">IDisposable
+    </SPAN>{
+        <SPAN style="COLOR: blue">private int </SPAN>state;
+        <SPAN style="COLOR: blue">private object </SPAN>current;
+        <SPAN style="COLOR: blue">public </SPAN><SPAN style="COLOR: #2b91af">FibonacciSeries </SPAN>parent;
+        <SPAN style="COLOR: blue">public int </SPAN>currentValue;
+        <SPAN style="COLOR: blue">public int </SPAN>index;
+        <SPAN style="COLOR: blue">private int </SPAN>termA = -1;
+        <SPAN style="COLOR: blue">private int </SPAN>termB = 1;
+
+        <SPAN style="COLOR: blue">public </SPAN>Enumerator(<SPAN style="COLOR: blue">int </SPAN>state)
+        {
+            <SPAN style="COLOR: blue">this</SPAN>.state = state;
+        }
+
+        <SPAN style="COLOR: blue">public bool </SPAN>MoveNext()
+        {
+            <SPAN style="COLOR: blue">switch </SPAN>(<SPAN style="COLOR: blue">this</SPAN>.state)
+            {
+                <SPAN style="COLOR: blue">case </SPAN>0:
+                    <SPAN style="COLOR: blue">this</SPAN>.index = 0;
+                    <SPAN style="COLOR: blue">break</SPAN>;
+
+                <SPAN style="COLOR: blue">case </SPAN>1:
+                    <SPAN style="COLOR: blue">this</SPAN>.index++;
+                    <SPAN style="COLOR: blue">break</SPAN>;
+            }
+
+            <SPAN style="COLOR: blue">this</SPAN>.state = -1;
+
+            <SPAN style="COLOR: blue">while </SPAN>(<SPAN style="COLOR: blue">this</SPAN>.index < <SPAN style="COLOR: blue">this</SPAN>.parent.size)
+            {
+                <SPAN style="COLOR: blue">this</SPAN>.currentValue = <SPAN style="COLOR: blue">this</SPAN>.termA + <SPAN style="COLOR: blue">this</SPAN>.termB;
+                <SPAN style="COLOR: blue">this</SPAN>.termA = <SPAN style="COLOR: blue">this</SPAN>.termB;
+                <SPAN style="COLOR: blue">this</SPAN>.termB = <SPAN style="COLOR: blue">this</SPAN>.currentValue;
+                <SPAN style="COLOR: blue">this</SPAN>.current = <SPAN style="COLOR: blue">this</SPAN>.currentValue;
+                <SPAN style="COLOR: blue">this</SPAN>.state = 1;
+                <SPAN style="COLOR: blue">return true</SPAN>;
+            }
+
+            <SPAN style="COLOR: blue">return false</SPAN>;
+        }
+
+        <SPAN style="COLOR: blue">void </SPAN><SPAN style="COLOR: #2b91af">IEnumerator</SPAN>.Reset()
+        { <SPAN style="COLOR: blue">throw new </SPAN><SPAN style="COLOR: #2b91af">NotSupportedException</SPAN>(); }
+
+        <SPAN style="COLOR: blue">void </SPAN><SPAN style="COLOR: #2b91af">IDisposable</SPAN>.Dispose() { }
+
+        <SPAN style="COLOR: blue">object </SPAN><SPAN style="COLOR: #2b91af">IEnumerator</SPAN><<SPAN style="COLOR: blue">object</SPAN>>.Current
+        { <SPAN style="COLOR: blue">get </SPAN>{ <SPAN style="COLOR: blue">return this</SPAN>.current; } }
+
+        <SPAN style="COLOR: blue">object </SPAN><SPAN style="COLOR: #2b91af">IEnumerator</SPAN>.Current
+        { <SPAN style="COLOR: blue">get </SPAN>{ <SPAN style="COLOR: blue">return this</SPAN>.current; } }
+    }
+}</PRE>

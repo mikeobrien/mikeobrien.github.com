@@ -1,0 +1,8 @@
+--
+layout: post
+title: VB.NET interface event delegates, where are they declared?
+categories: [VB.NET, .NET, C#]
+tags: [VB.NET, .NET, C#]
+--
+<P>So I'm implementing an interface, defined in an assembly written in VB.NET, on a class in an assembly written in C#. The interface defines a number of events. VB.NET event declaration doesent require you to define the corresponding delegate (as C# does) so the question is where does the VB.NET compiler declare it for you after compilation? Well it seems that the delegate definition is declared right in the interface. This could be confusing for someone who doesent know VB.NET since <A href="http://msdn2.microsoft.com/en-us/library/6d5kd4tc(vs.80).aspx">C# does not allow</A> the declaring of types within an interface whereas VB.NET does. </P>
+<P>Here IDataInputDevice is an interface residing in an assembly written in VB.NET with three events defined. The corresponding delegate definitions are defined right within the interface.</P><IMG src="/content/ad6091f47cde4b3b8c0edd802be64e72.jpg" border=0>

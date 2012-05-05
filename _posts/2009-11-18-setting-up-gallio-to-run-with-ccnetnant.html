@@ -1,0 +1,58 @@
+--
+layout: post
+title: Setting up Gallio to Run with CCNET/NAnt
+categories: [Testing, Build/Deploy, Nant, Gallio]
+tags: [Testing, Build/Deploy, Nant, Gallio]
+--
+<p><a href="http://www.gallio.org/">Gallio</a> is a fantastic test runner that integrates with a number of tools (like R#, which I love) and a ton of testing frameworks. So I set out to modify our NAnt build scripts to use Gallio instead of invoking tests directly with a particular testing framework. Here is how the setup went having NAnt invoke Gallio which invoked NUnit tests (Thanks to <a href="http://ferventcoder.com/Default.aspx">Rob Reynolds</a> for his <a href="http://ferventcoder.com/archive/2009/09/20/universal-nant-script-for-gallio.aspx">insights</a>):</p>  <p>1) Download and unzip the Gallio distro from here: <a href="http://www.gallio.org/Downloads.aspx"><u><font color="#0066cc">http://www.gallio.org/Downloads.aspx</font></u></a></p>  <p>2) Setup the NAnt tasks as follows (To run all tests in an assembly). You can get more info on the Gallio NAnt task properties <a href="http://www.gallio.org/api/html/AllMembers_T_Gallio_NAntTasks_GallioTask.htm">here</a>. The filter defaults to all but I included it for demo purposes. Error code 16 means that there were no tests. I ignored it since I was reorganizing the test suites and some didn’t have tests yet. </p>  <pre class="code"><span style="color: blue"><</span><span style="color: #a31515">loadtasks </span><span style="color: red">assembly</span><span style="color: blue">=</span>"<span style="color: blue"><GalioBinFolder>\Gallio.NAntTasks.dll</span>" <span style="color: blue">/>
+<</span><span style="color: #a31515">gallio </span><span style="color: red">working-directory</span><span style="color: blue">=</span>"<span style="color: blue"><TestSuiteWorkingFolder></span>"
+        <span style="color: red">report-types</span><span style="color: blue">=</span>"<span style="color: blue">Xml-Inline</span>"
+        <span style="color: red">report-directory</span><span style="color: blue">=</span>"<span style="color: blue"><ReportFolder></span>"
+        <span style="color: red">report-name-format</span><span style="color: blue">=</span>"<span style="color: blue">gallio-results</span>"
+        <span style="color: red">show-reports</span><span style="color: blue">=</span>"<span style="color: blue">false</span>"
+        <span style="color: red">failonerror</span><span style="color: blue">=</span>"<span style="color: blue">false</span>"
+        <span style="color: red">verbosity</span><span style="color: blue">=</span>"<span style="color: blue">Normal</span>"
+        <span style="color: red">echo-results</span><span style="color: blue">=</span>"<span style="color: blue">false</span>"
+        <span style="color: red">filter</span><span style="color: blue">=</span>"<span style="color: blue">include *</span>"
+        <span style="color: red">result-property</span><span style="color: blue">=</span>"<span style="color: blue">GallioResult</span>"<span style="color: blue">>
+  <</span><span style="color: #a31515">files</span><span style="color: blue">>
+    <</span><span style="color: #a31515">include </span><span style="color: red">name</span><span style="color: blue">=</span>"<span style="color: blue"><PathToATestSuiteAssembly></span>"<span style="color: blue">/>
+  </</span><span style="color: #a31515">files</span><span style="color: blue">>
+</</span><span style="color: #a31515">gallio</span><span style="color: blue">>
+<</span><span style="color: #a31515">fail </span><span style="color: red">if</span><span style="color: blue">=</span>"<span style="color: blue">${GallioResult != '0' and GallioResult != '16'}</span>" <span style="color: blue">></span><br /><span style="color: blue"></span>    One or more tests failed (Error code ${GallioResult}). <br />    Please check the log for more details<span style="color: blue"></</span><span style="color: #a31515">fail</span><span style="color: blue">>
+</span></pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>3) Copy the \GallioBundle-x-x-x\bin\Resources folder to \CruiseControl.NET\webdashboard or another location that is accessible from the web.</p>
+
+<p>4) Copy \GallioBundle-x-x-x\bin\Resources\xsl\*.xsl to \CruiseControl.NET\webdashboard\xsl. You don't actually need all those files, but who knows, that may change in the future.</p>
+
+<p>5) Edit the Gallio-Report.ccnet-details.xsl and Gallio-Report.ccnet-details-condensed.xsl files in the \CruiseControl.NET\webdashboard\xsl folder from step 4. Set the cssDir, jsDir, imgDir variables to the url of the files you copied in step 3. </p>
+
+<p>6) Open the \CruiseControl.NET\webdashboard\dashboard.config file and add the following entries:</p>
+
+<pre class="code"><span style="color: blue"><</span><span style="color: #a31515">dashboard</span><span style="color: blue">>
+  </span>...
+  <span style="color: blue"><</span><span style="color: #a31515">plugins</span><span style="color: blue">>
+    </span>...
+    <span style="color: blue"><</span><span style="color: #a31515">buildPlugins</span><span style="color: blue">>
+      <</span><span style="color: #a31515">buildReportBuildPlugin</span><span style="color: blue">>
+        <</span><span style="color: #a31515">xslFileNames</span><span style="color: blue">>
+          </span>...
+          <span style="color: blue"><</span><span style="color: #a31515">xslFile</span><span style="color: blue">></span>xsl\Gallio-Report.ccnet-details-condensed.xsl<span style="color: blue"></</span><span style="color: #a31515">xslFile</span><span style="color: blue">>
+          </span>...
+        <span style="color: blue"></</span><span style="color: #a31515">xslFileNames</span><span style="color: blue">>
+      </</span><span style="color: #a31515">buildReportBuildPlugin</span><span style="color: blue">>
+      </span>...
+      <span style="color: blue"><</span><span style="color: #a31515">xslReportBuildPlugin </span><span style="color: red">description</span><span style="color: blue">=</span>"<span style="color: blue">Test Summary</span>" <span style="color: red">actionName</span><span style="color: blue">=</span>"<span style="color: blue">GallioSummary</span>"
+                  <span style="color: red">xslFileName</span><span style="color: blue">=</span>"<span style="color: blue">xsl\Gallio-Report.ccnet-details-condensed.xsl</span>" <span style="color: blue">/>
+      <</span><span style="color: #a31515">xslReportBuildPlugin </span><span style="color: red">description</span><span style="color: blue">=</span>"<span style="color: blue">Test Details</span>" <span style="color: red">actionName</span><span style="color: blue">=</span>"<span style="color: blue">GallioDetails</span>"
+                  <span style="color: red">xslFileName</span><span style="color: blue">=</span>"<span style="color: blue">xsl\Gallio-Report.ccnet-details.xsl</span>" <span style="color: blue">/>
+      </span>...
+    <span style="color: blue"></</span><span style="color: #a31515">buildPlugins</span><span style="color: blue">>
+    </span>...
+  <span style="color: blue"></</span><span style="color: #a31515">plugins</span><span style="color: blue">>
+</</span><span style="color: #a31515">dashboard</span><span style="color: blue">></span></pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p><span style="color: blue"><font color="#000000">Unfortunately Gallio doesn't currently have an email friendly report stylesheet so you’ll have to roll your own.</font></span>

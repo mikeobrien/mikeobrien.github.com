@@ -1,0 +1,54 @@
+--
+layout: post
+title: Conditional Linq Methods
+categories: [NHibernate, C#, Linq]
+tags: [NHibernate, C#, Linq]
+--
+<p>Today I had to write some code that had nullable parameters that could filter the results of a Linq query. At first I was doing “if” statements on the nullable parameters to determine if they needed to be applied. This was pretty verbose so I came up with a more succinct approach with conditional Linq extension methods.</p>  <p>First define conditional extension methods on IQueryable<>:</p> <a href="http://11011.net/software/vspaste"></a>  <pre class="code"><span style="color: blue">public static class </span><span style="color: #2b91af">IQueryableExtensions
+</span>{
+    <span style="color: blue">public static </span><span style="color: #2b91af">IQueryable</span><T> Where<T>(<span style="color: blue">this </span><span style="color: #2b91af">IQueryable</span><T> query, <span style="color: blue">bool </span>condition, 
+        System.Linq.Expressions.<span style="color: #2b91af">Expression</span><<span style="color: #2b91af">Func</span><T, <span style="color: blue">bool</span>>> predicate)
+    {
+        <span style="color: blue">return </span>condition ? query.Where(predicate) : query;
+    }
+
+    <span style="color: blue">public static </span><span style="color: #2b91af">IQueryable</span><T> Take<T>(<span style="color: blue">this </span><span style="color: #2b91af">IQueryable</span><T> query, <span style="color: blue">bool </span>condition, <span style="color: blue">int </span>count)
+    {
+        <span style="color: blue">return </span>condition ? query.Take(count) : query;
+    }
+
+    <span style="color: blue">public static </span><span style="color: #2b91af">IQueryable</span><T> Skip<T>(<span style="color: blue">this </span><span style="color: #2b91af">IQueryable</span><T> query, <span style="color: blue">bool </span>condition, <span style="color: blue">int </span>count)
+    {
+        <span style="color: blue">return </span>condition ? query.Skip(count) : query;
+    }
+
+    <span style="color: green">// ...
+</span>}</pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>Then you get a nice fluent way to conditionally apply the parameters:</p>
+
+<pre class="code"><span style="color: blue">public </span><span style="color: #2b91af">List</span><<span style="color: #2b91af">Template</span>> EnumerateTemplates(
+    <span style="color: #2b91af">Guid </span>accountId,
+    <span style="color: blue">int</span>? startIndex,
+    <span style="color: blue">int</span>? maxResults,
+    <span style="color: #2b91af">Guid</span>? groupId,
+    <span style="color: blue">bool</span>? includeSubGroups,
+    <span style="color: #2b91af">DateTime</span>? olderThan,
+    <span style="color: #2b91af">DateTime</span>? newerThan)
+{
+    <span style="color: blue">using </span>(<span style="color: #2b91af">IRepository</span><<span style="color: #2b91af">Template</span>> templates = <span style="color: #2b91af">Context</span>.Current.Create<<span style="color: #2b91af">IRepository</span><<span style="color: #2b91af">Template</span>>>())
+    {
+        <span style="color: blue">var </span>selectedTemplates = templates.
+            Where(t => t.Account.Id == accountId).
+            Where(groupId.HasValue, t => t.Group.Id == groupId.Value).
+            Where(!groupId.HasValue && includeSubGroups.HasValue && 
+                  !includeSubGroups.Value, t => t.Group == <span style="color: blue">null</span>).
+            Where(olderThan.HasValue, t => t.Created < olderThan.Value).
+            Where(newerThan.HasValue, t => t.Created > newerThan.Value).
+            Take(maxResults.HasValue, maxResults.Value).
+            Skip(startIndex.HasValue, startIndex.Value - <span style="color: brown">1</span>);
+
+        <span style="color: blue">return </span>selectedTemplates.ToList();
+    }
+}</pre>

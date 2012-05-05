@@ -1,0 +1,18 @@
+--
+layout: post
+title: Weird Issue with PocketSOAP in Classic ASP and IIS7
+categories: [SSL, SOAP, Web Services, IIS 7]
+tags: [SSL, SOAP, Web Services, IIS 7]
+--
+<p>I'm doing due diligence on our new SOAP API and seeing what platforms can access it and also get a feel for how it is to use our API from different platforms. Unfortunately there are still a lot of Classic ASP developers/companies out there so I'm trying to see if they can use our SOAP interface or it they will have to just use our REST interface (Not really a bad thing actually, REST rocks, but sometimes clients want to use a specific technology). The only COM SOAP library I could find that supports SOAP 1.2 (Which is what our services are speaking) is <a href="http://www.pocketsoap.com/">PocketSOAP</a>. Although I ran into a weird problem using it in Classic ASP on IIS7. When I would hit a service running over SSL I would get the following error:</p> <p><font size="2" face="Courier New">Pocket.HTTP.1 error '80070005'</font></p> <p><font size="2" face="Courier New">Error opening CertificateStore</font></p> <p><font size="2" face="Courier New">/soap.asp, line 26</font></p> <p>Struggled with this for a while and dug up a post from the PocketSOAP developer where he posts the actual source code that causes the error:</p><pre class="code"><span style="color: green">// Open the "MY" certificate store, which is where Internet Explorer
+// stores its client
+</span>certificates.m_hMyCertStore = CertOpenSystemStore(0, _T(<span style="color: #a31515">"MY"</span>));
+<span style="color: blue">if</span>(!m_hMyCertStore)
+    hr = AtlReportError(
+        CLSID_CoPocketHTTP, OLESTR(<span style="color: #a31515">"Error opening CertificateStore"</span>),
+        IID_NULL, HRESULT_FROM_WIN32(GetLastError()));
+<span style="color: blue">else
+    </span>m_SslInitDone = <span style="color: blue">true</span>;</pre><a href="http://11011.net/software/vspaste"></a>
+<p>Classic ASP automatically impersonates, so if you enabled anonymous access in IIS7 the anonymous user defaults to the new built in account IUSR. If you used this default, authorization will be done under IUSR but since Classic ASP always impersonates, the code will also execute as IUSR (Whereas .NET does not default to impersonation and in this scenario authorization will be done as the IUSR and the code will execute as the app pool identity which is by default NetworkService). It doesn't appear that a user profile is ever loaded for the IUSR account so the call above is actually accessing the Default user "My" cert store (See below). The IUSR account doesn't have access to this so it fails. So there are a couple of ways to get around this; one is setting the anonymous account to be either the same as the app pool identity or a custom anon user account. In this case the user profile is loaded and the call above succeeds since the "My" cert store is in the user profile which gets loaded and the account has access to it (BTW, the loading of the app pool identity user profile can be toggled so it would need to be on, which is the default). The second way would be to give the IUSR account read/write/delete access the Default user profile cert store, but this doesn't seem like a very good idea to me since this is used as a template for new user profiles.</p>
+<p><a href="http://blog.mikeobrien.net/content/binary/WindowsLiveWriter/WeirdIssuewithPocketSOAPinClassicASPandI_1037F/image_2.png"><img style="border-bottom: 0px; border-left: 0px; border-top: 0px; border-right: 0px" border="0" alt="image" src="/content/e65272cf49a94f3da82d42ed32e6968c.png" width="832" height="218"></a> </p>
+<p>Hope this saves someone some time!</p>

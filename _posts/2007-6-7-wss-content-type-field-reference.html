@@ -1,0 +1,45 @@
+--
+layout: post
+title: WSS Content Type Field Reference
+categories: []
+tags: []
+--
+<P>I cant seem to find an explicit reference in the WSS SDK (Or on "<A href="http://www.youtube.com/watch?v=90DKubFKwVo" target=_blank>the Google</A>" for that matter) to the FieldRef element in a content type that says the FieldRef ID is the guid of a predefined site column. SO, I'm assuming that is what it is. In reading <A href="http://www.microsoft.com/mspress/companion/9780735623200/">Inside Microsoft Windows SharePoint Services 3.0</A> (Excellent book for SharePoint development btw) I don't see this specifically mentioned in the text either but it is implied in the <A href="http://go.microsoft.com/fwlink/?LinkId=89177&clcid=0x409">code samples</A>. Lets say we have a site column defined and a content type that makes use of it:</P>
+<STYLE type=text/css>
+.cf { font-family: courier new; font-size: 10pt; color: black; background: white; }
+.cl { margin: 0px; }
+.cln { color: #2b91af; }
+.cb1 { color: blue; }
+.cb2 { color: maroon; }
+.cb3 { color: red; }
+</STYLE>
+
+<DIV style="FONT-SIZE: 10pt; BACKGROUND: white; COLOR: black; FONT-FAMILY: courier new">
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">  <</SPAN><SPAN style="COLOR: maroon">Field</SPAN><SPAN style="COLOR: blue"> </SPAN></P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">      </SPAN><SPAN style="COLOR: red">ID</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue"><STRONG><FONT size=3>{BED99611-EDE0-41cb-8C05-0FBD96A15D0F}</FONT></STRONG></SPAN>"</P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">      </SPAN><SPAN style="COLOR: red">Type</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">Note</SPAN>"</P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">      </SPAN><SPAN style="COLOR: red">RichText</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">TRUE</SPAN>"</P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">      </SPAN><SPAN style="COLOR: red">AppendOnly</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">TRUE</SPAN>"</P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">      </SPAN><SPAN style="COLOR: red">Name</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">ActivityNotes</SPAN>"</P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">      </SPAN><SPAN style="COLOR: red">DisplayName</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">Activity Notes</SPAN>"</P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">      </SPAN><SPAN style="COLOR: red">Sortable</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">FALSE</SPAN>"</P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">      </SPAN><SPAN style="COLOR: red">SourceID</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">http://schemas.microsoft.com/sharepoint/v3</SPAN>"</P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">      </SPAN><SPAN style="COLOR: red">Group</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">Litware Columns</SPAN>"<SPAN style="COLOR: blue">></SPAN></P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">  </</SPAN><SPAN style="COLOR: maroon">Field</SPAN><SPAN style="COLOR: blue">></SPAN></P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue"></SPAN> </P></DIV>
+<DIV style="FONT-SIZE: 10pt; BACKGROUND: white; COLOR: black; FONT-FAMILY: courier new">
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">  <</SPAN><SPAN style="COLOR: maroon">ContentType</SPAN><SPAN style="COLOR: blue"> </SPAN></P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">      </SPAN><SPAN style="COLOR: red">ID</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">0x0100E71A2716C18B4e96A9B0461156806FFA</SPAN>"</P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">      </SPAN><SPAN style="COLOR: red">Name</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">Company</SPAN>"</P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">      </SPAN><SPAN style="COLOR: red">Description</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">Create a new company</SPAN>"</P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">      </SPAN><SPAN style="COLOR: red">Version</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">0</SPAN>"<SPAN style="COLOR: blue">            </SPAN></P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">      </SPAN><SPAN style="COLOR: red">Group</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">Litware Content Types</SPAN>"<SPAN style="COLOR: blue"> ></SPAN></P>
+<P style="MARGIN: 0px"> </P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">    <</SPAN><SPAN style="COLOR: maroon">FieldRefs</SPAN><SPAN style="COLOR: blue">>    </SPAN></P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">      <</SPAN><SPAN style="COLOR: maroon">FieldRef</SPAN><SPAN style="COLOR: blue"> </SPAN></P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">         </SPAN><SPAN style="COLOR: red">ID</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue"><STRONG><FONT size=3>{BED99611-EDE0-41cb-8C05-0FBD96A15D0F}</FONT></STRONG></SPAN>"<SPAN style="COLOR: blue"> </SPAN><SPAN style="COLOR: red"></SPAN></P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: red">         Name</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">ActivityNotes</SPAN>"<SPAN style="COLOR: blue"> </SPAN></P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">         </SPAN><SPAN style="COLOR: red">DisplayName</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">Activity Notes</SPAN>"<SPAN style="COLOR: blue"> />            </SPAN></P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">    </<SPAN style="COLOR: maroon">FieldRefs</SPAN><SPAN style="COLOR: blue">></SPAN></SPAN></P>
+<P style="MARGIN: 0px"><SPAN style="COLOR: blue">  </<SPAN style="COLOR: maroon">ContentType></SPAN></SPAN></P></DIV>
+<P>So the FieldRef ID is simply a reference to the predefined Field ID in this case. But what if you want to define a field within the content type (Not referencing a predefined field)? Will the guid now become the id for the new custom field? Or do we not define a guid in that case? I wish the SDK gave some more insight. Or if it does I wish I could find it! :)</P>

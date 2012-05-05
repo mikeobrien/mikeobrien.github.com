@@ -1,0 +1,48 @@
+--
+layout: post
+title: Setting up Git/IronRuby/Rake/Albacore Builds with ThoughtWorks Go (Formerly known as Cruise) on Windows
+categories: [Albacore, ThoughtWorks Go, Git, Ruby, IronRuby, Rake]
+tags: [Albacore, ThoughtWorks Go, Git, Ruby, IronRuby, Rake]
+--
+<p>The following steps outline how to setup Git/IronRuby/Rake/Albacore builds with ThoughtWorks Go (Formally known as Cruise) on Windows. These same instructions should loosely apply to earlier versions of Cruise as well.&#160; </p>  <ol>   <li>Install the following on the build server:      <ol>       <li><a href="http://code.google.com/p/msysgit/downloads/list">msysgit</a>&#160; <ol>           <li>Add the Git bin folder to the system path              <br /><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/content/cc22cba5cbb2446f990f58f62c9c6f59.png" width="425" height="242" /> </li>         </ol>       </li>        <li><a href="http://www.ironruby.net/Download">IronRuby</a> </li>        <li><a href="http://rake.rubyforge.org/">Rake</a>: <font face="Courier New">igem install rake</font> </li>        <li><a href="http://albacorebuild.net/">Albacore</a>: <font face="Courier New">igem install albacore</font> </li>        <li><a href="http://www.thoughtworks-studios.com/user/register&amp;destination=forms/form/cruise/download">ThoughtWorks Cruise</a> both the server and at least one agent. (May require a reboot)           <ol>           <li>If these are already installed restart both to pick up the new PATH environment variable. </li>            <li>If the Cruise service fails to start, make sure that the following path exists: <span style="widows: 2; text-transform: none; text-indent: 0px; border-collapse: separate; font: medium &#39;Times New Roman&#39;; white-space: normal; orphans: 2; letter-spacing: normal; color: rgb(0,0,0); word-spacing: 0px; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px" class="Apple-style-span"><span style="border-collapse: collapse; font-family: arial, sans-serif; font-size: 13px" class="Apple-style-span">&lt;Windows&gt;\SysWOW64\config\<wbr></wbr></wbr></wbr></wbr></wbr>systemprofile\AppData\Local\<wbr></wbr></wbr></wbr></wbr></wbr>Temp\</span></span> </li>         </ol>       </li>     </ol>   </li> </ol>  <p><strong>Configuration</strong></p>  <p>After the prerequisites have been installed, create and push a dummy rake script to next ensure that the build is configured properly (IE: release\build.rb):</p>  <pre class="code"><span style="color: green"># build.rb 
+</span>require <span style="color: #a31515">'rubygems'      
+
+</span>desc <span style="color: #a31515">&quot;Default&quot;
+</span>task <span style="color: teal">:</span>default do 
+        puts <span style="color: #a31515">&quot;Rake is working!&quot;
+</span>end</pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>Next you will now need to create the Cruise pipeline. To start the pipeline wizard go to “Admin|Pipelines Configuration” in Cruise and click the “ADD NEW PIPELINE” button.</p>
+
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; margin-left: 0px; border-left-width: 0px; margin-right: 0px" title="image" border="0" alt="image" src="/content/2289918c3aab4b45a8b892722062d5dd.png" width="657" height="327" /> </p>
+
+<p>Next, in the wizard, set the builder to “rake” and enter the repository relative path to the rake script in addition to the “default” target. Also set the SCM to “Git” and the url of the Git repo. </p>
+
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/content/10f91e4e59a941818571851521ed9053.png" /> </p>
+
+<p>The wizard generates the following pipeline which can then be directly modified:</p>
+
+<pre class="code"><span style="color: blue">&lt;</span><span style="color: #a31515">pipeline </span><span style="color: red">name</span><span style="color: blue">=</span>&quot;<span style="color: blue">ProjectEuler.NET</span>&quot; <span style="color: red">labeltemplate</span><span style="color: blue">=</span>&quot;<span style="color: blue">1.0.0.${COUNT}</span>&quot;<span style="color: blue">&gt;
+  &lt;</span><span style="color: #a31515">materials</span><span style="color: blue">&gt;
+    &lt;</span><span style="color: #a31515">git </span><span style="color: red">url</span><span style="color: blue">=</span>&quot;<span style="color: blue">git://github.com/mikeobrien/ProjectEuler.NET.git</span>&quot; <span style="color: blue">/&gt;
+  &lt;/</span><span style="color: #a31515">materials</span><span style="color: blue">&gt;
+  &lt;</span><span style="color: #a31515">stage </span><span style="color: red">name</span><span style="color: blue">=</span>&quot;<span style="color: blue">CI</span>&quot;<span style="color: blue">&gt;
+    &lt;</span><span style="color: #a31515">jobs</span><span style="color: blue">&gt;
+      &lt;</span><span style="color: #a31515">job </span><span style="color: red">name</span><span style="color: blue">=</span>&quot;<span style="color: blue">Default</span>&quot;<span style="color: blue">&gt;
+        &lt;</span><span style="color: #a31515">tasks</span><span style="color: blue">&gt;
+          &lt;</span><span style="color: #a31515">rake </span><span style="color: red">buildfile</span><span style="color: blue">=</span>&quot;<span style="color: blue">release\build.rb</span>&quot; <span style="color: red">target</span><span style="color: blue">=</span>&quot;<span style="color: blue">default</span>&quot; <span style="color: blue">/&gt;
+        &lt;/</span><span style="color: #a31515">tasks</span><span style="color: blue">&gt;
+      &lt;/</span><span style="color: #a31515">job</span><span style="color: blue">&gt;
+    &lt;/</span><span style="color: #a31515">jobs</span><span style="color: blue">&gt;
+  &lt;/</span><span style="color: #a31515">stage</span><span style="color: blue">&gt;
+&lt;/</span><span style="color: #a31515">pipeline</span><span style="color: blue">&gt;
+</span></pre>
+
+<p>Next, either trigger a build or push a change and to test the build. That’s all there is to it; very simple!</p>
+
+<p><strong>References</strong></p>
+
+<p><a href="http://www.tobinharris.com/past/2009/8/17/automating-net-development-and-nhibernate-with-ironruby-rake/"><u><font color="#0066cc">http://www.tobinharris.com/past/2009/8/17/automating-net-development-and-nhibernate-with-ironruby-rake/</font></u></a></p>
+
+<p><a href="http://www.code-magazine.com/Article.aspx?QuickID=1006101"><u><font color="#0066cc">http://www.code-magazine.com/Article.aspx?QuickID=1006101</font></u></a></p>  

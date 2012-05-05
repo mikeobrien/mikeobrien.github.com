@@ -1,0 +1,79 @@
+--
+layout: post
+title: ParseExact for Strings?
+categories: [.NET, C#]
+tags: [.NET, C#]
+--
+<p>The DateTime.ParseExact() method has come in handy on a number of occasions. I really wish there was something similar for strings as sometimes you need to grab specific components of a string. You can use regex directly but that seems a little cumbersome. So here is an extension method that works like the DateTime.ParseExact() but returns an array of strings.</p><pre class="code"><span style="color: blue">string </span>value = <span style="color: #a31515">"2/17/2009 10:57:42 AM...Executing file 26 of 81 files"</span>;
+<span style="color: blue">string</span>[] parts = value.ParseExact(<span style="color: #a31515">"{0}...Executing file {1} of {2} files"</span>);
+<span style="color: blue">foreach </span>(<span style="color: blue">string </span>part <span style="color: blue">in </span>parts)
+    <span style="color: #2b91af">Console</span>.WriteLine(part);
+<span style="color: #2b91af">Console</span>.ReadKey();</pre><pre class="code"><a href="http://blog.mikeobrien.net/content/binary/WindowsLiveWriter/ParseExactforStrings_1E49/image_2.png"><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="117" alt="image" src="/content/48d022b01581447e9999fbdd19518586.png" width="293" border="0"></a> </pre><a href="http://11011.net/software/vspaste"></a>
+<p>Implementation:</p><pre class="code"><span style="color: blue">public static class </span><span style="color: #2b91af">StringExtensions
+</span>{
+    <span style="color: blue">public static string</span>[] ParseExact(
+        <span style="color: blue">this string </span>data, 
+        <span style="color: blue">string </span>format)
+    {
+        <span style="color: blue">return </span>ParseExact(data, format, <span style="color: blue">false</span>);
+    }
+
+    <span style="color: blue">public static string</span>[] ParseExact(
+        <span style="color: blue">this string </span>data, 
+        <span style="color: blue">string </span>format, 
+        <span style="color: blue">bool </span>ignoreCase)
+    {
+        <span style="color: blue">string</span>[] values;
+
+        <span style="color: blue">if </span>(TryParseExact(data, format, <span style="color: blue">out </span>values, ignoreCase))
+            <span style="color: blue">return </span>values;
+        <span style="color: blue">else
+            throw new </span><span style="color: #2b91af">ArgumentException</span>(<span style="color: #a31515">"Format not compatible with value."</span>);
+    }
+
+    <span style="color: blue">public static bool </span>TryExtract(
+        <span style="color: blue">this string </span>data, 
+        <span style="color: blue">string </span>format, 
+        <span style="color: blue">out string</span>[] values)
+    {
+        <span style="color: blue">return </span>TryParseExact(data, format, <span style="color: blue">out </span>values, <span style="color: blue">false</span>);
+    }
+
+    <span style="color: blue">public static bool </span>TryParseExact(
+        <span style="color: blue">this string </span>data, 
+        <span style="color: blue">string </span>format, 
+        <span style="color: blue">out string</span>[] values, 
+        <span style="color: blue">bool </span>ignoreCase)
+    {
+        <span style="color: blue">int </span>tokenCount = 0;
+        format = <span style="color: #2b91af">Regex</span>.Escape(format).Replace(<span style="color: #a31515">"\\{"</span>, <span style="color: #a31515">"{"</span>);
+
+        <span style="color: blue">for </span>(tokenCount = 0; ; tokenCount++)
+        {
+            <span style="color: blue">string </span>token = <span style="color: blue">string</span>.Format(<span style="color: #a31515">"{{{0}}}"</span>, tokenCount);
+            <span style="color: blue">if </span>(!format.Contains(token)) <span style="color: blue">break</span>;
+            format = format.Replace(token,
+                <span style="color: blue">string</span>.Format(<span style="color: #a31515">"(?'group{0}'.*)"</span>, tokenCount));
+        }
+
+        <span style="color: #2b91af">RegexOptions </span>options = 
+            ignoreCase ? <span style="color: #2b91af">RegexOptions</span>.IgnoreCase : <span style="color: #2b91af">RegexOptions</span>.None;
+
+        <span style="color: #2b91af">Match </span>match = <span style="color: blue">new </span><span style="color: #2b91af">Regex</span>(format, options).Match(data);
+
+        <span style="color: blue">if </span>(tokenCount != (match.Groups.Count - 1))
+        {
+            values = <span style="color: blue">new string</span>[] { };
+            <span style="color: blue">return false</span>;
+        }
+        <span style="color: blue">else
+        </span>{
+            values = <span style="color: blue">new string</span>[tokenCount];
+            <span style="color: blue">for </span>(<span style="color: blue">int </span>index = 0; index < tokenCount; index++)
+                values[index] = 
+                    match.Groups[<span style="color: blue">string</span>.Format(<span style="color: #a31515">"group{0}"</span>, index)].Value;
+            <span style="color: blue">return true</span>;
+        }
+    }
+}
+</pre><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a>

@@ -1,0 +1,55 @@
+--
+layout: post
+title: Adding Custom Token Handlers to the Enterprise Library Logging Application Block TextFormatter
+categories: [.NET, Logging, Logging Application Block, Enterprise Library]
+tags: [.NET, Logging, Logging Application Block, Enterprise Library]
+--
+<P>Adding custom token handlers to the LAB TextFormatter is fairly simple. The following formatter adds an "arrow" token (" --> ") to  the formatter.</P><PRE class=code><SPAN style="COLOR: blue">using </SPAN>Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
+<SPAN style="COLOR: blue">using </SPAN>Microsoft.Practices.EnterpriseLibrary.Logging.Configuration;
+<SPAN style="COLOR: blue">using </SPAN>Microsoft.Practices.EnterpriseLibrary.Logging.Formatters;
+
+<SPAN style="COLOR: blue">namespace </SPAN>MyLibrary.Logging.EnterpriseLibrary
+{
+    [<SPAN style="COLOR: #2b91af">ConfigurationElementType</SPAN>(<SPAN style="COLOR: blue">typeof</SPAN>(<SPAN style="COLOR: #2b91af">CustomFormatterData</SPAN>))]
+    <SPAN style="COLOR: blue">public class </SPAN><SPAN style="COLOR: #2b91af">CustomTextFormatter </SPAN>: <SPAN style="COLOR: #2b91af">TextFormatter
+    </SPAN>{
+        <SPAN style="COLOR: blue">#region </SPAN>Private Fields
+
+            <SPAN style="COLOR: blue">private static readonly </SPAN><SPAN style="COLOR: #2b91af">Dictionary</SPAN><<SPAN style="COLOR: blue">string</SPAN>, <SPAN style="COLOR: #2b91af">TokenHandler</SPAN><<SPAN style="COLOR: #2b91af">LogEntry</SPAN>>> tokenHandlers =
+                <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">Dictionary</SPAN><<SPAN style="COLOR: blue">string</SPAN>, <SPAN style="COLOR: #2b91af">LogEntry</SPAN>>>();
+
+        <SPAN style="COLOR: blue">#endregion
+
+        #region </SPAN>Constructors
+
+            <SPAN style="COLOR: blue">static </SPAN>CustomTextFormatter()
+            {
+                tokenHandlers[<SPAN style="COLOR: #a31515">"arrow"</SPAN>] = <SPAN style="COLOR: #2b91af">GenericTextFormatter</SPAN><<SPAN style="COLOR: #2b91af">LogEntry</SPAN>>
+                    .CreateSimpleTokenHandler(<SPAN style="COLOR: #a31515">" --> "</SPAN>);
+            }
+
+            <SPAN style="COLOR: blue">public </SPAN>CustomTextFormatter(<SPAN style="COLOR: #2b91af">NameValueCollection </SPAN>parameters)
+                : <SPAN style="COLOR: blue">this</SPAN>(parameters.Get(<SPAN style="COLOR: #a31515">"template"</SPAN>)) { }
+
+            <SPAN style="COLOR: blue">public </SPAN>CustomTextFormatter() : <SPAN style="COLOR: blue">this</SPAN>(<SPAN style="COLOR: blue">null</SPAN>, tokenHandlers) { }
+
+            <SPAN style="COLOR: blue">public </SPAN>CustomTextFormatter(<SPAN style="COLOR: blue">string </SPAN>template) : <SPAN style="COLOR: blue">this</SPAN>(template, tokenHandlers) { }
+
+            <SPAN style="COLOR: blue">protected </SPAN>CustomTextFormatter(<SPAN style="COLOR: blue">string </SPAN>template, <SPAN style="COLOR: #2b91af">Dictionary</SPAN><<SPAN style="COLOR: blue">string</SPAN>, <SPAN style="COLOR: #2b91af">TokenHandler</SPAN><<SPAN style="COLOR: #2b91af">LogEntry</SPAN>>>
+                extraTokenHandlers) : <SPAN style="COLOR: blue">base</SPAN>(template, extraTokenHandlers) { }
+
+        <SPAN style="COLOR: blue">#endregion    
+    </SPAN>}
+}
+</PRE>
+<P>A few things to note: 1) If you want to define the formatter in configuration, you must add the CustomFormatterData attribute to the class. Don't try to add the the TextFormatterData attribute as I did (Because I did not pay close enough attention to the documentation!) and spend hours in Reflector trying to figure out why a TextFormatter object is created and not the derived type... This, by the way, has to do with the Assembler attribute on the nnnFormatterData class. This attribute references an assembler class that will instantiate the specific type (In this case the XmlLogFormatter), NOT the one specified in configuration. You could also define your own custom FormatterData and Assembler classes but the using the CustomFormatterData class is much simpler. 2) Again, if you want to define the formatter in configuration, you will need to add the constructor that accepts the NameValueCollection of configuration parameters. You can then grab the template parameter from this collection. 3) Create a static list of handlers that gets initialized once by a static constructor. There is no need to keep recreating these objects every time the formatter is created.</P>
+<P>To define the formatter in configuration, specify the class reference like you normally would, just point to the new class. You can now use the token you defined in your class. </P><PRE class=code><SPAN style="COLOR: blue"><</SPAN><SPAN style="COLOR: #a31515">formatters</SPAN><SPAN style="COLOR: blue">>
+</SPAN><SPAN style="COLOR: blue">  <</SPAN><SPAN style="COLOR: #a31515">add 
+    </SPAN><SPAN style="COLOR: red">name</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">EventLogFormatter</SPAN>" 
+    <SPAN style="COLOR: red">template</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">Timestamp{arrow}{timestamp}</SPAN><SPAN style="COLOR: red">&#xD;&#xA;</SPAN><SPAN style="COLOR: blue">Message{arrow}{message}</SPAN><SPAN style="COLOR: red">&#xD;&#xA;<FONT color=#0000ff> ...</FONT></SPAN>"
+    <SPAN style="COLOR: red">type</SPAN><SPAN style="COLOR: blue">=</SPAN>"<SPAN style="COLOR: blue">MyLibrary.Logging.EnterpriseLibrary.CustomTextFormatter, MyLibrary</SPAN>"
+     <SPAN style="COLOR: blue">/>
+</</SPAN><SPAN style="COLOR: #a31515">formatters</SPAN><SPAN style="COLOR: blue">></SPAN></PRE><A href="http://11011.net/software/vspaste"></A>
+<P>The result is as follows:</P>
+<P><A href="http://blog.mikeobrien.net/content/binary/WindowsLiveWriter/AddingCustomTokenHandlerstotheEnterprise_306/image_2.png"><IMG style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; BORDER-TOP: 0px; BORDER-RIGHT: 0px" border=0 alt=image src="/content/20c64ba7312a474798b9118856587bbe.png" width=465 height=296></A> </P>
+<P>Now obviously you'll want to do more than add a simple token. In our next installment we will show you how to add a parameterized token. See you next time.</P>

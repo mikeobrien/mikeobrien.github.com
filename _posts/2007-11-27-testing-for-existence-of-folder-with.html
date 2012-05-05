@@ -1,0 +1,14 @@
+--
+layout: post
+title: Testing for Existence of a Folder with NAnt
+categories: [Nant]
+tags: [Nant]
+--
+<P>Testing for the existence of a folder with NAnt is pretty simple. The only caveat is that you reference parameters without the ${} qualifier. You can also concatenate strings, building the path dynamically...</P>
+<P><FONT face="Courier New"><property name="RootPath" value="D:\Temp" /><BR><property name="RelativePath" value="SomeFolder" /></FONT></P>
+<P><FONT face="Courier New"><target name="default"></FONT></P>
+<P><FONT face="Courier New">   <if test="${directory::exists(RootPath + '\' + SomeFolder)}"><BR>      <echo message="${RootPath}\${SomeFolder} exists!"/><BR>   </if></FONT></P>
+<P><FONT face="Courier New">   <if test="${not(directory::exists(RootPath + '\' + SomeFolder))}"><BR>      <echo message="${RootPath}\${SomeFolder} does not exist!"/><BR>   </if></FONT></P>
+<P><FONT face="Courier New"></target></FONT></P>
+<P>As a side note; if you plan on passing a path into an exec as a parameter remember to quote it with the &quot; HTML entity:</P>
+<P><FONT face="Courier New"><exec program="${Subversion}"><BR>    <arg value="update &quot;${RootPath}\${SomeFolder}&quot;" /><BR></exec></FONT> </P>

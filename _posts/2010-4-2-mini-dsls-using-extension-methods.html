@@ -1,0 +1,59 @@
+--
+layout: post
+title: Mini DSL’s Using Extension Methods
+categories: [.NET]
+tags: [.NET]
+--
+<p>Earlier this year <a href="http://codebetter.com/blogs/jeremy.miller/">Jeremy Miller</a> wrote an excellent article for MSDN magazine called <a href="http://msdn.microsoft.com/en-us/magazine/ee291514.aspx">Internal Domain Specific Languages</a>. In it he suggests using extension methods as a simple way to create internal DSL’s. Currently I’m writing a module to import and export data from a system so I’ve been mucking around with the ADO.NET API’s. The repetitious code was getting to me and so I decided to take Jeremy’s advice and go for a more declarative approach by creating a mini DSL. </p><p>Here is one of the constructs I was seeing over and over:</p><pre class="code"><span style="color: blue">string </span>select = <span style="color: blue">string</span>.Format(<span style="color: #a31515">&quot;SELECT TOP {0} * FROM [{1}]&quot;</span>, maxResults, tableName);
+<span style="color: #2b91af">OleDbCommand </span>command = <span style="color: blue">new </span><span style="color: #2b91af">OleDbCommand</span>(select, _connection);
+<span style="color: #2b91af">DataSet </span>dataSet = <span style="color: blue">new </span><span style="color: #2b91af">DataSet</span>();
+<span style="color: #2b91af">OleDbDataAdapter </span>adapter = <span style="color: blue">new </span><span style="color: #2b91af">OleDbDataAdapter</span>(command);
+adapter.Fill(dataSet);</pre><p><a href="http://11011.net/software/vspaste"></a>Now I know we could shorten this up a bit by moving the code around but the mechanics are still there. By taking a more declarative approach we want to do the following:</p><ol><li>Create a command</li>
+<li>Select a maximum amount of records from a table.</li>
+<li>Create an adapter.</li>
+<li>Fill a DataSet </li>
+</ol><p>Lets create the following extension methods to accomplish this task in a declarative fashion:</p><pre class="code"><span style="color: blue"><span style="color: blue">public static class </span><span style="color: #2b91af">OleDbConnectionExtensions
+</span><font color="#000000">{
+    </font><span style="color: blue">public static </span><span style="color: #2b91af">OleDbCommand </span><font color="#000000">CreateCommand(</font><span style="color: blue">this </span><span style="color: #2b91af">OleDbConnection </span><font color="#000000">connection)
+    {
+        </font><span style="color: blue">return new </span><span style="color: #2b91af">OleDbCommand </span><font color="#000000">{ Connection = connection };
+    }
+}</font></span></pre><pre class="code"><span style="color: blue">public static class </span><span style="color: #2b91af">OleDbCommandExtensions
+</span>{
+    <span style="color: blue">public static </span><span style="color: #2b91af">OleDbCommand </span>SelectMaxFromTable(<span style="color: blue">this </span><span style="color: #2b91af">OleDbCommand </span>command, <span style="color: blue">string </span>tableName, <span style="color: blue">int </span>maxResults)
+    {
+        command.CommandText = <span style="color: blue">string</span>.Format(<span style="color: #a31515">&quot;SELECT TOP {0} * FROM [{1}]&quot;</span>, maxResults, tableName);
+        <span style="color: blue">return </span>command;
+    }
+
+    <span style="color: blue">public static </span><span style="color: #2b91af">OleDbDataAdapter </span>CreateAdapter(<span style="color: blue">this </span><span style="color: #2b91af">OleDbCommand </span>command)
+    {
+        <span style="color: blue">return new </span><span style="color: #2b91af">OleDbDataAdapter</span>(command);
+    }
+}</pre><a href="http://11011.net/software/vspaste"></a>  <pre class="code"><span style="color: blue">public static class </span><span style="color: #2b91af">OleDbDataAdapterExtensions
+</span>{
+    <span style="color: blue">public static </span><span style="color: #2b91af">DataSet </span>CreateAndFillDataSet(<span style="color: blue">this </span><span style="color: #2b91af">OleDbDataAdapter </span>adapter)
+    {
+        <span style="color: #2b91af">DataSet </span>dataSet = <span style="color: blue">new </span><span style="color: #2b91af">DataSet</span>();
+        adapter.Fill(dataSet);
+        <span style="color: blue">return </span>dataSet;
+    }
+}</pre><p><a href="http://11011.net/software/vspaste"></a>And voila! </p><pre class="code"><span style="color: #2b91af">DataSet </span>result = _connection.
+                    CreateCommand().
+                    SelectMaxFromTable(columnOptions.TableName, 50).
+                    CreateAdapter().
+                    CreateAndFillDataSet();</pre><a href="http://11011.net/software/vspaste"></a>  <p>Very easy to follow and very reusable. Doesn't this look eerily similar to pipelining in F#?? :)</p><p>Now we can go even farther if we want to make this even more terse by adding the following two extension methods (Which are themselves using our new mini DSL):</p><pre class="code"><span style="color: blue">public static class </span><span style="color: #2b91af">OleDbConnectionExtensions
+</span>{
+    <span style="color: blue">public static </span><span style="color: #2b91af">OleDbCommand </span>SelectMaxFromTable(<span style="color: blue">this </span><span style="color: #2b91af">OleDbConnection </span>connection, <span style="color: blue">string </span>tableName, <span style="color: blue">int </span>max)
+    {
+        <span style="color: blue">return </span>connection.CreateCommand().SelectMaxFromTable(tableName, max);
+    }
+}</pre><a href="http://11011.net/software/vspaste"></a>  <pre class="code"><span style="color: blue">public static class </span><span style="color: #2b91af">OleDbCommandExtensions
+</span>{
+    <span style="color: blue">public static </span><span style="color: #2b91af">DataSet </span>CreateAndFillDataSet(<span style="color: blue">this </span><span style="color: #2b91af">OleDbCommand </span>command)
+    {
+        <span style="color: blue">return </span>command.CreateAdapter().CreateAndFillDataSet();
+    }
+}</pre><a href="http://11011.net/software/vspaste"></a>  <p>There, much better:</p><pre class="code"><span style="color: #2b91af">DataSet </span>result = _connection.
+                    SelectMaxFromTable(columnOptions.TableName, 50).
+                    CreateAndFillDataSet();</pre><a href="http://11011.net/software/vspaste"></a>  <p>In our declarative syntax we really didn't care about the minutia of creating the command and adapter so we could eliminate that in our DSL.</p>

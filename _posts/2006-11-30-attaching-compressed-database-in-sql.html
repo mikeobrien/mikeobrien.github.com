@@ -1,0 +1,8 @@
+--
+layout: post
+title: Attaching a compressed database in SQL Server 2005
+categories: [TSQL/SQL Server]
+tags: [TSQL/SQL Server]
+--
+<P><A href="http://support.microsoft.com/kb/231347/en-us">You cant do it</A>... Didnt realize this since I wouldnt normally do that (for performace reasons). But I was attaching an MDF that happened to be in my temp folder, which is compressed, and got the error. I didnt quite get it at first since I didnt realize this was not possible in 2005 and because I forgot that folder was compressed... :P You can however do this if the file is in a readonly file group or if you are attaching a readonly database.</P>
+<P><FONT face="Courier New" size=1>The file "D:\temp\test.mdf" is compressed but does not reside in a read-only database or filegroup. The file must be decompressed.<BR>CREATE DATABASE failed. Some file names listed could not be created. Check related errors. (Microsoft SQL Server, Error: 5118)</FONT><BR></P>

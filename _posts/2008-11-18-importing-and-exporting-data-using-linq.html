@@ -1,0 +1,55 @@
+--
+layout: post
+title: Importing and Exporting Data Using Linq
+categories: [XML/XSL, C#, .NET 3.5, SQL Server 2005, Linq]
+tags: [XML/XSL, C#, .NET 3.5, SQL Server 2005, Linq]
+--
+<P>One thing I really love about Linq is how succinctly you can write import and export code. I've had to do this many times before Linq and it always felt kludgy no matter how clean you did it (Especially building xml documents). I think the decision to bake a set based syntax into C# and VB.NET was a great idea. So here is yet another Linq code sample, aren't there already a million of them out there??</P>
+<P>Exporting data from a SQL Server table to xml using Linq2Sql and Link2Xml:</P><PRE class=code><SPAN style="COLOR: #2b91af">TestDataContext </SPAN>dataContext =
+    <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">TestDataContext</SPAN>(<SPAN style="COLOR: #a31515">@"Data Source=localhost;
+        Initial Catalog=Test;Integrated Security=True"</SPAN>);
+
+<SPAN style="COLOR: #2b91af">XDocument </SPAN>export = <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">XDocument</SPAN>(
+    <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">XElement</SPAN>(
+        <SPAN style="COLOR: #a31515">"clients"</SPAN>,
+            <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">XComment</SPAN>(<SPAN style="COLOR: #a31515">"This is a comment!"</SPAN>),
+            <SPAN style="COLOR: blue">from </SPAN>client <SPAN style="COLOR: blue">in </SPAN>dataContext.Clients
+            <SPAN style="COLOR: blue">orderby </SPAN>client.State, client.City 
+            <SPAN style="COLOR: blue">select new </SPAN><SPAN style="COLOR: #2b91af">XElement</SPAN>(
+                <SPAN style="COLOR: #a31515">"client"</SPAN>,
+                    <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">XAttribute</SPAN>(<SPAN style="COLOR: #a31515">"id"</SPAN>, client.Id.ToString()),
+                    <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">XElement</SPAN>(<SPAN style="COLOR: #a31515">"name"</SPAN>, <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">XText</SPAN>(client.Name)),
+                    <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">XElement</SPAN>(<SPAN style="COLOR: #a31515">"address"</SPAN>, <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">XText</SPAN>(client.Address)),
+                    <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">XElement</SPAN>(<SPAN style="COLOR: #a31515">"address2"</SPAN>, <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">XText</SPAN>(client.Address2)),
+                    <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">XElement</SPAN>(<SPAN style="COLOR: #a31515">"city"</SPAN>, <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">XText</SPAN>(client.City)),
+                    <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">XElement</SPAN>(<SPAN style="COLOR: #a31515">"state"</SPAN>, <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">XText</SPAN>(client.State)),
+                    <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">XElement</SPAN>(<SPAN style="COLOR: #a31515">"zip"</SPAN>, <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">XText</SPAN>(client.Zip)),
+                    <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">XElement</SPAN>(<SPAN style="COLOR: #a31515">"comments"</SPAN>, <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">XCData</SPAN>(
+                        <SPAN style="COLOR: blue">string</SPAN>.Format(<SPAN style="COLOR: #a31515">"{0} is based out of {1}."</SPAN>, 
+                        client.Name, client.State)))
+                )
+            )
+        );
+export.Save(<SPAN style="COLOR: #a31515">@"D:\Temp\Clients.xml"</SPAN>);</PRE><A href="http://11011.net/software/vspaste"></A>
+<P>Importing data from an xml document to a SQL Server table using Linq2Xml and Linq2Sql (<FONT color=#ff0000><EM>And as Anon pointed out we can do a direct cast since the XAttribute (And XElement) class define explicit conversion operators for primitive types. On that note we also dont need to check if the XElement or XAttribute is null. The Linq2Sql entity defines fields (Or properties) as nullable types and the XElement and XAttribute classes define conversion operators for nullable primitive types. So if an attribute or element does not exist the entity value is simply set to null.</EM></FONT>):</P><PRE class=code><SPAN style="COLOR: #2b91af">TestDataContext </SPAN>dataContext =
+    <SPAN style="COLOR: blue">new </SPAN><SPAN style="COLOR: #2b91af">TestDataContext</SPAN>(<SPAN style="COLOR: #a31515">@"Data Source=localhost;
+        Initial Catalog=Test;Integrated Security=True"</SPAN>);
+
+<SPAN style="COLOR: #2b91af">XDocument </SPAN>document = <SPAN style="COLOR: #2b91af">XDocument</SPAN>.Load(<SPAN style="COLOR: #a31515">@"D:\Temp\Clients.xml"</SPAN>);
+
+<SPAN style="COLOR: blue">var </SPAN>clients = <SPAN style="COLOR: blue">from </SPAN>client <SPAN style="COLOR: blue">in </SPAN>document.Element(<SPAN style="COLOR: #a31515">"clients"</SPAN>).Elements(<SPAN style="COLOR: #a31515">"client"</SPAN>)
+    <SPAN style="COLOR: blue">select new </SPAN><SPAN style="COLOR: #2b91af">Client</SPAN>()
+    {
+        Id = (<FONT color=#0000ff>int</FONT>)client.Attribute(<SPAN style="COLOR: #a31515">"id"</SPAN>),
+        Name = (<FONT color=#0000ff>string</FONT>)client.Element(<SPAN style="COLOR: #a31515">"name"</SPAN>),
+        Address = (<FONT color=#0000ff>string</FONT>)client.Element(<SPAN style="COLOR: #a31515">"address"</SPAN>),
+        Address2 = (<FONT color=#0000ff>string</FONT>)client.Element(<SPAN style="COLOR: #a31515">"address2"</SPAN>),
+        City = (<FONT color=#0000ff>string</FONT>)client.Element(<SPAN style="COLOR: #a31515">"city"</SPAN>),
+        State = (<FONT color=#0000ff>string</FONT>)client.Element(<SPAN style="COLOR: #a31515">"state"</SPAN>),
+        Zip = (<FONT color=#0000ff>string</FONT>)client.Element(<SPAN style="COLOR: #a31515">"zip"</SPAN>)
+    };
+
+<SPAN style="COLOR: blue">foreach </SPAN>(<SPAN style="COLOR: blue">var </SPAN>client <SPAN style="COLOR: blue">in </SPAN>clients)
+    dataContext.Clients.InsertOnSubmit(client);
+
+dataContext.SubmitChanges();</PRE><A href="http://11011.net/software/vspaste"></A>

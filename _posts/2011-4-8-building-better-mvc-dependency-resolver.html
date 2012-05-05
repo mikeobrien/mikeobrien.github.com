@@ -1,0 +1,186 @@
+--
+layout: post
+title: Building a Better MVC Dependency Resolver
+categories: [Dependency Injection, StructureMap, ASP.NET MVC]
+tags: [Dependency Injection, StructureMap, ASP.NET MVC]
+--
+<p><font color="#ff0000"><strong><em>Updated to include global filters.</em></strong></font></p>  <p>Unfortunately the latest effort to add DI to MVC falls short in a number of ways. There are 3 areas in particular that are causing me pain:</p>  <ol>   <li>No distinction between infrastructure and a request. </li>    <li>No container per request. </li>    <li>No request container create and release mechanism. </li> </ol>  <p>In order to accommodate functionality specific to a request there would need to be a distinction between building up infrastructure related objects (created once at startup, e.g. IControllerFactory, IControllerActivator, etc.) and request related objects (created for each request, e.g. controllers, views, etc.) Unfortunately, all objects are built up from the same two methods regardless of if they’re infrastructure or request related. I use a StructureMap nested container per request. I want all dependencies for an individual request to be managed by that nested container. Also once the request completes I want to “clean up” the nested container (Like commit a transaction or whatever). Currently the dependency resolver offers no way to do this. Here is a better interface IMO:</p>  <pre class="code"><span style="color: blue">public interface </span><span style="color: #2b91af">IDependencyResolver
+</span>{
+    <span style="color: green">// Infrastructure
+    </span><span style="color: blue">object </span>GetInfrastructureService(<span style="color: #2b91af">Type </span>serviceType);
+    <span style="color: #2b91af">IEnumerable</span>&lt;<span style="color: blue">object</span>&gt; GetInfrastructureervices(<span style="color: #2b91af">Type </span>serviceType);
+
+    <span style="color: green">// Per-request
+    </span><span style="color: blue">object </span>CreateActionContainer();
+    <span style="color: blue">object </span>GetActionService(<span style="color: blue">object </span>container, <span style="color: #2b91af">Type </span>serviceType);
+    <span style="color: #2b91af">IEnumerable</span>&lt;<span style="color: blue">object</span>&gt; GetActionServices(<span style="color: blue">object </span>container, <span style="color: #2b91af">Type </span>serviceType);;
+    <span style="color: #2b91af">IEnumerable</span>&lt;<span style="color: blue">object</span>&gt; GetActionFilters(<span style="color: #2b91af"><span style="color: #2b91af"><span style="color: #2b91af">IContainer </span><font color="#000000">container, </font><span style="color: #2b91af">IEnumerable</span><font color="#000000">&lt;</font><span style="color: #2b91af">Type</span><font color="#000000">&gt; filterTypes</font></span></span>);
+    <span style="color: blue">void </span>ReleaseActionContainer(<span style="color: blue">object </span>container);
+}</pre>
+
+<p>I’m sure its unlikely that we’ll ever see anything like this from the MVC team but we can put together something on top of the current interface that gets us there:</p>
+
+<pre class="code"><span style="color: blue">public abstract class </span><span style="color: #2b91af">DependencyResolverBase</span>&lt;T&gt; : <span style="color: #2b91af">IDependencyResolver</span>, <span style="color: #2b91af">IFilterProvider </span><span style="color: blue">where </span>T : <span style="color: blue">class
+</span>{
+    <span style="color: blue">private const string </span>MetadataKey = <span style="color: #a31515">&quot;___DependencyResolverContainer___&quot;</span>;
+    <span style="color: blue">private static readonly </span><span style="color: #2b91af">Type</span>[] ActionFilterTypes = <span style="color: blue">new</span>[] { <span style="color: blue">typeof</span>(<span style="color: #2b91af">IAuthorizationFilter</span>), <span style="color: blue">typeof</span>(<span style="color: #2b91af">IActionFilter</span>), 
+                                                               <span style="color: blue">typeof</span>(<span style="color: #2b91af">IResultFilter</span>), <span style="color: blue">typeof</span>(<span style="color: #2b91af">IExceptionFilter</span>) };
+    <span style="color: blue">private readonly </span><span style="color: #2b91af">Func</span>&lt;<span style="color: #2b91af">IDictionary</span>&gt; _getRequestMetadata ;
+
+    <span style="color: blue">protected </span>DependencyResolverBase()
+    {
+        _getRequestMetadata = () =&gt; <span style="color: #2b91af">HttpContext</span>.Current.Items;
+    }
+
+    <span style="color: blue">protected </span>DependencyResolverBase(<span style="color: #2b91af">Func</span>&lt;<span style="color: #2b91af">IDictionary</span>&gt; getRequestMetadata)
+    {
+        _getRequestMetadata = getRequestMetadata;
+    }
+
+    <span style="color: green">// Infrastructure Services
+    </span><span style="color: blue">public abstract object </span>GetInfrastructureService(<span style="color: #2b91af">Type </span>serviceType);
+    <span style="color: blue">public abstract </span><span style="color: #2b91af">IEnumerable</span>&lt;<span style="color: blue">object</span>&gt; GetInfrastructureServices(<span style="color: #2b91af">Type </span>serviceType); 
+
+    <span style="color: green">// Action Services
+    </span><span style="color: blue">public abstract </span>T CreateActionContainer();
+    <span style="color: blue">public abstract object </span>GetActionService(T container, <span style="color: #2b91af">Type </span>serviceType);
+    <span style="color: blue">public abstract </span><span style="color: #2b91af">IEnumerable</span>&lt;<span style="color: blue">object</span>&gt; GetActionServices(T container, <span style="color: #2b91af">Type </span>serviceType);
+    <span style="color: blue">public abstract </span><span style="color: #2b91af">IEnumerable</span>&lt;<span style="color: blue">object</span>&gt; GetActionFilters(T container, <span style="color: #2b91af">IEnumerable</span>&lt;<span style="color: #2b91af">Type</span>&gt; filterTypes);
+    <span style="color: blue">public abstract void </span>ReleaseActionContainer(T container);
+ 
+    <span style="color: blue">public void </span>ReleaseActionContainer()
+    {
+        <span style="color: blue">var </span>container = CurrentContainer;
+        <span style="color: blue">if </span>(container != <span style="color: blue">null</span>) ReleaseActionContainer(container);            
+    }
+
+    <span style="color: blue">public void </span>RegisterHttpApplication(<span style="color: #2b91af">HttpApplication </span>application)
+    {
+        application.EndRequest += (s, e) =&gt; ReleaseActionContainer();
+    }
+
+    <span style="color: blue">object </span><span style="color: #2b91af">IDependencyResolver</span>.GetService(<span style="color: #2b91af">Type </span>serviceType)
+    {
+        <span style="color: blue">return </span>IsInfrastructureService(serviceType) ?
+            GetInfrastructureService(serviceType) : 
+            GetActionService(GetActionContainer(), serviceType);
+    }
+
+    <span style="color: #2b91af">IEnumerable</span>&lt;<span style="color: blue">object</span>&gt; <span style="color: #2b91af">IDependencyResolver</span>.GetServices(<span style="color: #2b91af">Type </span>serviceType)
+    {
+        <span style="color: blue">return </span>IsInfrastructureService(serviceType) ?
+            GetInfrastructureServices(serviceType).
+                Union(GetBuiltInInfrastructureServices(serviceType)) :
+            GetActionServices(GetActionContainer(), serviceType);
+    }
+
+    <span style="color: #2b91af">IEnumerable</span>&lt;<span style="color: #2b91af">Filter</span>&gt; <span style="color: #2b91af">IFilterProvider</span>.GetFilters(<span style="color: #2b91af">ControllerContext </span>controllerContext, 
+                                                   <span style="color: #2b91af">ActionDescriptor </span>actionDescriptor)
+    {
+        <span style="color: blue">return </span>GetActionFilters(GetActionContainer(), ActionFilterTypes, 
+                                controllerContext, actionDescriptor).
+                    Select(x =&gt; <span style="color: blue">new </span><span style="color: #2b91af">Filter</span>(x, <span style="color: #2b91af">FilterScope</span>.Global, <span style="color: blue">null</span>));
+    }
+
+    <span style="color: blue">private </span><span style="color: #2b91af">IEnumerable</span>&lt;<span style="color: blue">object</span>&gt; GetBuiltInInfrastructureServices(<span style="color: #2b91af">Type </span>serviceType)
+    {
+        <span style="color: blue">return </span>serviceType == <span style="color: blue">typeof</span>(<span style="color: #2b91af">IFilterProvider</span>) ? 
+                        <span style="color: blue">new </span><span style="color: #2b91af">List</span>&lt;<span style="color: blue">object</span>&gt; {<span style="color: blue">this</span>}:
+                        <span style="color: #2b91af">Enumerable</span>.Empty&lt;<span style="color: blue">object</span>&gt;();
+    }
+
+    <span style="color: blue">private </span>T GetActionContainer()
+    {
+        <span style="color: blue">var </span>container = CurrentContainer;
+        <span style="color: blue">if </span>(container == <span style="color: blue">null</span>) CurrentContainer = container = CreateActionContainer();
+        <span style="color: blue">return </span>container;
+    }
+
+    <span style="color: blue">private </span>T CurrentContainer
+    {
+        <span style="color: blue">get </span>{ <span style="color: blue">return </span>(T)_getRequestMetadata()[MetadataKey]; }
+        <span style="color: blue">set </span>{ _getRequestMetadata()[MetadataKey] = <span style="color: blue">value</span>; }
+    }       
+
+    <span style="color: blue">private static bool </span>IsInfrastructureService(<span style="color: #2b91af">Type </span>type)
+    {
+        <span style="color: blue">return </span>type.Namespace != <span style="color: blue">null </span>&amp;&amp; type.Namespace.StartsWith(<span style="color: #a31515">&quot;System.Web.Mvc&quot;</span>);
+    }
+}</pre>
+
+<p>This class uses the template method so you can fill in the details in a derived class. Here is an example with StructureMap:</p>
+
+<pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">StructureMapDependencyResolver </span>: <span style="color: #2b91af">DependencyResolverBase</span>&lt;<span style="color: #2b91af">IContainer</span>&gt;
+{
+    <span style="color: blue">public override object </span>GetInfrastructureService(<span style="color: #2b91af">Type </span>serviceType)
+    {
+        <span style="color: blue">return </span>Resolve(<span style="color: #2b91af">ObjectFactory</span>.Container, serviceType);
+    }
+
+    <span style="color: blue">public override </span><span style="color: #2b91af">IEnumerable</span>&lt;<span style="color: blue">object</span>&gt; GetInfrastructureServices(<span style="color: #2b91af">Type </span>serviceType)
+    {
+        <span style="color: blue">return </span><span style="color: #2b91af">ObjectFactory</span>.Container.GetAllInstances(serviceType).Cast&lt;<span style="color: blue">object</span>&gt;();
+    }
+
+    <span style="color: blue">public override </span><span style="color: #2b91af">IContainer </span>CreateActionContainer()
+    {
+        <span style="color: blue">return </span><span style="color: #2b91af">ObjectFactory</span>.Container.GetNestedContainer();
+    }
+
+    <span style="color: blue">public override object </span>GetActionService(<span style="color: #2b91af">IContainer </span>container, <span style="color: #2b91af">Type </span>serviceType)
+    {
+        <span style="color: blue">return </span>Resolve(container, serviceType);
+    }
+
+    <span style="color: blue">public override </span><span style="color: #2b91af">IEnumerable</span>&lt;<span style="color: blue">object</span>&gt; GetActionServices(<span style="color: #2b91af">IContainer </span>container, <span style="color: #2b91af">Type </span>serviceType)
+    {
+        <span style="color: blue">return </span>container.GetAllInstances(serviceType).Cast&lt;<span style="color: blue">object</span>&gt;();
+    }
+
+    <span style="color: blue">public override </span><span style="color: #2b91af">IEnumerable</span>&lt;<span style="color: blue">object</span>&gt; GetActionFilters(<span style="color: #2b91af">IContainer </span>container, <span style="color: #2b91af">IEnumerable</span>&lt;<span style="color: #2b91af">Type</span>&gt; filterTypes)
+    {
+        <span style="color: blue">return </span>container.Model.AllInstances.
+            Join(filterTypes, x =&gt; x.PluginType, y =&gt; y, (x, y) =&gt; x).
+            Select(x =&gt; x.ConcreteType).
+            Distinct().
+            Select(container.GetInstance);
+    }
+
+    <span style="color: blue">public override void </span>ReleaseActionContainer(<span style="color: #2b91af">IContainer </span>container)
+    {
+        container.Dispose();
+    }
+
+    <span style="color: blue">private static object </span>Resolve(<span style="color: #2b91af">IContainer </span>container, <span style="color: #2b91af">Type </span>serviceType)
+    {
+        <span style="color: blue">return </span>(serviceType.IsAbstract || serviceType.IsInterface) ?
+            container.TryGetInstance(serviceType) :
+            container.GetInstance(serviceType);
+    }
+}</pre>
+
+<p>Registration is pretty straight forward. The DependencyResolverBase class needs to subscribe to the request end event in order to release the container. This event needs to be subscribed to for each http application (And there can be many) thus the override of Init(). The dependency resolver automatically registers itself as a filter provider so no need to manually register it.</p>
+
+<pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">MvcApplication </span>: <span style="color: #2b91af">HttpApplication
+</span>{
+    /...
+
+    <span style="color: blue">protected void </span>Application_Start()
+    {
+        <span style="color: #2b91af">ObjectFactory</span>.Configure(x =&gt;
+                                    {
+                                        x.For&lt;<span style="color: #2b91af">IDatabase</span>&gt;().Use&lt;<span style="color: #2b91af">MongoDB</span>&gt;();
+                                        x.For&lt;<span style="color: #2b91af">IActionFilter</span>&gt;().Use&lt;<span style="color: #2b91af">SomeFilter</span>&gt;();
+                                        x.For&lt;<span style="color: #2b91af">IResultFilter</span>&gt;().Use&lt;<span style="color: #2b91af">SomeFilter</span>&gt;();
+                                    });
+
+        <span style="color: blue">var </span>dependencyProvider = <span style="color: blue">new </span><span style="color: #2b91af">StructureMapDependencyResolver</span>();
+        <span style="color: #2b91af">DependencyResolver</span>.SetResolver(dependencyProvider);
+        <span style="color: green">// ...
+    </span>}
+
+    <span style="color: blue">public override void </span>Init()
+    {
+        ((<span style="color: #2b91af">StructureMapDependencyResolver</span>)<span style="color: #2b91af">DependencyResolver</span>.Current).RegisterHttpApplication(<span style="color: blue">this</span>);
+    }
+}</pre>  

@@ -1,0 +1,17 @@
+--
+layout: post
+title: Working with MatchCollection in F#
+categories: [Regular Expressions, F#]
+tags: [Regular Expressions, F#]
+--
+<p>Since the MatchCollection doesn’t implement the generic IEnumerable<> so you cant use it OOB with the Seq functions. You can use the Seq.cast to convert it to a generic IEnumerable<> as follows:</p>  <pre class="code"><span style="color: blue">open </span>System
+<span style="color: blue">open </span>System.IO
+<span style="color: blue">open </span>System.Text.RegularExpressions
+
+<span style="color: blue">let </span>matches = Regex.Matches(File.ReadAllText(<span style="color: maroon">"Page.html"</span>), <span style="color: maroon">"(href\\s*=\\s*(['\"])(?<url>.*?)\\2)"</span>)
+
+matches |> <strong>Seq.cast</strong> |> Seq.iter (<span style="color: blue">fun </span>(regMatch:Match) <span style="color: blue">-> </span>Console.WriteLine(regMatch.Value))
+
+Console.WriteLine()
+Console.ReadKey() |> ignore</pre>
+<a href="http://11011.net/software/vspaste"></a>

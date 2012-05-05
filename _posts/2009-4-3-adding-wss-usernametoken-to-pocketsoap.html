@@ -1,0 +1,45 @@
+--
+layout: post
+title: Adding WSS UsernameToken to PocketSOAP Message
+categories: [SOAP, VBScript, WS-Security, Interoperability]
+tags: [SOAP, VBScript, WS-Security, Interoperability]
+--
+<p>As I <a href="/2009/04/weird-issue-with-pocketsoap-in-classic.html">mentioned earlier</a>, I'm testing our SOAP API on a few different platforms and am using <a href="http://www.pocketsoap.com/">PocketSOAP</a> as a COM solution for scripting languages (Like VBScript). It supports SOAP 1.2 but it doesn't support the WS-* standards out of the box. If you simply need to use the <a href="http://docs.oasis-open.org/wss/v1.1/wss-v1.1-spec-os-UsernameTokenProfile.pdf">UsernameToken part of the WSS spec</a> and you are sending your password as plain text (Over SSL right?) you can use the following VBScript method to add the headers:</p><pre class="code"><span style="color: blue">Sub </span>AddWSSUsernameToken(envelope, username, password)
+
+    <span style="color: blue">Dim </span>WSSNamespace, Security, UsernameToken, Serializer
+    WSSNamespace = <span style="color: #a31515">"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
+
+    </span>Security = envelope.Headers.Create(<span style="color: #a31515">"Security"</span>, <span style="color: #a31515">""</span>, WSSNamespace)
+    UsernameToken = Security.Nodes.Create(<span style="color: #a31515">"UsernameToken"</span>, <span style="color: #a31515">""</span>, WSSNamespace)
+<font color="#008000">    ' NOTE: If your using the SOAP 1.1 version of the envelope you
+    '       need to add the following line:
+    ' UsernameToken.root = true</font>
+    UsernameToken.Nodes.Create(<span style="color: #a31515">"Username"</span>, username, WSSNamespace)
+    UsernameToken.Nodes.Create(<span style="color: #a31515">"Password"</span>, password, WSSNamespace)
+
+    Serializer = envelope.SerializerFactory
+    Serializer.understoodHeader(WSSNamespace, <span style="color: #a31515">"Security"</span>)
+
+<span style="color: blue">End Sub</span></pre><a href="http://11011.net/software/vspaste"></a>
+<p>As noted if your using the SOAP v1.1 envelope you need to include the line where the root property is set for the UsernameToken node. Here is the usage:</p><pre class="code"><span style="color: blue">Dim </span>envelope
+<span style="color: blue">Set </span>envelope = CreateObject(<span style="color: #a31515">"pocketSOAP.Envelope.12"</span>)
+
+envelope.SetMethod <span style="color: #a31515">"SomeMethod"</span>, <span style="color: #a31515">"SomeNamespace"
+
+</span>AddWSSUsernameToken envelope, <span style="color: #a31515">"tony"</span>, <span style="color: #a31515">"clifton"</span></pre>
+<p> </p>
+<p>UPDATE: Here is the implementation in JScript:</p><pre class="code"><span style="color: blue">function </span>AddWSSUsernameToken(envelope, username, password)
+{
+    <span style="color: blue">var </span>wssNamespace = <span style="color: #a31515">"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"</span>;
+
+    <span style="color: blue">var </span>security = envelope.Headers.Create(<span style="color: #a31515">"Security"</span>, <span style="color: #a31515">""</span>, wssNamespace);
+    <span style="color: blue">var </span>usernameToken = security.Nodes.Create(<span style="color: #a31515">"UsernameToken"</span>, <span style="color: #a31515">""</span>, wssNamespace);
+<font color="#008000">    // NOTE: If your using the SOAP 1.1 version of the envelope you 
+    // need to add the following line: 
+    // usernameToken.root = true;</font>
+    usernameToken.Nodes.Create(<span style="color: #a31515">"Username"</span>, username, wssNamespace);
+    usernameToken.Nodes.Create(<span style="color: #a31515">"Password"</span>, password, wssNamespace);
+
+    <span style="color: blue">var </span>serializer = envelope.SerializerFactory;
+    serializer.understoodHeader(wssNamespace, <span style="color: #a31515">"Security"</span>);
+}</pre><a href="http://11011.net/software/vspaste"></a>

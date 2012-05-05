@@ -1,0 +1,25 @@
+--
+layout: post
+title: Conditional Extension Method
+categories: [Functional Programming, .NET, C#]
+tags: [Functional Programming, .NET, C#]
+--
+<p>I’ve been seeing this pattern over and over:</p><ol><li>Get a value. </li>
+<li>Apply some Boolean logic related to that value and if it is false then exit the method with a value of false. </li>
+<li>If it’s true then do something. </li>
+<li>Then exit the method with a true value. </li>
+</ol><p>Here is an imperative approach:</p><pre class="code"><span style="color: blue">object</span>[] values = GetRecord();
+
+<span style="color: blue">if </span>(values == <span style="color: blue">null</span>) <span style="color: blue">return false</span>;
+
+_currentRecord = <span style="color: blue">new </span><span style="color: #2b91af">List</span>&lt;<span style="color: blue">object</span>&gt;(values);
+
+<span style="color: blue">return true</span>;</pre><a href="http://11011.net/software/vspaste"></a>  <p>I really don’t like repeating this same construct (Which is 4 lines of code) since I’m more concerned with the intent and the logic could be wrapped in an extension method. Here is a functional construct to do the same thing:</p><pre class="code"><span style="color: blue">return </span>GetRecord().ActOn(v =&gt; v != <span style="color: blue">null</span>, v =&gt; _currentRecord = <span style="color: blue">new </span><span style="color: #2b91af">List</span>&lt;<span style="color: blue">object</span>&gt;(v));</pre><a href="http://11011.net/software/vspaste"></a>  <p>Here the value that the Boolean logic will operate on is passed in via an extension method, so declaring an intermediary variable is not necessary. The predicate and the closure to be called when true, are passed in. And finally the whole thing returns the result of the predicate. I love how succinct and terse the functional approach is! Here is the definition of the extension method:</p><pre class="code"><span style="color: blue">public static class </span><span style="color: #2b91af">ObjectExtensions
+</span>{
+    <span style="color: blue">public static bool </span>ActOn&lt;T&gt;(<span style="color: blue">this </span>T value, <span style="color: #2b91af">Func</span>&lt;T, <span style="color: blue">bool</span>&gt; predicate, <span style="color: #2b91af">Action</span>&lt;T&gt; action)
+    {
+        <span style="color: blue">if </span>(!predicate(value)) <span style="color: blue">return false</span>;
+        action(value);
+        <span style="color: blue">return true</span>;
+    }
+}</pre>

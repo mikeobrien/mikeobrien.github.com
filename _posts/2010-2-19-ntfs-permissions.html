@@ -1,0 +1,53 @@
+--
+layout: post
+title: NTFS Permissions
+categories: [Security, NTFS]
+tags: [Security, NTFS]
+--
+I can never seem to remember the details of what the NTFS permissions do so I compiled a chart based on info from <a href="http://technet.microsoft.com/en-us/library/cc732880.aspx">here</a> and <a href="http://technet.microsoft.com/en-us/library/cc787794(WS.10).aspx">here</a> that explains it.<br />
+<style>
+ table th.ntfschart {
+ background:none repeat scroll 0 0 #cccccc;
+ border-bottom:1px solid #c8cdde;
+ color:#000066;
+ padding-left:5px;
+ padding-right:5px;
+ text-align:left;
+}
+
+ table th.ntfschart,  table td.ntfschart {
+ border:1 solid #cccccc;
+ font-family:verdana;
+ font-size: 8pt;
+ padding:5px;
+}
+
+table.ntfschart {
+ border:1 solid #cccccc;
+ border-collapse:collapse;
+}
+</style>  <br />
+<table class="ntfschart"><tbody>
+<tr>       <th class="ntfschart" nowrap="nowrap">Special permissions </th>        <th class="ntfschart" nowrap="nowrap">Full Control </th>        <th class="ntfschart" nowrap="nowrap">Modify </th>        <th class="ntfschart" nowrap="nowrap">Read &amp; Execute </th>        <th class="ntfschart" nowrap="nowrap">List Folder Contents </th>        <th class="ntfschart" nowrap="nowrap">Read </th>        <th class="ntfschart" nowrap="nowrap">Write </th>        <th class="ntfschart">Description </th>     </tr>
+<tr>       <td class="ntfschart">Traverse Folder/Execute File</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart"><strong>For folders</strong>: Traverse Folder allows or denies moving through folders to reach other files or folders, even if the user has no permissions for the traversed folders. (Applies to folders only.) Traverse folder takes effect only when the group or user is not granted the <strong>Bypass traverse checking</strong> user right in the Group Policy snap-in. (By default, the Everyone group is given the <strong>Bypass traverse checking</strong> user right.)<br />
+<strong>For files:</strong> Execute File allows or denies running program files. (Applies to files only).<br />
+Setting the Traverse Folder permission on a folder does not automatically set the Execute File permission on all files within that folder.</td>     </tr>
+<tr>       <td class="ntfschart">List Folder/Read Data</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td class="ntfschart"></td>        <td class="ntfschart">List Folder allows or denies viewing file names and subfolder names within the folder. List Folder only affects the contents of that folder and does not affect whether the folder you are setting the permission on will be listed. (Applies to folders only.)<br />
+Read Data allows or denies viewing data in files. (Applies to files only.) </td>     </tr>
+<tr>       <td class="ntfschart">Read Attributes</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td class="ntfschart"></td>        <td class="ntfschart">Allows or denies viewing the attributes of a file or folder, such as read-only and hidden. Attributes are defined by NTFS.</td>     </tr>
+<tr>       <td class="ntfschart">Read Extended Attributes</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td class="ntfschart"></td>        <td class="ntfschart">Allows or denies viewing the extended attributes of a file or folder. Extended attributes are defined by programs and may vary by program.</td>     </tr>
+<tr>       <td class="ntfschart">Create Files/Write Data</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td align="center" class="ntfschart">x</td>        <td class="ntfschart">Create Files allows or denies creating files within the folder. (Applies to folders only).<br />
+Write Data allows or denies making changes to the file and overwriting existing content. (Applies to files only.) </td>     </tr>
+<tr>       <td class="ntfschart">Create Folders/Append Data</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td align="center" class="ntfschart">x</td>        <td class="ntfschart">Create Folders allows or denies creating folders within the folder. (Applies to folders only.)<br />
+Append Data allows or denies making changes to the end of the file but not changing, deleting, or overwriting existing data. (Applies to files only.) </td>     </tr>
+<tr>       <td class="ntfschart">Write Attributes</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td align="center" class="ntfschart">x</td>        <td class="ntfschart">Allows or denies changing the attributes of a file or folder, such as read-only or hidden. Attributes are defined by NTFS.<br />
+The Write Attributes permission does not imply creating or deleting files or folders, it only includes the permission to make changes to the attributes of a file or folder. In order to allow (or deny) create or delete operations, see <strong>Create Files/Write Data</strong>, <strong>Create Folders/Append Data</strong>, <strong>Delete Subfolders and Files</strong>, and <strong>Delete</strong>. </td>     </tr>
+<tr>       <td class="ntfschart">Write Extended Attributes</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td align="center" class="ntfschart">x</td>        <td class="ntfschart">Allows or denies changing the extended attributes of a file or folder. Extended attributes are defined by programs and may vary by program.<br />
+The Write Extended Attributes permission does not imply creating or deleting files or folders, it only includes the permission to make changes to the attributes of a file or folder. In order to allow (or deny) create or delete operations, see <strong>Create Files/Write Data</strong>, <strong>Create Folders/Append Data</strong>, <strong>Delete Subfolders and Files</strong>, and <strong>Delete</strong>. </td>     </tr>
+<tr>       <td class="ntfschart">Delete Subfolders and Files</td>        <td align="center" class="ntfschart">x</td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart">Allows or denies deleting subfolders and files, even if the Delete permission has not been granted on the subfolder or file. (Applies to folders.)</td>     </tr>
+<tr>       <td class="ntfschart">Delete</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart">Allows or denies deleting the file or folder. If you do not have Delete permission on a file or folder, you can still delete it if you have been granted Delete Subfolders and Files on the parent folder.</td>     </tr>
+<tr>       <td class="ntfschart">Read Permissions</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td class="ntfschart">Allows or denies reading permissions of the file or folder, such as Full Control, Read, and Write.</td>     </tr>
+<tr>       <td class="ntfschart">Change Permissions</td>        <td align="center" class="ntfschart">x</td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart">Allows or denies changing permissions of the file or folder, such as Full Control, Read, and Write.</td>     </tr>
+<tr>       <td class="ntfschart">Take Ownership</td>        <td align="center" class="ntfschart">x</td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart"></td>        <td class="ntfschart">Allows or denies taking ownership of the file or folder. The owner of a file or folder can always change permissions on it, regardless of any existing permissions that protect the file or folder.</td>     </tr>
+<tr>       <td class="ntfschart">Synchronize</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td align="center" class="ntfschart">x</td>        <td class="ntfschart">Allows or denies different threads to wait on the handle for the file or folder and synchronize with another thread that may signal it. This permission applies only to multithreaded, multiprocess programs.</td>     </tr>
+</tbody></table>
