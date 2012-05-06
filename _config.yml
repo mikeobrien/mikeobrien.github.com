@@ -1,2 +1,2 @@
 paginate: 10
-permalink: /blog/:year/:month/:day/:title
+permalink: /blog/:title
