@@ -6,5 +6,5 @@ tags: [Subversion, Infrastructure]
 <P>Previously (Prior to v1.4) the Subversion server (svnserve.exe) couldn't be natively run as a Windows service. You had to use a wrapper such as srvany.exe from the Windows res kit to host it. Well now as of v1.4 it will run as a service but you have to manually install it. Doing this is pretty simple; just use the sc utility to add it at the command line as follows. The first svnserve switch (<FONT face="Courier New">--service</FONT>) notifies it that it should communicate with the SCM. The second (-r), which is optional, allows you to specify the root repository path.</P>
 <P><FONT face="Courier New">C:\>sc create SubversionServer binpath= "\"C:\Program Files\Subversion\bin\svnserve.exe\" --service <FONT face=Verdana>-r&#160; e:\Subversion\RootRepo</FONT>" displayname= "Subversion Server" depend= Tcpip start= auto</FONT></P>
 <P><FONT face="Courier New">C:\>sc start SubversionServer</FONT></P>
-<P><IMG src="/content/5cb80026738442ee970101fbed35d2da.jpg" border=0></P>
+<P><IMG src="/blog/images/5cb80026738442ee970101fbed35d2da.jpg" border=0></P>
 <P>You can find the release notes about this new feature <A href="http://svn.collab.net/repos/svn/tags/1.4.0/notes/windows-service.txt">here</A>.</P>

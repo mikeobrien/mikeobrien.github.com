@@ -20,7 +20,7 @@ tags: [TSQL/SQL Server, SQL Server 2005]
 
 </span><span style="color: blue">SELECT </span><span style="color: gray">* </span><span style="color: blue">FROM </span>Filter</pre><a href="http://11011.net/software/vspaste"></a>
 <p><a href="http://11011.net/software/vspaste"></a>The CTE, so far, only contains one query which will serve as the "anchor". If you run this it only returns one result, the very first id and the current position in the string:</p>
-<p><a href="http://blog.mikeobrien.net/content/binary/UsingaRecursiveCTEtoBuildaFilterfromaCom_C2FB/image.png"><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="100" alt="image" src="/content/64853a528c52414088462685ab3c5635.png" width="237" border="0"></a> </p>
+<p><a href="http://blog.mikeobrien.net/content/binary/UsingaRecursiveCTEtoBuildaFilterfromaCom_C2FB/image.png"><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="100" alt="image" src="/blog/images/64853a528c52414088462685ab3c5635.png" width="237" border="0"></a> </p>
 <p>Next we will add in the recursive query. This query must come immediatly <strong>after</strong> the anchor and be <strong>separated from it by the UNION ALL operator</strong>. You can have multiple anchors and multiple recursive queries which can make use of other combination operators, but anchors must be grouped <strong>before</strong> the recursive queries and the two groups must be separated by the UNION ALL operator.</p><pre class="code"><span style="color: blue">WITH </span>Filter<span style="color: gray">(</span>FilterId<span style="color: gray">, </span>Position<span style="color: gray">) </span><span style="color: blue">AS
 </span><span style="color: gray">(
     </span><span style="color: blue">SELECT 
@@ -47,7 +47,7 @@ tags: [TSQL/SQL Server, SQL Server 2005]
 
 </span><span style="color: blue">SELECT </span><span style="color: gray">* </span><span style="color: blue">FROM </span>Filter</pre><a href="http://11011.net/software/vspaste"></a>
 <p><a href="http://11011.net/software/vspaste"></a>The recursive query makes use of the last position to "move" to the next id in the string. When it has hit the end of the string the last position is set to zero which terminates the recursion. The results are as follows:</p>
-<p><a href="http://blog.mikeobrien.net/content/binary/UsingaRecursiveCTEtoBuildaFilterfromaCom_C2FB/image_3.png"><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="156" alt="image" src="/content/684e58bedfc94871919db8c6f55264db.png" width="293" border="0"></a> </p>
+<p><a href="http://blog.mikeobrien.net/content/binary/UsingaRecursiveCTEtoBuildaFilterfromaCom_C2FB/image_3.png"><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="156" alt="image" src="/blog/images/684e58bedfc94871919db8c6f55264db.png" width="293" border="0"></a> </p>
 <p>You'll also notice that the query that selects from the CTE immediately follows it; this is another requirement for CTE's. Now lets select some employees from the AdventureWorks database:</p><pre class="code"><span style="color: blue">DECLARE </span>@Filter <span style="color: blue">varchar</span><span style="color: gray">(</span>1000<span style="color: gray">)
 
 </span><span style="color: blue">SET </span>@Filter <span style="color: gray">= </span><span style="color: red">'4,8,23,56,72'</span><span style="color: gray">;
@@ -81,4 +81,4 @@ tags: [TSQL/SQL Server, SQL Server 2005]
 <span style="color: blue">FROM </span>HumanResources<span style="color: gray">.</span>Employee
 <span style="color: blue">WHERE </span>EmployeeID <span style="color: gray">IN (</span><span style="color: blue">SELECT </span>FilterId <span style="color: blue">FROM </span>Filter<span style="color: gray">)</span></pre><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a>
 <p>And here are the results:</p>
-<p><a href="http://blog.mikeobrien.net/content/binary/UsingaRecursiveCTEtoBuildaFilterfromaCom_C2FB/image_4.png"><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="180" alt="image" src="/content/e384f13562ee4ea6a118baebe74955b4.png" width="430" border="0"></a></p>
+<p><a href="http://blog.mikeobrien.net/content/binary/UsingaRecursiveCTEtoBuildaFilterfromaCom_C2FB/image_4.png"><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="180" alt="image" src="/blog/images/e384f13562ee4ea6a118baebe74955b4.png" width="430" border="0"></a></p>

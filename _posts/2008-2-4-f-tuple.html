@@ -35,9 +35,9 @@ tags: [F#]
 <P>Here we just set the individual firstName, lastName and age variables to the corresponding values in the tuple. On the other hand if we just want the first name we can block out the last name and age with the underscore placeholder ("_") and just get the first name:</P><PRE class=code><SPAN style="COLOR: blue">let </SPAN>firstName, _, _ = person</PRE><A href="http://11011.net/software/vspaste"></A>
 <P>or we can just get the last name and the age by blocking out the first name. You get the point...</P><PRE class=code><SPAN style="COLOR: blue">let </SPAN>_, lastName, age = person</PRE><A href="http://11011.net/software/vspaste"></A>
 <P>F# uses "pattern matching" to match up the variables listed, with the values in the tuple. Now as mentioned before, under the covers F# does actually use generic tuple types as seen when working with a tuple from F#...</P>
-<P><IMG src="/content/bbf73237bdf34035b49f04ed385c23bf.jpg" border=0><A href="http://blog.mikeobrien.net/content/binary/FTuple_B6C7/image.png"></A></P>
+<P><IMG src="/blog/images/bbf73237bdf34035b49f04ed385c23bf.jpg" border=0><A href="http://blog.mikeobrien.net/content/binary/FTuple_B6C7/image.png"></A></P>
 <P>in C#...</P>
-<P><A href="http://blog.mikeobrien.net/content/binary/FTuple_B6C7/image_3.png"><IMG style="BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px" height=229 alt=image src="/content/ea01dfd600f9449bb106a014ec721674.png" width=583 border=0></A></P>
+<P><A href="http://blog.mikeobrien.net/content/binary/FTuple_B6C7/image_3.png"><IMG style="BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px" height=229 alt=image src="/blog/images/ea01dfd600f9449bb106a014ec721674.png" width=583 border=0></A></P>
 <P>In reflector we can see that there are tuple definitions for up to 7 items:</P>
-<P><A href="http://blog.mikeobrien.net/content/binary/FTuple_B6C7/image_4.png"><IMG style="BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px" height=469 alt=image src="/content/928caaa353c741ebae9d513c60606aa3.png" width=644 border=0></A> </P>
+<P><A href="http://blog.mikeobrien.net/content/binary/FTuple_B6C7/image_4.png"><IMG style="BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px" height=469 alt=image src="/blog/images/928caaa353c741ebae9d513c60606aa3.png" width=644 border=0></A> </P>
 <P>Edgar Sanchez has a nice blog entry on tuples <A href="http://weblogs.asp.net/esanchez/archive/2007/12/05/tuples-an-f-lightweight-data-structure.aspx">here</A>.</P>

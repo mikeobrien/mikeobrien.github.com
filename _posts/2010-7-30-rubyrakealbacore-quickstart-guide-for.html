@@ -12,7 +12,7 @@ tags: [Albacore, .NET, Ruby, Rake]
 
 <p>Now save this and run this using the Ruby interpreter with the script path specified:</p>
 
-<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/content/edcee9616d314a408a95815957a60a1c.png" width="405" height="101" /> </p>
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/edcee9616d314a408a95815957a60a1c.png" width="405" height="101" /> </p>
 
 <p><strong><font size="3">Including Files</font></strong></p>
 
@@ -37,7 +37,7 @@ tags: [Albacore, .NET, Ruby, Rake]
 
 <p>Now run HelloWorld.rb again:</p>
 
-<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/content/848818870d6f48aaa81db6036b832a8e.png" width="405" height="115" /> </p>
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/848818870d6f48aaa81db6036b832a8e.png" width="405" height="115" /> </p>
 
 <p align="justify">If you want to include a file that is in a subfolder you can specify that with a relative path. You will need to use the forward slash as the folder delimiter, not the backslash as the backslash is the escape character:</p>
 
@@ -810,7 +810,7 @@ CallLambda((name) =&gt; {
 
 <p>Installing Rake is a matter of running <font color="#0000ff" face="Courier New">(i)gem install rake</font>:</p>
 
-<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/content/7e2a390e8a154fa2a1fcc8c2a9cd1aa8.png" width="437" height="143" /> </p>
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/7e2a390e8a154fa2a1fcc8c2a9cd1aa8.png" width="437" height="143" /> </p>
 
 <p></p>
 
@@ -829,7 +829,7 @@ task :default <span style="color: #0000ff">do</span>
 
 <p>and run it using "rake &#8211;f [path]":</p>
 
-<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/content/ecf7114f4984439c8c4dd84949ba9034.png" width="437" height="115" /> </p>
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/ecf7114f4984439c8c4dd84949ba9034.png" width="437" height="115" /> </p>
 
 <p><strong><font size="3">Understanding the Rake DSL</font></strong></p>
 
@@ -844,7 +844,7 @@ task :<span style="color: #00008b">test</span> =&gt; :compile <span style="color
 
 <p>"task" is no more than a function being called with 2 parameters passed. </p>
 
-<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/content/64fbed785a0c4815b3edccfe4c54c5d1.png" width="313" height="131" /> </p>
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/64fbed785a0c4815b3edccfe4c54c5d1.png" width="313" height="131" /> </p>
 
 <p align="justify">The first parameter you pass into the "task" function can be a few things. If there are no prerequisite tasks then only the task name is passed, which is a lone symbol (IE: <font face="Courier New">task <font color="#ff0000">:build</font> do...end</font>). The task names are <a href="http://ruby-doc.org/core/classes/Symbol.html">Ruby symbols</a>. A Ruby symbol is a colon followed by a token; IE ":compile", ":test", etc. Now if there is one prerequisite task then a 1 element hash (Or dictionary in .NET) with the task as the key and the prerequisite as the value is passed in (IE: <font face="Courier New">task <font color="#ff0000">:build =&gt; :test</font> do...end</font>). The "<em>key</em> =&gt; <em>value</em>" syntax is shorthand for defining a hash with one key/value pair. If multiple prerequisites are passed then its the same as the last scenario except the value is now an array of prerequisite tasks instead of just one (IE: <font face="Courier New">task <font color="#ff0000">:build =&gt; [:test, :compile]</font> do...end</font>). The "[<em>value1</em>, <em>value2</em>, ...]" syntax is shorthand for creating an array.</p>
 
@@ -912,7 +912,7 @@ task :build =&gt; [:compile, :<span style="color: #00008b">test</span>] <span st
 
 <p>Running this script produces the following output:</p>
 
-<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/content/2442c125322840e095fedcccaa7bbacc.png" width="525" height="199" /> </p>
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/2442c125322840e095fedcccaa7bbacc.png" width="525" height="199" /> </p>
 
 <p>So the syntax of the Rake DSL may look a bit esoteric, especially to a .NET developer, but its actually pretty simple and much terser than C#.</p>
 
@@ -1157,7 +1157,7 @@ buldJobName = ENV[&quot;<span style="color: #8b0000">CRUISE_JOB_NAME</span>&quot
 
 <p>To use the Albacore tasks you will need to install the Gem as follows:</p>
 
-<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/content/544d743b02d8424cb543be7d93139e49.png" width="477" height="269" /></p>
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/544d743b02d8424cb543be7d93139e49.png" width="477" height="269" /></p>
 
 <p>In the example below we will us the MSBuild and assembly info tasks to build our application. Note, you will have to add the require statement at the top of the file for Albacore. </p>
 

@@ -6,4 +6,4 @@ tags: [TSQL/SQL Server]
 <P>When making schema changes to a DB in SQL Server 2005 Management Studio you may receive the following error for long running operations:</P>
 <P><FONT face="Courier New" color=#006400>"Timeout expired.&#160; The timeout period elapsed prior to completion of the operation or the server is not responding."</FONT></P>
 <P>Then you'll probably go check out the execution timeout only to find that it's set to be unlimited (As I did... ;-)). Then you'll probably search the web to find why this doesn't make a difference and find that there is timeout override hiding out under the "Designers" node (The LAST place I would have thought to look!). Now the problem is if you uncheck the timeout override it will not actually remove the override (Bug?). So you have to actually explicitly set the timeout. </P>
-<P align=center><IMG src="/content/8dfe6e4d6ce94ea5a0464b937a8f0c35.jpg" border=0></P>
+<P align=center><IMG src="/blog/images/8dfe6e4d6ce94ea5a0464b937a8f0c35.jpg" border=0></P>
