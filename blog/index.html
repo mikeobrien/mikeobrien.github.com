@@ -51,7 +51,7 @@ layout: chrome
 <div>
   <h2 class="widget-title">Tags</h2>
   <ul>
-    {{ site.tags | sort: 0 | map: 0}}
+    {{ site.tags | map: 0 | sort}}
   </ul>
 </div>
 
