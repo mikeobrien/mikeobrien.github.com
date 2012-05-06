@@ -51,7 +51,7 @@ layout: chrome
 <div>
   <h2 class="widget-title">Tags</h2>
   <ul>
-    {% for tag in site.tags | sort: 0 %}
+    {% for tag in site.tags | join: "," | sort %}
     <li><a href="/tags/{{tag | first}}">{{tag | first}} ({{tag | last | size }})</a></li>
     {% endfor %}
   </ul>
