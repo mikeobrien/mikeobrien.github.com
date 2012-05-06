@@ -51,8 +51,8 @@ layout: chrome
 <div>
   <h2 class="widget-title">Tags</h2>
   <ul>
-    {% for tag in site.tags|sort:0 %}
-    <li><a href="/tags/{{tag | first}}">hh{{tag | first}} ({{tag | last | size }})</a></li>
+    {% for tag in site.tags %}
+    <li><a href="/tags/{{tag | first}}">{{tag | first}} ({{tag | last }})</a></li>
     {% endfor %}
   </ul>
 </div>
