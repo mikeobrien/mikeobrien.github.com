@@ -12,7 +12,7 @@ layout: chrome
 <hr/>
 <div style="height: 20px">
 <div style="float: left;">Posted {{ page.date | date: "%m/%d/%Y" }}</div>
-<div style="float: right;">{{ page.tags }}</div>
+<div style="float: right;">{{ page.tags | array_to_sentence_string }}</div>
 </div>
 <div id="disqus_thread"></div>
 <script type="text/javascript">
