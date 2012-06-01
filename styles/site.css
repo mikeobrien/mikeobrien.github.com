@@ -2,3 +2,7 @@ body {
     background-color: #71969F;
 	font-family: proxima-nova-soft, Helvetica, Arial, sans-serif;
 }
+
+a {
+    color: #00324D;
+}
