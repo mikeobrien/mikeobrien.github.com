@@ -9,24 +9,6 @@ img {
 	border-width: 0;
 }
 
-.cv-container h3 a {
-	color: #1671A0;
-}
-
-.cube-menu-container {
-    text-align: center;
-    width: 100%;
-    height: 100%;
-}
-
-.cube-menu-padding {
-    height: 50%;
-}
-
-.cube-menu {
-	margin-top: -200px;
-}
-
 .icon-cv {
 	padding-right:15px;
 }
@@ -38,63 +20,6 @@ img {
 .icon-lab {
 	padding-right:10px;
 }
-
-.cv-info {
-	padding-bottom: 10px; 
-}
-
-.cv-container {
-	background: #fff;
-	width: 700px;
-	margin: 70 auto 0 auto;
-	padding: 30px 40px;
-	text-align: left; /* Stupid IE hack grrrrr */
-}
-
-.cv-container .print-button { 
-	float: right; 
-	font-weight: bold;
-	color: #ccc;
-}
-
-.cv-container a { color:#000; } 
-.cv-container a:link, .cv-container a:visited { text-decoration: none; }
-.cv-container a:active, .cv-container a:hover { text-decoration: underline; }
-
-.cv-container h3 { margin: 10 0; } 
-
-.cv-experience-header {
-	font-weight: bold;
-	font-size: 10pt;
-}
-
-.cv-experience-employer {
-	font-style: italic;
-	font-size: 9pt;
-}
-
-.cv-experience-detail {
-	font-size: 8pt;
-}
-
-.tag-cloud { 
-	padding: 0 10px 5px 10px; 
-	text-align: center;
-}
-
-.tag-cloud span {
-	font-weight: bold;
-	vertical-align: middle;
-	margin: 0 10px;
-}
-
-.tag-cloud a { color: #666666; }
-
-.tag-cloud-item-1 { font-size: 13px; }
-.tag-cloud-item-2 { font-size: 14px; }		
-.tag-cloud-item-3 { font-size: 16px; }			
-.tag-cloud-item-4 { font-size: 18px; }
-.tag-cloud-item-5 { font-size: 20px; }
 
 .footer {
     text-align: center;
