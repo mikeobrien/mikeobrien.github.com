@@ -2,14 +2,20 @@
 layout: site
 ---
 
-<div class="container-fluid">
-
-    <div class="row-fluid">
-      <div class="span4"><a href="/"><img src="/images/logo-mikeobrien.png" alt="mikeobrien.net"/></a></div>
-      <div class="span1 offset6"><a href="/cv"><img src="/images/icon-cv-red.png" alt="Curriculum Vitae" /></a></div>
-      <div class="span1"><a href="http://blog.mikeobrien.net"><img src="/images/icon-blog-blue.png" alt="Blog" /></a></div>
-      <div class="span1"><a href="https://github.com/mikeobrien"><img src="/images/icon-lab-blue.png" alt="Lab" /></a></div>
+<div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="/"><img src="/images/logo-mikeobrien.png" alt="mikeobrien.net"/></a>
+          <div class="pull-right">
+            <a href="/cv"><img src="/images/icon-cv-red.png" alt="Curriculum Vitae" /></a>
+            <a href="http://blog.mikeobrien.net"><img src="/images/icon-blog-blue.png" alt="Blog" /></a>
+            <a href="https://github.com/mikeobrien"><img src="/images/icon-lab-blue.png" alt="Lab" /></a>
+          </div>
+        </div>
+      </div>
     </div>
+
+<div class="container-fluid">
 
     {{ content }}
 
