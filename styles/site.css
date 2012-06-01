@@ -1,28 +1,4 @@
 body {
     background-color: #71969F;
 	font-family: proxima-nova-soft, Helvetica, Arial, sans-serif;
-	font-size: 11pt;
-	text-align: center; /* Stupid IE hack grrrrr */
-}
-
-img {
-	border-width: 0;
-}
-
-.icon-cv {
-	padding-right:15px;
-}
-
-.icon-blog {
-	padding-right:10px;
-}
-
-.icon-lab {
-	padding-right:10px;
-}
-
-.footer {
-    text-align: center;
-	width: 700px;
-	margin: 50px auto;
 }
