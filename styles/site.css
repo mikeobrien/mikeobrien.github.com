@@ -8,11 +8,10 @@ a {
 }
 
 .header {
-    height: 80px;
+    margin: 10px 10px 30px 10px;
 }
 
 .footer {
-    height: 100px;
     text-align: center;
-    vertical-align: middle;
+    margin: 20px 0;
 }
