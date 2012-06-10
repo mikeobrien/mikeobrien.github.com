@@ -8,10 +8,22 @@ a {
 }
 
 .header {
-    margin: 10px 10px 30px 10px;
+    height: 90px;
+}
+
+.header .logo {
+    padding-top: 9px;
+}
+
+.header .links {
+    float: right;
+}
+
+.header .links img {
+    padding-left: 8px;
 }
 
 .footer {
     text-align: center;
-    margin: 20px 0;
+    margin: 30px 0;
 }
