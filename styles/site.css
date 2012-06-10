@@ -6,3 +6,13 @@ body {
 a {
     color: #00324D;
 }
+
+.header {
+    height: 80px;
+}
+
+.footer {
+    height: 100px;
+    text-align: center;
+    vertical-align: middle;
+}
