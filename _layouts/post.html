@@ -16,7 +16,7 @@ layout: chrome
     
     <div class="footer">
         <hr/>
-        <div class="published">Posted {{ page.date | date: "%m/%d/%Y" }}</div>
+        <div class="published">Posted {{ page.date | date: "%m-%d-%Y" }}</div>
         <div class="tags">
         {% for tag in page.tags %}
           <a href="#">{{ tag }}</a>{% if forloop.last != true %}, {% endif %}
