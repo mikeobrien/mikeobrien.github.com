@@ -12,21 +12,21 @@
     padding: 10px 30px
 }
 
-.post .footer {
+.post, .post-index .footer {
     height: 20px;
     margin: 15px, 0;
 }
 
-.post .footer .published {
+.post, .post-index .footer .published {
     float: left;
     color: #667279;
 }
 
-.post .footer .tags {
+.post, .post-index .footer .tags {
     float: right;
     color: #667279;
 }
 
-.post .footer hr {
+.post, .post-index .footer hr {
     margin: 0 0 5px 0;
 }
