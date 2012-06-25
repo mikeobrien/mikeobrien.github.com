@@ -7,7 +7,7 @@
 
 .posts .seperator {
     margin: 10px 0;
-    color: #667279;
+    border-top: 2px solid #667279;
 }
 
 .posts .footer {
