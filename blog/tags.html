@@ -3,7 +3,7 @@ layout: blog
 ---
 
 {% for tag in site.tags %}
-<div class="tag" id="tag-{{tag | first | uri_escape | replace:'%','' | replace:'.',''  }}" style="display : none">
+<div class="tag" id="tag-{{tag | first | uri_escape | replace:'%','' | replace:'.','' | replace:'+','' | replace:'/','' }}" style="display : none">
     <div class="page-header">
         <h1 id="tag">{{tag | first}} <small id="tag-count">{{tag | last | size }} posts</small></h1>
     </div>
@@ -15,14 +15,14 @@ layout: blog
 
 <script>
 function getId() {
-    return 'tag-' + window.location.hash.replace('%', '').replace('.', '');
+    return 'tag-' + window.location.hash.replace('%', '').replace('.', '').replace('/', '').replace('+', '');
 }
 
 $(getId()).show();
 $(window).bind('hashchange', function() {
   $('.tag').hide();
   $(getId()).show();
-  console.log(window.location.hash);
+  console.log(getId());
 });
 </script>
 
