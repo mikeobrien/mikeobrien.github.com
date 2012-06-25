@@ -3,9 +3,9 @@ layout: blog
 ---
 
 {% for tag in site.tags %}
-<div id="{{tag | first}}" style="display : none">
+<div id="{{tag | first}}___" style="display : none">
     <div class="page-header">
-        <h1 id="tag">{{tag | first}}<small id="tag-count">{{tag | last | size }} posts</small></h1>
+        <h1 id="tag">{{tag | first}} <small id="tag-count">{{tag | last | size }} posts</small></h1>
     </div>
     <div>
     Show posts here....
@@ -14,6 +14,6 @@ layout: blog
 {% endfor %}
 
 <script>
-$(window.location.hash).show()
+$(window.location.hash + "___").show()
 </script>
 
