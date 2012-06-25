@@ -7,7 +7,7 @@ layout: chrome
 <div class="container-fluid posts">
   <div class="row-fluid">
     <div class="span10 posts">
-    
+        <div>
         {% for post in paginator.posts %}
             <div class="page-header">
                 <h1><a href="{{ post.url }}">{{ post.title }}</a> <small>{{ post.date | date: "%B, %Y" }}</small></h1>
@@ -21,9 +21,9 @@ layout: chrome
                   <a href="#">{{ tag }}</a>{% if forloop.last != true %}, {% endif %}
                 {% endfor %}
                 </div>
-                <hr/>
             </div>
             {% if forloop.last != true %}<hr class="seperator"/>{% endif %}
+        </div>
         {% endfor %}
 
     </div>
