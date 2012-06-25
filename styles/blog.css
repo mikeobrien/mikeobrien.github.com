@@ -5,6 +5,10 @@
     padding: 10px 30px
 }
 
+.posts .page-header {
+    border-bottom: 2px solid #667279;
+}
+
 .posts .seperator {
     margin: 10px 0;
     border-top: 2px solid #667279;
