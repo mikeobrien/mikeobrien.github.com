@@ -5,6 +5,25 @@
     padding: 10px 30px
 }
 
+.post-index .footer {
+    height: 20px;
+    margin: 15px, 0;
+}
+
+.post-index .footer .published {
+    float: left;
+    color: #667279;
+}
+
+.post-index .footer .tags {
+    float: right;
+    color: #667279;
+}
+
+.post-index .footer hr {
+    margin: 0 0 5px 0;
+}
+
 .post {
     background-color: #fff;
     text-align: left;
@@ -12,21 +31,21 @@
     padding: 10px 30px
 }
 
-.post, .post-index .footer {
+.post .footer {
     height: 20px;
     margin: 15px, 0;
 }
 
-.post, .post-index .footer .published {
+.post .footer .published {
     float: left;
     color: #667279;
 }
 
-.post, .post-index .footer .tags {
+.post .footer .tags {
     float: right;
     color: #667279;
 }
 
-.post, .post-index .footer hr {
+.post .footer hr {
     margin: 0 0 5px 0;
 }
