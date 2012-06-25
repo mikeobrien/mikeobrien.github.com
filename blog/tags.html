@@ -14,12 +14,10 @@ layout: blog
 {% endfor %}
 
 <script>
-var id = window.location.hash + "___";
-$(id).show();
+$(window.location.hash + "___").show();
 $(window).bind('hashchange', function() {
   $('#tag').hide();
-  $(id).show();
-  console.log('hash change');
+  $(window.location.hash + "___").show();
 });
 </script>
 
