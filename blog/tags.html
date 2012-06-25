@@ -15,7 +15,7 @@ layout: blog
 
 <script>
 function getId() {
-    return 'tag-' + window.location.hash.replace('%', '').replace('.', '').replace('/', '').replace('+', '');
+    return '#tag-' + window.location.hash.replace('#', '').replace('%', '').replace('.', '').replace('/', '').replace('+', '');
 }
 
 $(getId()).show();
