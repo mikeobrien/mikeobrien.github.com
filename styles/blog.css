@@ -6,12 +6,12 @@
 }
 
 .posts .page-header {
-    border-bottom: 2px solid #667279;
+    border-bottom: 1px solid #667279;
 }
 
 .posts .seperator {
     margin: 10px 0;
-    border-top: 2px solid #667279;
+    border-top: 1px solid #667279;
 }
 
 .posts .footer {
@@ -38,6 +38,10 @@
     text-align: left;
     margin: 30px 50px;
     padding: 10px 30px
+}
+
+.post .page-header {
+    border-bottom: 1px solid #667279;
 }
 
 .post .footer {
