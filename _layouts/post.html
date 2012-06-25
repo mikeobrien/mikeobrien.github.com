@@ -2,7 +2,9 @@
 layout: chrome
 ---
 
-<div style="background-color: #fff;text-align: left;margin: 30px 50px;padding: 10px 30px">
+<link href="/styles/blog.css" rel="stylesheet" type="text/css" />
+
+<div class="post">
 
     <div class="page-header">
         <h1>{{ page.title }} <small>{{ page.date | date: "%B, %Y" }}</small></h1>
@@ -11,11 +13,13 @@ layout: chrome
     <div>
     {{ content }}
     </div>
-    <hr/>
-    <div style="height: 20px">
-    <div style="float: left;">Posted {{ page.date | date: "%m/%d/%Y" }}</div>
-    <div style="float: right;">{{ page.tags | array_to_sentence_string }}</div>
+    
+    <div class="footer">
+        <hr/>
+        <div class="published">Posted {{ page.date | date: "%m/%d/%Y" }}</div>
+        <div class="tags">{{ page.tags | array_to_sentence_string }}</div>
     </div>
+    
     <div id="disqus_thread"></div>
     <script type="text/javascript">
         /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */

@@ -1,0 +1,23 @@
+.post {
+    background-color: #fff;
+    text-align: left;
+    margin: 30px 50px;
+    padding: 10px 30px
+}
+
+.post .footer {
+    height: 20px;
+    margin: 15px, 0;
+}
+
+.post .footer .published {
+    float: left;
+}
+
+.post .footer .tags {
+    float: right;
+}
+
+.post .footer hr {
+    margin: 0;
+}
