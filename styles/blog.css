@@ -1,3 +1,10 @@
+.post-index {
+    background-color: #fff;
+    text-align: left;
+    margin: 30px 50px;
+    padding: 10px 30px
+}
+
 .post {
     background-color: #fff;
     text-align: left;
