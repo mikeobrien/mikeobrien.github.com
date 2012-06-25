@@ -3,7 +3,7 @@ layout: blog
 ---
 
 {% for tag in site.tags %}
-<div class="tag" id="{{tag | first | cgi_escape}}___" style="display : none">
+<div class="tag" id="{{tag | first | uri_escape}}___" style="display : none">
     <div class="page-header">
         <h1 id="tag">{{tag | first}} <small id="tag-count">{{tag | last | size }} posts</small></h1>
     </div>
