@@ -12,12 +12,14 @@
 
 .post .footer .published {
     float: left;
+    color: #667279;
 }
 
 .post .footer .tags {
     float: right;
+    color: #667279;
 }
 
 .post .footer hr {
-    margin: 0;
+    margin: 0 0 5px 0;
 }
