@@ -19,7 +19,7 @@ layout: chrome
         <div class="published">Posted {{ page.date | date: "%m/%d/%Y" }}</div>
         <div class="tags">
         {% for tag in page.tags %}
-          <a href="#">{{ item }}{% if tag != forloop.last %}</a>, {% endif %}
+          <a href="#">{{ tag }}</a>{% if forloop.last != true %}, {% endif %}
         {% endfor %}
         </div>
     </div>
