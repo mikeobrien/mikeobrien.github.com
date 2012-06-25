@@ -17,7 +17,11 @@ layout: blog
         <div class="published">Posted {{ page.date | date: "%m-%d-%Y" }}</div>
         <div class="tags">
         {% for tag in page.tags %}
-          <a href="/blog/tags#{{forloop.index}}">{{ tag }}</a>{% if forloop.last != true %}, {% endif %}
+            {% for siteTag in site.tags %}
+                {% if tag == siteTag %}
+                    <a href="/blog/tags#{{forloop.index}}">{{ tag }}</a>{% if forloop.last != true %}, {% endif %}
+                {% endif %}
+            {% endfor %}
         {% endfor %}
         </div>
     </div>
