@@ -1,0 +1,21 @@
+---
+layout: chrome
+---
+
+<link href="/styles/blog.css" rel="stylesheet" type="text/css" />
+
+<div class="container-fluid blog">
+  <div class="row-fluid">
+    <div class="span10">
+        {{ content }}
+    </div>
+    <div class="span2">
+        <h2>Tags</h2>
+        <ul>
+        {% for tag in site.tags %}
+        <li><a href="/tags/{{tag | first}}">{{tag | first}} ({{tag | last | size }})</a></li>
+        {% endfor %}
+        </ul>
+    </div>
+  </div>
+</div>
