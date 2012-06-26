@@ -18,18 +18,18 @@ layout: chrome
         {{ content }}
     </div>
     <div class="span2">
-        <div class="well">
-            <a href="https://github.com/mikeobrien"><img src="/images/github.png" /></a>
-            <a href="http://twitter.com/hcoverlambda"><img src="/images/twitter.png" /></a>
-            <a href="/rss.xml"><img src="/images/rss.png" /></a>
-            <a href="http://www.librarything.com/catalog/mikeobrien"><img src="/images/librarything.png" /></a>
-            <a id="email" href="#"><img src="/images/email.png" /></a>
+        <div class="well contact">
+            <a href="https://github.com/mikeobrien" title="GitHub"><img src="/images/github.png" class="contact-icon"/></a>
+            <a href="http://twitter.com/hcoverlambda" title="Twitter"><img src="/images/twitter.png" class="contact-icon" /></a>
+            <a href="http://www.librarything.com/catalog/mikeobrien" title="LibraryThing"><img src="/images/librarything.png" class="contact-icon" /></a>
+            <a href="/rss.xml" title="Feed"><img src="/images/rss.png" class="contact-icon" /></a>
+            <a id="email" href="#" title="Email"><img src="/images/email.png" class="contact-icon" /></a>
         </div>
         
         <div class="well" style="padding: 8px 0;">
             <ul class="nav nav-list">
                 {% for tag in site.tags %}
-                <li><a href="/blog/tags#tag-{{forloop.index}}"><i class="icon-tag"></i> {{tag | first}} ({{tag | last | size }})</a></li>
+                <li><a href="/blog/tags#tag-{{forloop.index}}" title="{{tag | first }}"><i class="icon-tag"></i> {{tag | first}} ({{tag | last | size }})</a></li>
                 {% endfor %}
             </ul>
         </div>
