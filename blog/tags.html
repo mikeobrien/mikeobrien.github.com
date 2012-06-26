@@ -7,7 +7,7 @@ layout: blog
 </div>
 
 {% for tag in site.tags %}
-<div class="tag" id="tag-{{forloop.index}}" style="display: none">
+<div class="tag tag-{{forloop.index}}" style="display: none">
     <h3 class="name">{{tag | first}} <small id="tag-count">{{tag | last | size }} posts</small></h3>
     <div>
         <table class="table table-striped">
@@ -36,10 +36,15 @@ layout: blog
 
 <script>
 $('.tag').tsort('.name');
-$(window.location.hash).show();
+
+function getClass() {
+    return '.' + window.location.hash.replace('#', '');
+}
+
+$(getClass()).show();
 $(window).bind('hashchange', function() {
     $('.tag').hide();
-    $(window.location.hash).show();
+    $(getClass()).show();
 });
 </script>
 
