@@ -18,8 +18,7 @@ layout: blog
         <div class="tags">
         {% for tag in page.tags %}
             {% for siteTag in site.tags %}
-                {{ tag }}: {{ siteTag }}<br/>
-                {% if tag[0] == siteTag[0] %}
+                {% if tag == siteTag[0] %}
                     <a href="/blog/tags#{{forloop.index}}">{{ tag }}</a>{% if forloop.last != true %}, {% endif %}
                 {% endif %}
             {% endfor %}
