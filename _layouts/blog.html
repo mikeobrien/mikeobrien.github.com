@@ -26,8 +26,8 @@ layout: chrome
             <a id="email" href="#" title="Email"><img src="/images/email.png" class="contact-icon" /></a>
         </div>
         
-        <div class="well tags" style="padding: 8px 0;">
-            <ul class="nav nav-list">
+        <div class="well" style="padding: 8px 0;">
+            <ul class="nav nav-list tags">
                 {% for tag in site.tags %}
                 <li><a href="/blog/tags#tag-{{forloop.index}}" title="{{tag | first }}"><i class="icon-tag"></i> {{tag | first}} ({{tag | last | size }})</a></li>
                 {% endfor %}
