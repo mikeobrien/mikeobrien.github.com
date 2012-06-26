@@ -14,14 +14,7 @@ layout: blog
         <hr/>
         <div class="published">Posted {{ post.date | date: "%m-%d-%Y" }}</div>
         <div class="tags">
-        {% for tag in post.tags %}
-            {% assign last = forloop.last %}
-            {% for siteTag in site.tags %}
-                {% if tag == siteTag[0] %}
-                    <a href="/blog/tags#tag-{{forloop.index}}">{{ tag }}</a>{% if last != true %}, {% endif %}
-                {% endif %}
-            {% endfor %}
-        {% endfor %}  
+        {% for tag in page.tags %}{% assign last = forloop.last %}{% for siteTag in site.tags %}{% if tag == siteTag[0] %}<a href="/blog/tags#tag-{{forloop.index}}">{{ tag }}</a>{% if last != true %}, {% endif %}{% endif %}{% endfor %}{% endfor %}
         </div>
     </div>
     {% if forloop.last != true %}<hr class="seperator"/>{% endif %}
