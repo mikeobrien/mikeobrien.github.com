@@ -17,9 +17,10 @@ layout: blog
         {% for tag in page.tags %}
             {% for siteTag in site.tags %}
                 {% if tag == siteTag[0] %}
-                    <a href="/blog/tags#tag-{{forloop.index}}">{{ tag }}</a>{% if forloop.last != true %}, {% endif %}
+                    <a href="/blog/tags#tag-{{forloop.index}}">{{ tag }}</a>
                 {% endif %}
             {% endfor %}
+            {% if forloop.last != true %}, {% endif %}
         {% endfor %}
         </div>
     </div>
