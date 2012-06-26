@@ -6,10 +6,8 @@
 }
 
 .page-header {
+    color: #3C4246;
     margin: 12px 0;
-}
-
-.posts .page-header {
     border-bottom: 1px solid #667279;
 }
 
@@ -35,11 +33,6 @@
 
 .posts .footer hr {
     margin: 0 0 5px 0;
-}
-
-.post .page-header {
-    border-bottom: 1px solid #667279;
-    color: #3C4246;
 }
 
 .post .footer {
