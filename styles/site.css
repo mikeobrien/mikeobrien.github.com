@@ -4,6 +4,10 @@ body {
     padding: 8px;
 }
 
+td {
+    font-size: 13px;
+}
+
 a {
     color: #3C4246;
 }

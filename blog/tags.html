@@ -4,18 +4,16 @@ layout: blog
 
 {% for tag in site.tags %}
 <div class="tag" id="tag-{{forloop.index}}">
-    <div class="page-header">
-        <h3 class="name">{{tag | first}} <small id="tag-count">{{tag | last | size }} posts</small></h3>
-    </div>
+    <h3 class="name">{{tag | first}} <small id="tag-count">{{tag | last | size }} posts</small></h3>
     <div>
         <table class="table table-striped">
             <tbody>
                 {% for post in tag[1] %} 
                   <tr>
                     <td><a href="{{ post.url }}">{{ post.title }}</a></td>
-                    <td>{{ page.date | date: "%m-%d-%Y" }}</td>
+                    <td>{{ post.date | date: "%m-%d-%Y" }}</td>
                     <td>
-                    {% for tag in page.tags %}
+                    {% for tag in post.tags %}
                         {% for siteTag in site.tags %}
                             {% if tag == siteTag[0] %}
                                 <a href="/blog/tags#tag-{{forloop.index}}">{{ tag }}</a>{% if forloop.last != true %}, {% endif %}
