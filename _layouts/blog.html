@@ -5,22 +5,34 @@ layout: chrome
 <link href="/styles/blog.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="/scripts/jquery.tinysort.min.js"></script>
 
+<script language="javascript">
+    var email = ['m', 'o', 'b', '@', 'm', 'i', 'k', 'e', 'o', 'b', 'r', 'i', 'e', 'n', '.', 'n', 'e', 't'].join('');
+    $(function () { 
+        $('#email').attr('href', 'mailto:' + email); 
+    });
+</script>
+
 <div class="container-fluid blog">
   <div class="row-fluid">
     <div class="span10">
         {{ content }}
     </div>
     <div class="span2">
-        <div>
+        <div class="well">
             <a href="https://github.com/mikeobrien"><img src="/images/github.png" /></a>
             <a href="http://twitter.com/hcoverlambda"><img src="/images/twitter.png" /></a>
             <a href="/rss.xml"><img src="/images/rss.png" /></a>
+            <a href="http://www.librarything.com/catalog/mikeobrien"><img src="/images/librarything.png" /></a>
+            <a id="email" href="#"><img src="/images/email.png" /></a>
         </div>
-        <ul id="tags">
-        {% for tag in site.tags %}
-        <li><a href="/blog/tags#tag-{{forloop.index}}">{{tag | first}} ({{tag | last | size }})</a></li>
-        {% endfor %}
-        </ul>
+        
+        <div class="well" style="padding: 8px 0;">
+            <ul class="nav nav-list">
+                {% for tag in site.tags %}
+                <li><a href="/blog/tags#tag-{{forloop.index}}"><i class="icon-tag"></i> {{tag | first}} ({{tag | last | size }})</a></li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
   </div>
 </div>
