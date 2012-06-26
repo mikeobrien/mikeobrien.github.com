@@ -7,10 +7,11 @@
 
 .blog .contact {
     text-align: center;
+    padding: 10px;
 }
 
 .blog .contact-icon {
-    padding: 2px;
+    padding: 5px 2px;
 }
 
 .page-header {
