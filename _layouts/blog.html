@@ -11,7 +11,11 @@ layout: chrome
         {{ content }}
     </div>
     <div class="span2">
-        <h2>Tags</h2>
+        <div>
+            <a href="https://github.com/mikeobrien"><img src="/images/github.png" /></a>
+            <a href="http://twitter.com/hcoverlambda"><img src="/images/twitter.png" /></a>
+            <a href="/rss.xml"><img src="/images/rss.png" /></a>
+        </div>
         <ul id="tags">
         {% for tag in site.tags %}
         <li><a href="/blog/tags#tag-{{forloop.index}}">{{tag | first}} ({{tag | last | size }})</a></li>
