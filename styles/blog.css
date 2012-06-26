@@ -5,6 +5,10 @@
     padding: 10px 30px
 }
 
+.page-header {
+    margin: 12px 0;
+}
+
 .posts .page-header {
     border-bottom: 1px solid #667279;
 }

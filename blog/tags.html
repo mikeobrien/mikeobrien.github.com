@@ -18,9 +18,12 @@ layout: blog
                     <td style="width:100px;text-align: center">{{ post.date | date: "%m-%d-%Y" }}</td>
                     <td style="width:250px">
                     {% for tag in post.tags %}
+                        {% assign last = forloop.last %}
                         {% for siteTag in site.tags %}
                             {% if tag == siteTag[0] %}
-                                <a href="/blog/tags#tag-{{forloop.index}}">{{ tag }}</a>{% endif %}{% endfor %}{% if forloop.last != true %}, {% endif %}
+                                <a href="/blog/tags#tag-{{forloop.index}}">{{ tag }}</a>{% if last != true %}, {% endif %}
+                            {% endif %}
+                        {% endfor %}
                     {% endfor %}                
                     </td>
                   </tr>
