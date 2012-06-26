@@ -41,10 +41,13 @@ function getClass() {
     return '.' + window.location.hash.replace('#', '');
 }
 
-$(getClass()).show();
+lastClass = getClass()
+$(lastClass).show();
+
 $(window).bind('hashchange', function() {
-    $('.tag').hide();
-    $(getClass()).show();
+    $(lastClass).hide();
+    lastClass = getClass();
+    $(lastClass).show();
 });
 </script>
 
