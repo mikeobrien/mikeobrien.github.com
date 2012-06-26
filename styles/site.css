@@ -16,7 +16,7 @@ a {
 }
 
 .header .logo {
-    padding-top: 9px;
+    padding-top: 9px 0 0 5px;
 }
 
 .header .links {
