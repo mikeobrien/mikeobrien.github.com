@@ -3,9 +3,9 @@ layout: blog
 ---
 
 {% for tag in site.tags %}
-<div class="tag" id="tag-{{forloop.index}}" style="display : none">
+<div class="tag" id="tag-{{forloop.index}}">
     <div class="page-header">
-        <h1 id="tag">{{tag | first}} <small id="tag-count">{{tag | last | size }} posts</small></h1>
+        <h1 class="name">{{tag | first}} <small id="tag-count">{{tag | last | size }} posts</small></h1>
     </div>
     <div>
     {% for post in tag[1] %} 
@@ -16,15 +16,6 @@ layout: blog
 {% endfor %}
 
 <script>
-function getId() {
-    return '#tag-' + window.location.hash.replace(/\#/g, '');
-}
-
-$(getId()).show();
-$(window).bind('hashchange', function() {
-  $('.tag').hide();
-  $(getId()).show();
-  console.log(getId());
-});
+$('.tag').tsort('.name');
 </script>
 
