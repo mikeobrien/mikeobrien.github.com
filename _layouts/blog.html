@@ -18,12 +18,12 @@ layout: chrome
         {{ content }}
     </div>
     <div class="span2">
-        <div class="well contact">
-            <a href="https://github.com/mikeobrien" title="GitHub"><img src="/images/github.png" class="contact-icon"/></a>
-            <a href="http://twitter.com/hcoverlambda" title="Twitter"><img src="/images/twitter.png" class="contact-icon" /></a>
-            <a href="http://www.librarything.com/catalog/mikeobrien" title="LibraryThing"><img src="/images/librarything.png" class="contact-icon" /></a>
-            <a href="/rss.xml" title="Feed"><img src="/images/rss.png" class="contact-icon" /></a>
-            <a id="email" href="#" title="Email"><img src="/images/email.png" class="contact-icon" /></a>
+        <div class="well social">
+            <a href="https://github.com/mikeobrien" title="GitHub"><img src="/images/github.png" class="social-icon"/></a>
+            <a href="http://twitter.com/hcoverlambda" title="Twitter"><img src="/images/twitter.png" class="social-icon" /></a>
+            <a href="http://www.librarything.com/catalog/mikeobrien" title="LibraryThing"><img src="/images/librarything.png" class="social-icon" /></a>
+            <a href="/rss.xml" title="Feed"><img src="/images/rss.png" class="social-icon" /></a>
+            <a id="email" href="#" title="Email"><img src="/images/email.png" class="social-icon" /></a>
         </div>
         
         <div class="well" style="padding: 8px 0;">
@@ -38,5 +38,5 @@ layout: chrome
 </div>
 
 <script>
-$('#tags>li').tsort();
+$('#tags>li').tsort('a', { attr:'title' });
 </script>
