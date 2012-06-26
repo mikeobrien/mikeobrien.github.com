@@ -16,10 +16,10 @@ layout: nil
     {% assign post = site.posts[i] %}
     <item>
       <title>{{ post.title | xml_escape }}</title>
-      <link>http://www.mikeobrien.net/blog/{{ post.url }}</link>
+      <link>http://www.mikeobrien.net/blog{{ post.url }}</link>
       <pubDate>{{ post.date | date: "%a, %d %b %Y %H:%M:%S %z" }}</pubDate>
       <author>mob</author>
-      <guid>http://www.mikeobrien.net/blog/{{ post.id }}</guid>
+      <guid>http://www.mikeobrien.net/blog{{ post.id }}</guid>
       <description>{{ post.content | xml_escape }}</description>
     </item>
     {% endfor %}
