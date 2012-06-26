@@ -14,7 +14,7 @@ layout: chrome
         <h2>Tags</h2>
         <ul id="tags">
         {% for tag in site.tags %}
-        <li><a href="/blog/tags#{{forloop.index}}">{{tag | first}} ({{tag | last | size }})</a></li>
+        <li><a href="/blog/tags#tag-{{forloop.index}}">{{tag | first}} ({{tag | last | size }})</a></li>
         {% endfor %}
         </ul>
     </div>
