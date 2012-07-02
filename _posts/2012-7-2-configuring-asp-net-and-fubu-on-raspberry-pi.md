@@ -1,5 +1,5 @@
 ---
-published: true
+published: false
 layout: mdpost
 title: Setting up ASP.NET and FubuMVC on the RaspberryPi
 tags: [RaspberryPi, Mono, ASP.NET, FubuMVC]
