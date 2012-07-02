@@ -10,7 +10,7 @@ layout: blog
     <div class="page-header">
         <h2><a href="{{ post.url }}">{{ post.title }}</a> <small>{{ post.date | date: "%B, %Y" }}</small></h2>
     </div>
-    <div>{{ post.content }}</div>
+    <div class="markdown-body">{{ post.content }}</div>
     <div class="footer">
         <hr/>
         <div class="published">Posted {{ post.date | date: "%m-%d-%Y" }}</div>
