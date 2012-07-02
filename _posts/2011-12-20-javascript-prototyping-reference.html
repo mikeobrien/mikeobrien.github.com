@@ -8,7 +8,7 @@ tags: [JavaScript, CoffeeScript]
 
 
 
-<table><tbody>       <tr>         <th colspan="2">JavaScript</td></tr> </th>       </tr>        <tr>         <td>           <div align="left">             <pre class="code csharpcode"><span class="kwrd">var</span> x = <span class="kwrd">function</span>() {}</pre>
+<table><tbody>       <tr>         <th colspan="2" style="background-color: #F8F8F8">JavaScript</td></tr> </th>       </tr>        <tr>         <td style="background-color: #fff">           <div align="left">             <pre class="code csharpcode"><span class="kwrd">var</span> x = <span class="kwrd">function</span>() {}</pre>
           </div>
           <style type="text/css">
 
@@ -53,7 +53,7 @@ tags: [JavaScript, CoffeeScript]
 }
 .csharpcode .lnum { color: #606060; }</style></td>
 
-        <td>
+        <td style="background-color: #fff">
           <div align="left">
             <pre class="code csharpcode">x = {
     <span class="rem">// Only meaningful for constructors not functions.</span>
@@ -109,7 +109,7 @@ tags: [JavaScript, CoffeeScript]
       </tr>
 
       <tr>
-        <td>
+        <td style="background-color: #fff">
           <div align="left">
             <pre class="code csharpcode"><span class="kwrd">var</span> Y = <span class="kwrd">function</span>(name) {
     <span class="rem">// In a constructor 'this' refers to the</span>
@@ -181,7 +181,7 @@ Y.prototype.printName = <span class="kwrd">function</span>() {
 }
 .csharpcode .lnum { color: #606060; }</style></td>
 
-        <td>
+        <td style="background-color: #fff">
           <div align="left">
             <pre class="code csharpcode">Y = {
     <span class="rem">// This will be set as the new objects prototype.</span>
@@ -258,7 +258,7 @@ y = {
       </tr>
 
       <tr>
-        <td>
+        <td style="background-color: #fff">
           <div align="left">
             <pre class="code csharpcode"><span class="kwrd">var</span> z = { name: <span class="str">'Richard Feynman'</span> }</pre>
           </div>
@@ -318,7 +318,7 @@ y = {
 }
 .csharpcode .lnum { color: #606060; }</style></td>
 
-        <td>
+        <td style="background-color: #fff">
           <div align="left">
             <pre class="code csharpcode">z = {
     __proto__: Object.prototype,
@@ -383,7 +383,7 @@ y = {
       </tr>
 
       <tr>
-        <td>
+        <td style="background-color: #fff">
           <div align="left">
             <pre class="code csharpcode"><span class="kwrd">var</span> a = { name: <span class="str">'Werner Heisenberg'</span> }
 
@@ -453,7 +453,7 @@ y = {
 }
 .csharpcode .lnum { color: #606060; }</style></td>
 
-        <td>
+        <td style="background-color: #fff">
           <div align="left">
             <pre class="code csharpcode">a = {
     __proto__: Object.prototype,
@@ -527,11 +527,11 @@ b = {
       </tr>
 
       <tr>
-        <th colspan="2">CoffeeScript</td></tr> </th>
+        <th colspan="2" style="background-color: #F8F8F8">CoffeeScript</td></tr> </th>
       </tr>
 
       <tr>
-        <td>
+        <td style="background-color: #fff">
           <div align="left">
             <pre class="code csharpcode"><span class="kwrd">class</span> Parent
     constructor: -&gt;
@@ -595,7 +595,7 @@ b = {
 }
 .csharpcode .lnum { color: #606060; }</style></td>
 
-        <td>
+        <td style="background-color: #fff">
           <div align="left">
             <pre class="code csharpcode"><span class="kwrd">function</span> Parent() {
     <span class="kwrd">this</span>.id = ++Parent.identity;
@@ -673,7 +673,7 @@ Parent = {
       </tr>
 
       <tr>
-        <td>
+        <td style="background-color: #fff">
           <div align="left">
             <pre class="code csharpcode">parent = <span class="kwrd">new</span> Parent()</pre>
           </div>
@@ -733,7 +733,7 @@ Parent = {
 }
 .csharpcode .lnum { color: #606060; }</style></td>
 
-        <td>
+        <td style="background-color: #fff">
           <div align="left">
             <pre class="code csharpcode">parent = {
     __proto__: Parent.prototype,
@@ -798,7 +798,7 @@ Parent = {
       </tr>
 
       <tr>
-        <td>
+        <td style="background-color: #fff">
           <div align="left">
             <pre class="code csharpcode"><span class="kwrd">class</span> Child extends Parent
     url: <span class="str">'http://www.google.com'</span></pre>
@@ -859,7 +859,7 @@ Parent = {
 }
 .csharpcode .lnum { color: #606060; }</style></td>
 
-        <td>
+        <td style="background-color: #fff">
           <div align="left">
             <pre class="code csharpcode">__extends(Child, Parent);
 <span class="kwrd">function</span> Child() {
@@ -938,7 +938,7 @@ Child = {
       </tr>
 
       <tr>
-        <td>
+        <td style="background-color: #fff">
           <div align="left">
             <pre class="code csharpcode">child = <span class="kwrd">new</span> Child()</pre>
           </div>
@@ -998,7 +998,7 @@ Child = {
 }
 .csharpcode .lnum { color: #606060; }</style></td>
 
-        <td>
+        <td style="background-color: #fff">
           <div align="left">
             <pre class="code csharpcode">child = {
     __proto__: Child.prototype,
@@ -1063,11 +1063,11 @@ Child = {
       </tr>
 
       <tr>
-        <th colspan="2">backbone.js</td></tr> </th>
+        <th colspan="2" style="background-color: #F8F8F8">backbone.js</td></tr> </th>
       </tr>
 
       <tr>
-        <td>
+        <td style="background-color: #fff">
           <div align="left">
             <pre class="code csharpcode"><span class="rem">// [backbone.js].extend(protoProps, classProps)</span>
 <span class="kwrd">var</span> Person = Backbone.Model.extend({
@@ -1109,7 +1109,7 @@ Child = {
 }
 .csharpcode .lnum { color: #606060; }</style></td>
 
-        <td>
+        <td style="background-color: #fff">
           <div align="left">
             <pre class="code csharpcode">Person = {
     prototype: {
@@ -1161,11 +1161,11 @@ Child = {
       </tr>
 
       <tr>
-        <th colspan="2">underscore.js</td></tr> </th>
+        <th colspan="2" style="background-color: #F8F8F8">underscore.js</td></tr> </th>
       </tr>
 
       <tr>
-        <td>
+        <td style="background-color: #fff">
           <div align="left">
             <pre class="code csharpcode"><span class="kwrd">var</span> person = { id: 5 }
 <span class="kwrd">var</span> a = { name: <span class="str">'Werner Heisenberg'</span> }
@@ -1228,7 +1228,7 @@ _.extend(person, a, b);</pre>
 }
 .csharpcode .lnum { color: #606060; }</style></td>
 
-        <td>
+        <td style="background-color: #fff">
           <div align="left">
             <pre class="code csharpcode">person = {
     id: 5,
