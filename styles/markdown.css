@@ -5,7 +5,7 @@
 .markdown-body>*:first-child { margin-top: 0!important }
 .markdown-body>*:last-child { margin-bottom: 0!important }
 .markdown-body a.absent { color: #c00 }
-.markdown-body a.anchor {
+.markdown-body a {
     display: block;
     padding-left: 30px;
     margin-left: -30px;
@@ -15,6 +15,12 @@
     left: 0;
     bottom: 0;
     color: #4183C4;
+    text-decoration: none;
+}
+
+.markdown-body a:hover {
+    color: #4183C4;
+    text-decoration: underline;
 }
 .markdown-body h1,
 .markdown-body h2,
