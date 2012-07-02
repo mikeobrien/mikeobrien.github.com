@@ -258,6 +258,7 @@
     border: 1px solid #eaeaea;
     background-color: #f8f8f8;
     border-radius: 3px;
+    color: #333;
 }
 .markdown-body pre>code {
     margin: 0;

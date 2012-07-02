@@ -8,6 +8,7 @@ tags: [RaspberryPi, Mono, ASP.NET, FubuMVC]
 These instructions assume you're running Debian Squeeze on your pi. If you havent set that up see [here](http://www.raspberrypi.org/downloads) for further instructions. 
 
 ### Initial Setup ###
+--------
 
 Once you have written the image to your sd card and inserted it, plugin the pi to a display, keyboard, ethernet and usb power. Login using the default creds pi/raspberry. The following commands set the password and enable ssh:
 
@@ -38,10 +39,9 @@ To this (with your settings):
 
 Now `restart`:
 
-```bash
-shutdown -r now
-```
+    shutdown -r now
 
 You can now unplug your display and keyboard and ssh into the pi. You may want to setup a hosts record on your machine so you don't have to remember the ip address.
 
 ### Installing Apache ###
+-------
