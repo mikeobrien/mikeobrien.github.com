@@ -14,6 +14,7 @@
     top: 0;
     left: 0;
     bottom: 0;
+    color: #4183C4;
 }
 .markdown-body h1,
 .markdown-body h2,
@@ -96,6 +97,7 @@
     color: #ccc;
     height: 1px;
     padding: 0;
+    margin: 0;
 }
 .markdown-body>h2:first-child,
 .markdown-body>h1:first-child,
