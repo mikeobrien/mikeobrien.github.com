@@ -38,8 +38,10 @@ To this (with your settings):
 
 Now restart:
 
-    shutdown -r now
-    
+```bash
+shutdown -r now
+```
+
 You can now unplug your display and keyboard and ssh into the pi. You may want to setup a hosts record on your machine so you don't have to remember the ip address.
 
 ### Installing Apache ###
