@@ -3,7 +3,12 @@ layout: post
 title: JavaScript Prototyping Reference
 tags: [JavaScript, CoffeeScript]
 ---
-<p>I've had problems remembering what is actually happening when working with constructor functions and prototyping. I created the following table to demonstrate what's going on. If I'm missing something please let me know as I'm not a JavaScript ninja by any means. </p>  <p>A couple of things to note:</p>  <ul>   <li>The <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object/proto">__proto__ property is deprecated and non standard</a>. I include it only as a way to indicate an object's prototype. </li>    <li>I included the <a href="http://documentcloud.github.com/underscore/#extend">underscore.js extend function</a> only to show how it compares to protypal inheritance in JS or CS. I think the name of this function is not clear. </li>    <li>The <a href="http://documentcloud.github.com/backbone/docs/backbone.html#section-121">backbone.js extend method</a> is functionally equivalent to the <a href="http://jashkenas.github.com/coffee-script/#classes">CoffeeScript extends operator</a>. </li> </ul>  <br /><center>   <table style="border-bottom: #000 1px solid; border-left: #000 1px solid; border-collapse: collapse; border-top: #000 1px solid; border-right: #000 1px solid"><tbody>       <tr>         <th style="background: #006; color: #fff" colspan="2">JavaScript</td></tr> </th>       </tr>        <tr>         <td style="border-bottom: #000 1px solid; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">           <div align="left">             <pre class="code csharpcode"><span class="kwrd">var</span> x = <span class="kwrd">function</span>() {}</pre>
+<p>I've had problems remembering what is actually happening when working with constructor functions and prototyping. I created the following table to demonstrate what's going on. If I'm missing something please let me know as I'm not a JavaScript ninja by any means. </p>  <p>A couple of things to note:</p>  <ul>   <li>The <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object/proto">__proto__ property is deprecated and non standard</a>. I include it only as a way to indicate an object's prototype. </li>    <li>I included the <a href="http://documentcloud.github.com/underscore/#extend">underscore.js extend function</a> only to show how it compares to protypal inheritance in JS or CS. I think the name of this function is not clear. </li>    <li>The <a href="http://documentcloud.github.com/backbone/docs/backbone.html#section-121">backbone.js extend method</a> is functionally equivalent to the <a href="http://jashkenas.github.com/coffee-script/#classes">CoffeeScript extends operator</a>. </li> </ul>  <br /><center>   
+
+
+
+
+<table><tbody>       <tr>         <th colspan="2">JavaScript</td></tr> </th>       </tr>        <tr>         <td>           <div align="left">             <pre class="code csharpcode"><span class="kwrd">var</span> x = <span class="kwrd">function</span>() {}</pre>
           </div>
           <style type="text/css">
 
@@ -104,7 +109,7 @@ tags: [JavaScript, CoffeeScript]
       </tr>
 
       <tr>
-        <td style="border-bottom: #000 1px solid; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">
+        <td>
           <div align="left">
             <pre class="code csharpcode"><span class="kwrd">var</span> Y = <span class="kwrd">function</span>(name) {
     <span class="rem">// In a constructor 'this' refers to the</span>
@@ -253,7 +258,7 @@ y = {
       </tr>
 
       <tr>
-        <td style="border-bottom: #000 1px solid; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">
+        <td>
           <div align="left">
             <pre class="code csharpcode"><span class="kwrd">var</span> z = { name: <span class="str">'Richard Feynman'</span> }</pre>
           </div>
@@ -378,7 +383,7 @@ y = {
       </tr>
 
       <tr>
-        <td style="border-bottom: #000 1px solid; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">
+        <td>
           <div align="left">
             <pre class="code csharpcode"><span class="kwrd">var</span> a = { name: <span class="str">'Werner Heisenberg'</span> }
 
@@ -526,7 +531,7 @@ b = {
       </tr>
 
       <tr>
-        <td style="border-bottom: #000 1px solid; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">
+        <td>
           <div align="left">
             <pre class="code csharpcode"><span class="kwrd">class</span> Parent
     constructor: -&gt;
@@ -668,7 +673,7 @@ Parent = {
       </tr>
 
       <tr>
-        <td style="border-bottom: #000 1px solid; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">
+        <td>
           <div align="left">
             <pre class="code csharpcode">parent = <span class="kwrd">new</span> Parent()</pre>
           </div>
@@ -793,7 +798,7 @@ Parent = {
       </tr>
 
       <tr>
-        <td style="border-bottom: #000 1px solid; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">
+        <td>
           <div align="left">
             <pre class="code csharpcode"><span class="kwrd">class</span> Child extends Parent
     url: <span class="str">'http://www.google.com'</span></pre>
@@ -933,7 +938,7 @@ Child = {
       </tr>
 
       <tr>
-        <td style="border-bottom: #000 1px solid; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">
+        <td>
           <div align="left">
             <pre class="code csharpcode">child = <span class="kwrd">new</span> Child()</pre>
           </div>
@@ -1062,7 +1067,7 @@ Child = {
       </tr>
 
       <tr>
-        <td style="border-bottom: #000 1px solid; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">
+        <td>
           <div align="left">
             <pre class="code csharpcode"><span class="rem">// [backbone.js].extend(protoProps, classProps)</span>
 <span class="kwrd">var</span> Person = Backbone.Model.extend({
@@ -1160,7 +1165,7 @@ Child = {
       </tr>
 
       <tr>
-        <td style="border-bottom: #000 1px solid; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; border-right: #c0c0c0 1px solid; padding-top: 10px">
+        <td>
           <div align="left">
             <pre class="code csharpcode"><span class="kwrd">var</span> person = { id: 5 }
 <span class="kwrd">var</span> a = { name: <span class="str">'Werner Heisenberg'</span> }
