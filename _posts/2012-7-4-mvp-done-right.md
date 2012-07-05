@@ -12,7 +12,7 @@ A good program would have to be:
 
 * **Community driven**: The community should be the ones deciding who receives these awards. Managers and evangelists have a conflict of interest. Since the awards are about expertise and involvement/contribution to the community, who better to decide than the community. Peer review is necessary here just as it is in the scientific community for example.
 * **Transparent**: Everyone would have to know how it works, unlike the mystery that surrounds the Microsoft program. The method for selection should be clearly stated and open for discussion. Even the software that's used for recording and tallying nominations should be open source.
-* **Cross-platform**: The award categories should not be limited to a particular set of technologies and should be open to community discussion.
+* **Cross-platform**: The award categories should not be limited to a particular set of technologies and should be open for community discussion.
 
 ### Benefits ###
 
