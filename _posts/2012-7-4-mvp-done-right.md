@@ -20,7 +20,7 @@ I think the benefits could be three fold:
 
 * **Recipients**: Many people work selflessly in communities to help their peers or contribute to open source software. They usually don't receive anything in return. They enjoy what they do and probably don't complain. But I'm sure they wouldn't mind receiving a little recognition for their efforts. And what about some other perks like free software or having their way paid to a conference?
 * **Nominators**: I appreciate the work done by a number of people in the communities that I'm apart of. Of course there are a number of ways to express appreciation. I would love to be able to give them props in this way too.
-* **Sponsors**: Would be a nice opportunity to give back to the community and from a strictly business perspective, get their brand out software/services out there. JetBrains and GitHub do this and I'm sure it helps their bottom line.
+* **Sponsors**: Would be a nice opportunity to give back to the community and from a strictly business perspective, get their brand and software/services out there. JetBrains and GitHub do this and I'm sure it helps their bottom line.
 
 ### Execution ###
 
@@ -36,4 +36,4 @@ Some ideas for execution:
 * Other sponsors could pledge things for different categories. For example JetBrains could pledge free RubyMine licenses for all ruby awardees. Or CodeStock could offer free tickets to the top 5 awardees in certain categories. 
 * Categories shouldn't require sponsorship. So in some cases there would just be recognition, no goodies.
 
-In the end, these types of programs may be flawed and thus only good for self-serving organizations. But it would be interesting to see it done right. It may be that they provide value if executed correctly.
+In the end, these types of programs may be flawed and thus only good for self-serving organizations. But it would be interesting to see it done right. It may be that they provide value if executed properly.
