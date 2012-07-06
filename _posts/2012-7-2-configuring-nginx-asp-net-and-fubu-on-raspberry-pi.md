@@ -191,6 +191,8 @@ WEBAPPS="<b>www.mysite.com</b>:/:/var/www/"
 ...
 </code></pre>
 
+Note: The FastCGI startup script is set to use fastcgi-mono-server4. This would need to be adjusted if you are using older or future versions of mono.
+
 Delete the static file you created earier and create an asp.net file:
 
     rm /var/www/index.html
