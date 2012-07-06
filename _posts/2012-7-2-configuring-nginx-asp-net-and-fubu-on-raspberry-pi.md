@@ -5,7 +5,7 @@ title: Setting up nginx, ASP.NET and FubuMVC on the RaspberryPi
 tags: [RaspberryPi, Mono, ASP.NET, FubuMVC]
 ---
 
-Thanks to the various sources on the interwebs for help compiling these steps.
+Thanks to the all the sources on the interwebs for help compiling these steps.
 
 These instructions assume you're running Debian image on your pi. If you havent set that up see [here](http://www.raspberrypi.org/downloads) for further instructions. 
 
@@ -74,10 +74,25 @@ To install nginx you'll need to to first update apt-get. Next install the nginx 
     apt-get install nginx
     sudo mkdir /var/www
     sudo groupadd www-data
-    
-Disable ipv6 on the default site by commenting out this line: `listen [::]:80 default ipv6only=on;`:
+
+Edit the default site configuration:
 
     sudo vi /etc/nginx/sites-enabled/default
+
+And disable ipv6 as well as set the site domain name (Highlighted below):
+
+<pre><code>
+...
+server {
+    ...
+    <b>#<b/>listen   [::]:80 default ipv6only=on; ## listen for ipv6
+    
+    server_name <b>www.mysite.com</b>;
+    ...
+}
+...
+</code></pre>
+
     
 Start the web server:
     
@@ -85,14 +100,14 @@ Start the web server:
     
 Create a test page:
 
-    vi /var/www/index.html
+    sudo vi /var/www/index.html
     
 If all is well you should see your test page.
 
 ### Installing mono ###
 -------
 
-Unfortunately [the latest version of mono isn't available for squeeze](http://mono-project.com/DistroPackages/Debian), which at the time of writing is the latest stable version of debian. The official squeeze mono package is version 2.6.7 [which is equivilent to .NET 3.5](http://en.wikipedia.org/wiki/Mono_(software)#History). Subsequent versions (i.e. wheezy and sid) will ship with an oficial mono package of version 2.10.8.1 which is equivilent to .NET 4.0. So if the pi image you installed is wheezy or higher or you don't mind running the older version of mono you can just use `sudo apt-get install mono-complete`. Otherwise if you're on squeeze and want to run the latest version of mono we'll have to grab the source and compile it (Which will take ~8 hours) or download the precompiled version.
+Unfortunately [the latest version of mono isn't available for squeeze](http://mono-project.com/DistroPackages/Debian), which at the time of writing is the latest stable version of debian. The official squeeze mono package is version 2.6.7 [which is equivilent to .NET 3.5](http://en.wikipedia.org/wiki/Mono_(software)#History). Subsequent debian versions (i.e. wheezy and sid) will ship with an oficial mono package of version 2.10.8.1 which is equivilent to .NET 4.0. So if the pi image you installed is wheezy or higher or you don't mind running the older version of mono you can just use `sudo apt-get install mono-complete`. Otherwise if you're on squeeze and want to run the latest version of mono we'll have to grab the source and compile it (Which will take ~8 hours) or download the precompiled version.
 
 First install the prerequsites:
 
@@ -100,7 +115,7 @@ First install the prerequsites:
 
 a) Either download the precompiled version:
 
-    wget http://...mono-2.10.8-pi-compiled.tar.bz2
+    wget https://github.com/downloads/mikeobrien/pidev/mono-2.10.8-compiled-pi.tar.bz2
     tar xvjf mono-2.10.8-pi-compiled.tar.bz2; cd mono-2.10.8
     make install
     cd ..; rm -rf mono-2.10.8; rm mono-2.10.8-pi-compiled.tar.bz2
@@ -118,3 +133,78 @@ Then verify the installation:
 
 ### Configuring ASP.NET ###
 -------
+
+First you will need to install the mono FastCGI server. As mentioned earlier, the official debian squeeze package is a bit old. If your ok with this or if you are running debian wheezy or higher you can just do `sudo apt-get install mono-fastcgi-server2`. Otherwise you will have to build and install from scratch as follows:
+
+    wget http://origin-download.mono-project.com/sources/xsp/xsp-2.10.2.tar.bz2
+    tar xvjf xsp-2.10.2.tar.bz2; cd xsp-2.10.2
+    ./configure --prefix=/usr/local; make; make install
+    cd ..; rm -rf xsp-2.10.2; rm xsp-2.10.2.tar.bz2
+    
+Then we need to setup FastCGI in the default nginx website:
+
+    sudo vi /etc/nginx/sites-enabled/default
+
+By adding the highlighted configuration:
+
+<pre><code>
+...
+server {
+    ...
+    location / {
+        root   /var/www;
+        index  index.html index.htm <b>index.aspx</b>;
+        <b>fastcgi_index index.aspx;
+        fastcgi_pass 127.0.0.1:9000;
+        include /etc/nginx/fastcgi_params;</b>
+    }
+    ...
+}
+...
+</code></pre>
+
+Next we need modify the FastCGI config file:
+
+    sudo vi /etc/nginx/fastcgi_params
+
+By adding these lines to the end of the file:
+
+    # ASP.NET
+    fastcgi_param PATH_INFO           "";
+    fastcgi_param SCRIPT_FILENAME     $document_root$fastcgi_script_name;
+
+Now we will need to download the mono FastCGI startup script (Complements of [Tomas Bosak](http://yojimbo87.github.com)) and install it:
+
+    wget -P /etc/init.d/ https://github.com/downloads/mikeobrien/pidev/monoserve
+    chmod +x /etc/init.d/monoserve
+    update-rc.d monoserve defaults
+    
+Edit the FastCGI startup script:
+
+    sudo vi /etc/init.d/monoserve
+
+And set the domain name you set in the nginx site configuration (Highlighted below):
+
+<pre><code>
+...
+WEBAPPS="<b>www.mysite.com</b>:/:/var/www/"
+...
+</code></pre>
+
+Delete the static file you created earier and create an asp.net file:
+
+    rm /var/www/index.html
+    sudo vi /var/www/index.aspx
+    
+With some dynamic content:
+
+    Hello, the time is <%= System.DateTime.Now %>.
+    
+Start the service and make sure the page works:
+
+    sudo service monoserve start
+    
+### Configuring FubuMVC ###
+-------
+
+
