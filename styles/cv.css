@@ -1,3 +1,13 @@
+.cv-recruiter-warning {
+    color:#D71A21;
+    background-color:#FDE5A9;
+    padding:10px;
+    text-align:center;
+    font-weight:bold;
+    width: 700px;
+	margin: 0 auto;
+}
+
 .cv-container h3 a {
 	color: #1671A0;
 }
