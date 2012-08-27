@@ -5,6 +5,16 @@
     padding: 10px 10px 10px 30px;
 }
 
+.blog .content {
+    padding: 10px;
+}
+
+.blog .sidebar {
+    width: 200px; 
+    vertical-align:top; 
+    padding: 10px;
+}
+
 .blog .social {
     text-align: center;
     padding: 10px;
