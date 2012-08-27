@@ -13,28 +13,32 @@ layout: chrome
     });
 </script>
 
-<div class="container blog">
-  <div class="row">
+<div class="container-fluid blog">
+  <div class="row-fluid">
     <div class="span10">
         {{ content }}
     </div>
     <div class="span2">
-        <div class="well social">
-            <a href="https://github.com/mikeobrien" title="GitHub"><img src="/images/github.png" class="social-icon"/></a>
-            <a href="http://twitter.com/hcoverlambda" title="Twitter"><img src="/images/twitter.png" class="social-icon" /></a>
-            <a href="http://www.librarything.com/catalog/mikeobrien" title="LibraryThing"><img src="/images/librarything.png" class="social-icon" /></a>
-            <a href="http://feeds.feedburner.com/MikeObriensDevAndScienceBlog" title="Feed"><img src="/images/rss.png" class="social-icon" /></a>
-            <a id="email" href="#" title="Email"><img src="/images/email.png" class="social-icon" /></a>
-        </div>
+        <div class="sidebar-nav">
         
-        <iframe src="http://githubbadge.appspot.com/badge/mikeobrien?s=1" style="border: 0;height: 142px;width: 100%;overflow: hidden;" frameBorder=0></iframe>
+            <div class="well social">
+                <a href="https://github.com/mikeobrien" title="GitHub"><img src="/images/github.png" class="social-icon"/></a>
+                <a href="http://twitter.com/hcoverlambda" title="Twitter"><img src="/images/twitter.png" class="social-icon" /></a>
+                <a href="http://www.librarything.com/catalog/mikeobrien" title="LibraryThing"><img src="/images/librarything.png" class="social-icon" /></a>
+                <a href="http://feeds.feedburner.com/MikeObriensDevAndScienceBlog" title="Feed"><img src="/images/rss.png" class="social-icon" /></a>
+                <a id="email" href="#" title="Email"><img src="/images/email.png" class="social-icon" /></a>
+            </div>
+            
+            <iframe src="http://githubbadge.appspot.com/badge/mikeobrien?s=1" style="border: 0;height: 142px;width: 100%;overflow: hidden;" frameBorder=0></iframe>
 
-        <div class="well" style="padding: 8px 0;">
-            <ul class="nav nav-list tags">
-                {% for tag in site.tags %}
-                <li><a href="/blog/tags#tag-{{forloop.index}}" title="{{tag | first }}"><i class="icon-tag"></i> {{tag | first}} ({{tag | last | size }})</a></li>
-                {% endfor %}
-            </ul>
+            <div class="well" style="padding: 8px 0;">
+                <ul class="nav nav-list tags">
+                    {% for tag in site.tags %}
+                    <li><a href="/blog/tags#tag-{{forloop.index}}" title="{{tag | first }}"><i class="icon-tag"></i> {{tag | first}} ({{tag | last | size }})</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
         </div>
     </div>
   </div>
