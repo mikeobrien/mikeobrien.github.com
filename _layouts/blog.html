@@ -13,13 +13,14 @@ layout: chrome
     });
 </script>
 
-<div class="container-fluid blog">
-  <div class="row-fluid">
-    <div class="span10">
-        {{ content }}
-    </div>
-    <div class="span2">
-        <div class="sidebar-nav">
+<div class="container blog">
+    <table style="width: 100%">
+    <tr>
+        <td style="width: 100%">
+            {{ content }}
+        </td>
+        
+        <td style="width: 200px">
         
             <div class="well social">
                 <a href="https://github.com/mikeobrien" title="GitHub"><img src="/images/github.png" class="social-icon"/></a>
@@ -39,9 +40,10 @@ layout: chrome
                 </ul>
             </div>
             
-        </div>
-    </div>
-  </div>
+        </td>
+    
+    </tr>
+    </table>
 </div>
 
 <script>
