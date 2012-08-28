@@ -78,15 +78,16 @@ Edit the default site configuration:
 
 Next disable ipv6 (By commenting out the line), also set the site domain name:
 
+<pre><code>...
+server {
     ...
-    server {
-        ...
-        #listen   [::]:80 default ipv6only=on; ## listen for ipv6
-        
-        server_name www.mysite.com;
-        ...
-    }
+    <b>#<b/>listen   [::]:80 default ipv6only=on; ## listen for ipv6
+    
+    server_name <b>www.mysite.com</b>;
     ...
+}
+...
+</code></pre>
 
     
 Start the web server:
@@ -142,8 +143,7 @@ Then we need to setup FastCGI in the default nginx website:
 
 By adding the highlighted configuration:
 
-<pre><code>
-...
+<pre><code>...
 server {
     ...
     location / {
@@ -180,8 +180,7 @@ Edit the FastCGI startup script:
 
 And set the domain name you set in the nginx site configuration (Highlighted below):
 
-<pre><code>
-...
+<pre><code>...
 WEBAPPS="<b>www.mysite.com</b>:/:/var/www/"
 ...
 </code></pre>
