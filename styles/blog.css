@@ -7,11 +7,12 @@
 
 .blog .content {
     padding: 10px 10px 10px 30px;
+    vertical-align: top; 
 }
 
 .blog .sidebar {
     width: 200px; 
-    vertical-align:top; 
+    vertical-align: top; 
     padding: 10px;
 }
 
