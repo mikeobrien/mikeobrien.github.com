@@ -1,8 +1,9 @@
 .blog {
     background-color: #fff;
     text-align: left;
-    margin: 20px 50px;
+    margin: 20px 0;
     padding: 10px 10px 10px 30px;
+    width: 100%;
 }
 
 .blog .content {
@@ -73,10 +74,6 @@
 
 .post .footer hr {
     margin: 0 0 5px 0;
-}
-
-.tag {
-    width: 100%;
 }
 
 .tag .name {
