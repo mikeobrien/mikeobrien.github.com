@@ -4,9 +4,7 @@ title: Setting up nginx, ASP.NET and FubuMVC on the RaspberryPi
 tags: [RaspberryPi, Mono, ASP.NET, FubuMVC]
 ---
 
-Thanks to the all the sources on the interwebs for help compiling these steps.
-
-These instructions assume you're running Debian image on your pi. If you havent set that up see [here](http://www.raspberrypi.org/downloads) for further instructions. 
+Thanks to the all the sources on the interwebs for help compiling these steps. These instructions assume you're running Debian image on your pi. If you havent set that up see [here](http://www.raspberrypi.org/downloads) for further instructions. 
 
 ### Initial Setup ###
 --------
@@ -78,19 +76,17 @@ Edit the default site configuration:
 
     sudo vi /etc/nginx/sites-enabled/default
 
-And disable ipv6 as well as set the site domain name (Highlighted below):
+Next disable ipv6 (By commenting out the line), also set the site domain name:
 
-<pre><code>
-...
-server {
     ...
-    <b>#<b/>listen   [::]:80 default ipv6only=on; ## listen for ipv6
-    
-    server_name <b>www.mysite.com</b>;
+    server {
+        ...
+        #listen   [::]:80 default ipv6only=on; ## listen for ipv6
+        
+        server_name www.mysite.com;
+        ...
+    }
     ...
-}
-...
-</code></pre>
 
     
 Start the web server:
