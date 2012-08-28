@@ -101,7 +101,7 @@ If all is well you should see your test page.
 ### Installing mono ###
 -------
 
-Unfortunately [the latest version of mono isn't available for squeeze](http://mono-project.com/DistroPackages/Debian), which at the time of writing is the latest stable version of debian. The official squeeze mono package is version 2.6.7 [which is equivilent to .NET 3.5](http://en.wikipedia.org/wiki/Mono_(software)%23History). Subsequent debian versions (i.e. wheezy and sid) will ship with an oficial mono package of version 2.10.8.1 which is equivilent to .NET 4.0. So if the pi image you installed is wheezy or higher or you don't mind running the older version of mono you can just use `sudo apt-get install mono-complete`. Otherwise if you're on squeeze and want to run the latest version of mono we'll have to grab the source and compile it (Which will take ~8 hours) or download the precompiled version.
+Unfortunately [the latest version of mono isn't available for squeeze](http://mono-project.com/DistroPackages/Debian), which at the time of writing is the latest stable version of debian. The official squeeze mono package is version 2.6.7 [which is equivilent to .NET 3.5](http://en.wikipedia.org/wiki/Mono_%28software%29#History). Subsequent debian versions (i.e. wheezy and sid) will ship with an oficial mono package of version 2.10.8.1 which is equivilent to .NET 4.0. So if the pi image you installed is wheezy or higher or you don't mind running the older version of mono you can just use `sudo apt-get install mono-complete`. Otherwise if you're on squeeze and want to run the latest version of mono we'll have to grab the source and compile it (Which will take ~8 hours) or download the precompiled version.
 
 First install the prerequsites:
 
