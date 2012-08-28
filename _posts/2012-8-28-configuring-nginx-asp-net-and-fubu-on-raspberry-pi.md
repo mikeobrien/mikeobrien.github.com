@@ -78,17 +78,15 @@ Edit the default site configuration:
 
 Next disable ipv6 (By commenting out the line), also set the site domain name:
 
-<pre><code>...
-server {
     ...
-    <b>#<b/>listen   [::]:80 default ipv6only=on; ## listen for ipv6
-    
-    server_name <b>www.mysite.com</b>;
+    server {
+        ...
+        #listen   [::]:80 default ipv6only=on; ## listen for ipv6
+        
+        server_name www.mysite.com;
+        ...
+    }
     ...
-}
-...
-</code></pre>
-
     
 Start the web server:
     
