@@ -1,3 +1,7 @@
+.blog-container {
+    padding: 30px
+}
+
 .blog {
     background-color: #fff;
     text-align: left;

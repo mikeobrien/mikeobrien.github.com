@@ -1,5 +1,4 @@
 ---
-published: false
 layout: post
 title: Setting up nginx, ASP.NET and FubuMVC on the RaspberryPi
 tags: [RaspberryPi, Mono, ASP.NET, FubuMVC]
@@ -206,7 +205,8 @@ Start the service and make sure the page works:
 
     sudo service monoserve start
     
-### Configuring FubuMVC ###
+### Next steps ###
 -------
 
+In my next installment we'll get [FubuMVC](http://mvc.fubu-project.org/) running on the pi.
 
