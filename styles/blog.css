@@ -75,7 +75,10 @@
     margin: 0 0 5px 0;
 }
 
+.tag {
+    width: 100%;
+}
+
 .tag .name {
     margin: 0 0 10px 0;
-    width: 100%;
 }
