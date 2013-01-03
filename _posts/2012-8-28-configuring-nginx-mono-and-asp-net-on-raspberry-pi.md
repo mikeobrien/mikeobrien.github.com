@@ -36,3 +36,10 @@ df -h
 
 The following commands set the time zone, password and enable ssh:
 
+```bash
+dpkg-reconfigure tzdata
+
+passwd
+
+sudo mv /boot/boot_enable_ssh.rc /boot/boot.rc
+```
