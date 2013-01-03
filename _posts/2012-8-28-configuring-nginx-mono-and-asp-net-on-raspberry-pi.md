@@ -37,4 +37,7 @@ df -h
 The following commands set the time zone, password and enable ssh:
 
 ```bash
+dpkg-reconfigure tzdata
+
+passwd
 ```
