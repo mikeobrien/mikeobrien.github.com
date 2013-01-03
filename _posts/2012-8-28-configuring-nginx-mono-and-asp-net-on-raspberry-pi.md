@@ -62,7 +62,7 @@ Change this:
     
 To this (with your settings):
 
-```apache
+```ini
 iface eth0 inet static
 address 192.168.1.100
 netmask 255.255.255.0
@@ -99,7 +99,7 @@ sudo vi /etc/nginx/sites-enabled/default
 
 Next disable ipv6 (By commenting out the line), also set the site domain name:
 
-```apache
+```ini
 ...
 server {
     ...
@@ -203,7 +203,7 @@ sudo vi /etc/nginx/fastcgi_params
 
 By adding these lines to the end of the file:
 
-```apache
+```ini
 # ASP.NET
 fastcgi_param PATH_INFO           "";
 fastcgi_param SCRIPT_FILENAME     $document_root$fastcgi_script_name;
@@ -240,3 +240,19 @@ sudo vi /var/www/index.aspx
 ```
     
 With some dynamic content:
+
+```aspx-cs
+Hello, the time is <%= System.DateTime.Now %>.
+```
+    
+Start the service and make sure the page works:
+
+```bash
+sudo service monoserve start
+```
+    
+### Next steps ###
+-------
+
+In my next installment we'll get [FubuMVC](http://mvc.fubu-project.org/) running on the pi.
+
