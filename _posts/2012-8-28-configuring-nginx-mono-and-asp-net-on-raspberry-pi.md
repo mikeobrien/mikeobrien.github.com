@@ -27,32 +27,3 @@ sudo fdisk -uc /dev/mmcblk0
 
 Now reboot, resize the partition and reboot once more and verify the new size:
 
-```bash
-sudo reboot
-sudo resize2fs /dev/mmcblk0p2
-sudo reboot
-df -h
-```
-
-The following commands set the time zone, password and enable ssh:
-
-```bash
-dpkg-reconfigure tzdata
-
-passwd
-
-sudo mv /boot/boot_enable_ssh.rc /boot/boot.rc
-```
-
-You'll want to either setup a static DHCP lease on your DHCP server or configure a static ip on the pi. The following command displays the network interface (and the mac address) if you want to setup a static DHCP lease:
-
-```bash
-ifconfig -a
-```
-    
-Or the following command allows you to set a static ip:
-
-```bash
-sudo vi /etc/network/interfaces
-```
-    
