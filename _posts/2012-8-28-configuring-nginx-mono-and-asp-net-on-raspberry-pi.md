@@ -24,10 +24,12 @@ First we need to resize the root partition to fill the SD card as the default si
 
 Now reboot, resize the partition and reboot once more and verify the new size:
 
-    sudo reboot
-    sudo resize2fs /dev/mmcblk0p2
-    sudo reboot
-    df -h
+```bash
+sudo reboot
+sudo resize2fs /dev/mmcblk0p2
+sudo reboot
+df -h
+```
 
 The following commands set the time zone, password and enable ssh:
 
