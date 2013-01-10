@@ -2,7 +2,6 @@
 layout: post
 title: Setting up nginx, Mono and ASP.NET on the RaspberryPi
 tags: [RaspberryPi, Mono, ASP.NET]
-markdown: redcarpet
 ---
 
 **UPDATE: Much of this post is no longer valid with the [new Raspbian image](http://www.raspberrypi.org/downloads). For example the steps in the Initial Setup section are now automated in the initial setup screen. Also wheezy ships with a newer version of mono, so depending on your needs, there may no longer be a need to download and compile the latest source.**
@@ -25,7 +24,7 @@ First we need to resize the root partition to fill the SD card as the default si
 
 Now reboot, resize the partition and reboot once more and verify the new size:
 
-```
+```bash
 sudo reboot
 sudo resize2fs /dev/mmcblk0p2
 sudo reboot
