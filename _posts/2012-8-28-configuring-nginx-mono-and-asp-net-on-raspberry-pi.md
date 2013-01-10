@@ -146,7 +146,7 @@ make install
 cd ..; rm -rf mono-2.10.8; rm mono-2.10.8-pi-compiled.tar.bz2
 ```
 
-b) Or compile yourself:
+b) Or compile it yourself:
 
 ```bash
 wget http://origin-download.mono-project.com/sources/mono/mono-2.10.8.tar.bz2
