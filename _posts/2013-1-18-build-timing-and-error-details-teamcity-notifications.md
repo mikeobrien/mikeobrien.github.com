@@ -1,7 +1,7 @@
 ---
 published: true
 layout: post
-title: Adding Build Time and Error Details to TeamCity Email Notifications
+title: Adding Build Time and Error Details to TeamCity Emails
 tags: [TeamCity]
 ---
 
