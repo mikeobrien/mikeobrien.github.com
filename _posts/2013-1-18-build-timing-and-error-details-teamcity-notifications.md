@@ -5,7 +5,7 @@ title: Adding Build Time and Error Details to TeamCity Email Notifications
 tags: [TeamCity]
 ---
 
-**Updated links to TeamCity 7.x and added task timings section**
+**Updated links to TeamCity 7.x and added task timings section.**
 
 After setting up TeamCity I wanted to add some more information to the notification email. TeamCity allows you to customize all notifications (Not just email) through templates. The following resources were helpful in figuring out how to do this:
 
@@ -17,7 +17,6 @@ First I wanted to add build time to the subject of successful build notification
 
 ```html
 <#global subject>${project.name} ${buildType.name} v${build.buildNumber} Succeeded
-
 (${((build.duration / 60) % 60)}:${((build.duration) % 60)?string?left_pad(2, "0")})</#global>
 ```
 
@@ -68,7 +67,7 @@ createSpec     0:00  0%
 createPackage  0:01  7%
 ```
 
-When a build fails, TeamCity will include failed test results in the email but not other failure information. I wanted to also add the failure summary (Like the one seen on the build summary page) in every failed build notification. Add the following anywhere in the `bodyHtml` section of `build_failed.ftl`:
+When a build fails, TeamCity will include failed test results in the email but not other failure information. I wanted to also add the failure summary (Like the one seen on the build summary page) in every failed build notification. Add the following anywhere in the `bodyHtml` section of `build_failed.ftl`, adjusting the number of lines you want to capture (By default 25):
 
 ```html
 <div style="color:red"> 
