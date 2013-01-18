@@ -44,7 +44,7 @@ Next I wanted to see a breakdown of the timing of all the build tasks. You can a
 		<#assign duration=end-start>
 		<tr>
 		<td>${message.text?replace("Execute ", "")}</td>
-		<td>${((duration / 60) % 60)}:${((duration) % 60)?string?left_pad(2, "0")}</td>
+		<td align="right">${((duration / 60) % 60)}:${((duration) % 60)?string?left_pad(2, "0")}</td>
 		<td align="right">${((duration / build.duration) * 100)?round}%</td>
 		</tr>
 	</#if>
