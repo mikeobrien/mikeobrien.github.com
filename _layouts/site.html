@@ -60,14 +60,8 @@
 		<title>Mike O'Brien{% if page.title %} - {{page.title}}{% endif %}</title>
         
         <meta name="description" content="{% if page.title %}{{page.title}}{% else %}Terrible Tinkerer.{% endif %}" />
-        
-        {% if page.tags %}
-        <meta name="keywords" content="{{page.tags | join: ','}}" />
-        {% endif %}
-        
-        {% if page.date %}
-        <meta http-equiv="date" content="{{page.date |date: '%A, %d  %Y %H:%M:%S GMT'}}" />
-        {% endif %}
+        {% if page.tags %}<meta name="keywords" content="{{page.tags | join: ','}}" />{% endif %}
+        {% if page.date %}<meta http-equiv="date" content="{{page.date |date: '%A, %d  %Y %H:%M:%S GMT'}}" />{% endif %}
         
         <link href="/styles/bootstrap.css" rel="stylesheet" type="text/css" />
         <link href="/styles/site.css" rel="stylesheet" type="text/css" />
