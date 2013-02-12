@@ -4,7 +4,7 @@ title: MVP Done Right
 tags: [MVP]
 ---
 
-Over the years I and [others](http://devlicio.us/blogs/rob_eisenberg/archive/2012/01/04/how-i-lost-regained-and-then-turned-down-an-mvp-award.aspx) [have](http://codebetter.com/karlseguin/2009/02/03/why-aren-t-i-an-mvp/) [observed](http://keyvan.io/on-microsoft-mvp-program) that the current Microsoft MVP program is flawed. What if we had an MVP-esque program that was done right? Paul Betts said he is "[still not convinced the entire concept of the MVP program isn’t flawed](https://twitter.com/xpaulbettsx/status/220643035095105536)". It may in fact be a flawed concept altogether. I'm on the fence about it though because I've never seen it done right. So it's hard to tell if the MVP program is flawed in principle or if it's just Microsoft messing it up. Anyways, here are some thought's on what I think a "good" program would be:
+Over the years I and [others](http://devlicio.us/blogs/rob_eisenberg/archive/2012/01/04/how-i-lost-regained-and-then-turned-down-an-mvp-award.aspx) [have](http://codebetter.com/karlseguin/2009/02/03/why-aren-t-i-an-mvp/) [observed](http://keyvan.io/on-microsoft-mvp-program) that the current Microsoft MVP program is flawed. What if we had an MVP-esque program that was done right? Paul Betts said he is "[still not convinced the entire concept of the MVP program isn't flawed](https://twitter.com/xpaulbettsx/status/220643035095105536)". It may in fact be a flawed concept altogether. I'm on the fence about it though because I've never seen it done right. So it's hard to tell if the MVP program is flawed in principle or if it's just Microsoft messing it up. Anyways, here are some thought's on what I think a "good" program would be:
 
 ### Core Tenets ### 
 
