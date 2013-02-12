@@ -31,7 +31,7 @@ Some ideas for execution:
 * Nominating should be completely community driven. People should be able to upvote their peers in different categories and be able to propose categories.
 * Categories could be broad; programming languages, frameworks, software, commercial or open source, but kept reasonably in the sphere of software dev. 
 * Any software that is used for the program should be open source.
-* Awardees would be automatically chosen at the end of the year, which doesn’t have to be the calendar year, as the top n percent of nominees in the category.
+* Awardees would be automatically chosen at the end of the year, which doesn't have to be the calendar year, as the top n percent of nominees in the category.
 * Primary sponsorship should be provided by a respected and well know organization. I think if it's to be taken seriously it can't be done by an organization that is not liked and respected by devs in general or one that is not widely known. The primary sponsor would coordinate the program and host any software or content required for it. I personally think GitHub would be perfect for this.
 * Other sponsors could pledge things for different categories. For example JetBrains could pledge free RubyMine licenses for all ruby awardees. Or CodeStock could offer free tickets to the top 5 awardees in certain categories. 
 * Categories shouldn't require sponsorship. So in some cases there would just be recognition, no goodies.
