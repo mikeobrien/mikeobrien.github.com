@@ -22,6 +22,14 @@ First I wanted to add build time to the subject of successful build notification
 
 This will give you a subject along the lines of: `Frogger Stable CI v1.0.0.331 Succeeded (11:58)`
 
+If your using [the new feature branch builds in TeamCity](http://confluence.jetbrains.com/display/TCD7/Working+with+Feature+Branches) you may also want to throw in the branch name:
+
+```html
+<#global subject>${project.name} ${buildType.name} ...</#global>
+```
+
+This will only display the branch name if it is not the default branch.
+
 Next I wanted to see a breakdown of the timing of all the build tasks. You can add this anywhere in the `bodyHtml` directive of `build_successful.ftl`:
 
 ```html
@@ -67,14 +75,16 @@ createSpec     0:00  0%
 createPackage  0:01  7%
 ```
 
-When a build fails, TeamCity will include failed test results in the email but not other failure information. I wanted to also add the failure summary (Like the one seen on the build summary page) in every failed build notification. Add the following anywhere in the `bodyHtml` section of `build_failed.ftl`, adjusting the number of lines you want to capture (By default 25):
+When a build fails, TeamCity will include failed test results in the email but not other failure information. I wanted to also add the failure summary (Like the one seen on the build summary page) in every failed build notification. Add the following anywhere in the `bodyHtml` section of `build_failed.ftl`, adjusting the number of lines you want to capture (By default 30) and how many you want to skip (By default 12, which contains the rake stack trace and some TC finalization messages, both of which are usually not important):
 
 ```html
-<div style="color:red"> 
-    <#list build.buildLog.messages[(build.buildLog.messages?size - 25)..] as message> 
-        ${message.text?replace("\n", "\lbr/\g")}<br/> 
-    </#list> 
-</div> 
+<div style="color:red">
+	<code style="font-family:monospace;font-family:Menlo,Bitstream Vera Sans Mono,Courier New,Courier,monospace;font-size:12px">
+		<#list build.buildLog.messages[(build.buildLog.messages?size - 30)..(build.buildLog.messages?size - 12)] as message>
+			${message.text?replace("\n", "\lbr/\g")?replace(" ", "&nbsp;")}<br/>
+		</#list>
+	</code>
+</div>
 ```
 
 This will give you a notification along the lines of:
