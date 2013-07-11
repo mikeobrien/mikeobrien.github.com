@@ -75,12 +75,13 @@ createSpec     0:00  0%
 createPackage  0:01  7%
 ```
 
-When a build fails, TeamCity will include failed test results in the email but not other failure information. I wanted to also add the failure summary (Like the one seen on the build summary page) in every failed build notification. Add the following anywhere in the `bodyHtml` section of `build_failed.ftl`, adjusting the number of lines you want to capture (By default 30) and how many you want to skip (By default 12, which contains the rake stack trace and some TC finalization messages, both of which are usually not important):
+When a build fails, TeamCity will include failed test results in the email but not other failure information. I wanted to also add the failure summary (Like the one seen on the build summary page) in every failed build notification. Add the following anywhere in the `bodyHtml` section of `build_failed.ftl`. The code below breaks at the ruby runtime error because in general it doesen't give you any valuable info and the stack trace is huge. The error messages you want to see appear before that point (Unless of course there is a bug in the ruby code itself). Also everything after it is not important. So I omit it and everything after it. If you want to see everything just remove the line where it breaks.
 
 ```html
 <div style="color:red">
 	<code style="font-family:monospace;font-family:Menlo,Bitstream Vera Sans Mono,Courier New,Courier,monospace;font-size:12px">
-		<#list build.buildLog.messages[(build.buildLog.messages?size - 30)..(build.buildLog.messages?size - 12)] as message>
+		<#list build.buildLog.messages[(build.buildLog.messages?size - 30)..] as message>
+			<#if message.text?trim?starts_with("RuntimeError:")><#break></#if>
 			${message.text?replace("\n", "\lbr/\g")?replace(" ", "&nbsp;")}<br/>
 		</#list>
 	</code>
