@@ -16,6 +16,7 @@ a {
 }
 
 .header .logo {
+    float: left;
     padding: 9px 0 0 5px;
 }
 
