@@ -62,6 +62,6 @@ wlan0     Scan completed :
 ...
 ```
 
-- Try plugging the adapter into the other USB port on the pi. Was having a terrible time getting it to work, did this and voilà!
+- Try plugging the adapter into the other USB port on the pi. Was having a terrible time getting it to work, did this and voila!
 - Make sure you are plugged into a powered hub. I guess this can be a problem as the adapter draws more current than some ports can provide. If you don't see the blue light flashing on the adapter this might be the issue.
 - Hit the [pi add-ons forum](http://www.raspberrypi.org/phpBB3/viewforum.php?f=45). And don't ask me in the comments because I'm just as clueless as you.
