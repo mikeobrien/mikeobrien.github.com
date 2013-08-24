@@ -7,8 +7,8 @@ tags: [RaspberryPi]
 
 Finally got the [Edimax Nano (EW-7811Un)](http://www.amazon.com/Edimax-EW-7811Un-Wireless-Adapter-Wizard/dp/B003MTTJOY) setup on my Raspberry Pi. Last year I could not get it working but it appears that newer versions of the Raspbian Wheezy image might have simplifed the config. The following instructions worked with the 7/26/2013 Raspbian image (can't speak for older or newer versions) and WPA (Did not try it for WPA2).
 
-1. Plug in the adapter and reboot.
-2. Check that the device is showing up (Note the last entry):
+- Plug in the adapter and reboot.
+- Check that the device is showing up (Note the last entry):
 
 ```bash
 pi@raspberrypi ~ $ lsusb
@@ -18,7 +18,7 @@ Bus 001 Device 003: ID 0424:ec00 Standard Microsystems Corp.
 Bus 001 Device 004: ID 7392:7811 Edimax Technology Co., Ltd EW-7811Un 802.11n Wireless Adapter [Realtek RTL8188CUS]
 ```
 
-4. Edit the /etc/network/interfaces file as follows and reboot:
+- Edit the /etc/network/interfaces file as follows and reboot:
 
 ```bash
 auto lo
@@ -33,7 +33,7 @@ wpa-ssid "my ssid"
 wpa-psk "my wifi password"
 ```
 
-5. See if you're connected and getting an IP, a blue light should be flashing on the adapter:
+- See if you're connected and getting an IP, a blue light should be flashing on the adapter:
 
 ```bash
 pi@raspberrypi ~ $ ifconfig wlan0
@@ -48,7 +48,7 @@ wlan0     Link encap:Ethernet  HWaddr 80:1f:02:70:7d:b1
 
 **Troubleshooting**
 
-1. See if you can scan for available networks, if so you might have your ssid or password set incorrectly:
+- See if you can scan for available networks, if so you might have your ssid or password set incorrectly:
 
 ```bash
 pi@raspberrypi ~ $ sudo iwlist wlan0 scan
@@ -62,6 +62,6 @@ wlan0     Scan completed :
 ...
 ```
 
-2. Try plugging the adapter into the other USB port on the pi. Was having a terrible time getting it to work, did this and viola!
-3. Make sure you are plugged into a powered hub. I guess this can be a problem as the adapter draws more current than some ports can provide. If you don't see the blue light flashing on the adapter this might be the issue.
-4. Hit the [pi add-ons forum](http://www.raspberrypi.org/phpBB3/viewforum.php?f=45). And don't ask me in the comments because I'm just as clueless as you.
+- Try plugging the adapter into the other USB port on the pi. Was having a terrible time getting it to work, did this and voilà!
+- Make sure you are plugged into a powered hub. I guess this can be a problem as the adapter draws more current than some ports can provide. If you don't see the blue light flashing on the adapter this might be the issue.
+- Hit the [pi add-ons forum](http://www.raspberrypi.org/phpBB3/viewforum.php?f=45). And don't ask me in the comments because I'm just as clueless as you.
