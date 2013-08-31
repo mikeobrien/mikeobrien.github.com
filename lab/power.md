@@ -3,7 +3,7 @@ layout: lab
 title: Lab
 ---
 
-Welcome to the lab
+Power Supplies
 ==================
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor metus vulputate nisi tempor, sit amet cursus sem porta. Pellentesque ipsum odio, porta non turpis vitae, bibendum auctor quam. Nulla tristique, tortor sed ornare dapibus, odio lacus malesuada sapien, ac aliquam nisl arcu a nisl. Phasellus placerat dui urna, id cursus odio ultrices at. Quisque eu sodales odio. Ut vitae tellus viverra, auctor metus eu, varius arcu. Aliquam fermentum lacus sit amet interdum commodo. Duis sit amet turpis diam. Cras lobortis cursus arcu, in fringilla urna tristique fermentum. Sed turpis libero, volutpat sollicitudin rhoncus id, mattis in est. Donec bibendum, magna at interdum pharetra, velit neque lobortis augue, eget sodales mauris dolor at purus. Aenean iaculis metus ut vulputate auctor. Pellentesque enim sem, consequat tincidunt iaculis hendrerit, molestie at nisl. Nulla vel lacinia nunc.
