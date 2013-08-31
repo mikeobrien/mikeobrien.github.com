@@ -2,7 +2,7 @@
     padding: 0 25px;
 }
 
-.lab .container {
+.lab .lab-container {
     background-color: #fff;
     padding: 0 30px;
     width: 100%;
@@ -20,7 +20,7 @@
     width: 200px;
 }
 
-.content {
+.lab-content {
     margin-left: 250px;
 }
 
