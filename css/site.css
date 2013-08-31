@@ -30,6 +30,7 @@ a {
 
 .header .links {
     float: right;
+    padding-top: 3px;
 }
 
 .header .links img {
