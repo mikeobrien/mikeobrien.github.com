@@ -1,6 +1,6 @@
 body {
     background-color: #71969F;
-    padding: 8px;
+    padding: 0;
 }
 
 td {
@@ -13,11 +13,20 @@ a {
 
 .header {
     height: 90px;
+    background-color: #84A7AF;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 30px;
 }
 
 .header .logo {
     float: left;
-    padding: 9px 0 0 5px;
+    padding: 10px 0 0 5px;
+}
+
+.header .logo img {
+    height: 35px;
 }
 
 .header .links {
@@ -26,6 +35,8 @@ a {
 
 .header .links img {
     padding-left: 8px;
+    padding-top: 7px;
+    height: 40px;
 }
 
 .footer {
