@@ -52,6 +52,10 @@
     border-top: 1px solid #667279;
 }
 
+.tags a {
+    padding: 2px 15px;
+}
+
 .posts .footer {
     height: 20px;
     margin: 15px, 0;
