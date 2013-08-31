@@ -1,7 +1,7 @@
 .container {
     background-color: #fff;
     text-align: left;
-    margin: 20px 0;
+    margin: 20px auto;
     padding: 10px 10px 10px 30px;
     width: 100%;
 }
