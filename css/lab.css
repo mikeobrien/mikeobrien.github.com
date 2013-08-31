@@ -5,3 +5,10 @@
     padding: 10px 10px 10px 30px;
     width: 100%;
 }
+
+.nav .nav > li > a {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 30px;
+    font-size: 90%;
+}
