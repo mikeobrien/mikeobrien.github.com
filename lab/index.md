@@ -7,7 +7,7 @@ title: Lab
 
 Building scientific apparatus can be challenging when you are first starting out. The purpose of this site to act as a living lab book to help experimenters get up to speed on a few technologies and techniques. 
 
-**DISCLAIMER**: I am not a experimental physicist or electrical engineer. Although I do my best to present the material as accurately as possible I cannot make any guarantees. Also some experiments involve very high voltages (> 100kV) which can seriously injure or kill. YOU are responsible for educating yourself and for your own safety.
+**DISCLAIMER**: I am not an experimental physicist or electrical engineer. Although I do my best to present the material as accurately as possible I cannot make any guarantees. Also some experiments involve very high voltages (> 100kV) which can seriously injure or kill. YOU are responsible for educating yourself and for your own safety.
 
 ### <a id="learning-resources"></a> Learning Resources
 
