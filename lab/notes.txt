@@ -7,8 +7,9 @@ KF flanges on the intake and exhaust
 
 Testing for leaks, isolate components as much as possible to leak test them.
 
-Vendors, getting accounts with vendors that only allow business customers.
 
 Potting to prevent breakdown.
 
 HV safety tips?
+
+Remember to talk about NPT nominal diameters and how they don't match the stated size. Like a 1/8 NPT pipe has a nominal diameter of .405. Also mention the taper.

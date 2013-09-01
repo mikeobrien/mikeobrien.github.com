@@ -33,7 +33,7 @@ p {
     text-indent: 20px;
 }
 
-p a {
+p a, li a {
     color: #428bca;
 }
 
