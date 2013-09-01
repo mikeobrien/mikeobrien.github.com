@@ -29,7 +29,7 @@ Finding and purchasing supplies can be challenging at first. The most cost effec
 
 - Always checkout the sellers negative and neutral reviews no matter what their feedback score is. The feedback score is a pretty poor indicator IMO. I've gotten burned a few times and if I would have looked at the negative reviews I would have saved myself a lot of trouble. You want to see how they handle customer service when something goes wrong and thats where you will see it. Two sellers in particular I would avoid are [supertechshop](http://www.ebay.com/usr/supertechshop) and [svcstore](http://www.ebay.com/usr/svcstore), both eBay stores for [Silicon Valley Compucycle](http://www.svc.com/). Read [supertechshop](http://www.ebay.com/usr/supertechshop)'s negative reviews and you'll understand why.
 
-- Use the eBay RSS feeds to keep on top of new listings. Do a search on eBay and then tack on `&_rss=1` to the url and it will return RSS for that search. You can then use a feed reader or other method to keep up with new listings. I personally use [IFTTT](https://ifttt.com) to post the RSS feed to a private twitter feed.
+- Use the eBay RSS feeds to keep on top of new listings. Do a search on eBay and then tack on `&_rss=1` to the url and it will return RSS for that search. You can then use a feed reader or other method to keep up with new listings. I personally use [IFTTT](https://ifttt.com) to post the RSS feed to a private twitter feed that I follow.
 
 - See how much the item has sold for in the past so you can get an idea of how much it will cost. Under the advanced search you will see an option for sold listings.
 
