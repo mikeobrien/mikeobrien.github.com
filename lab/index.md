@@ -13,7 +13,7 @@ Building scientific apparatus can be challenging when you are first starting out
 
 The following resources have been very helpful in general. I will note resources that cover specific topics in their respective sections on the site.
 
-- [Exploring Quantum Physics through Hands-on Projects](http://www.amazon.com/Exploring-Quantum-Physics-through-Projects/dp/1118140664) - David and Shanni Prutchi. Most of the content on this site is meant to complement this book, not replace it. So I would highly recommend picking up a copy as it contains a lot of information that I won't cover here. Also take a look at [their website](http://www.diyphysics.com/) as it contains quite a bit of supplementary information.
+- [Exploring Quantum Physics through Hands-on Projects](http://www.amazon.com/Exploring-Quantum-Physics-through-Projects/dp/1118140664) - David and Shanni Prutchi. Most of the content on this site is designed to complement this book, not replace it. So I would highly recommend picking up a copy as it contains a lot of information that I won't cover here. Also take a look at [their website](http://www.diyphysics.com/) as it contains quite a bit of supplementary information.
 
 - [Building Scientific Apparatus](http://www.amazon.com/Building-Scientific-Apparatus-John-Moore/dp/0521878586) - John H. Moore, Christopher C. Davis, Michael A. Coplan, Sandra C. Greer. This is the experimenters bible; fabricating, vacuum, electronics, optics and more. If you are doing any serious experimentation, this book is a must have, covers almost everything you need to know.
 
