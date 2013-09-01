@@ -46,7 +46,7 @@ If you can't find what you need surplus then you're stuck buying new. For common
 Here are some vendors you will want to be aware of:
 
 - [Kurt J. Lesker](http://www.lesker.com/) - Sells all things vacuum. You can find a lot of Lesker items on eBay but you may need to order from them directly. They have account restrictions, see above.
-- [Ace Glass](http://www.aceglass.com/) - Sells laboratory glassware. In particular internally threaded glassware and components that can be easily put together to build vacuum chambers. You can also find quite a bit of their products on eBay. They have account restrictions, see above.
+- [Ace Glass](http://www.aceglass.com/) - Sells laboratory glassware. In particular, internally threaded glassware and components that can be easily put together to build vacuum chambers. You can also find quite a bit of their products on eBay. They have account restrictions, see above.
 - [Ideal Vacuum Products](http://www.idealvac.com/) - Sells a wide range of vacuum components. If you can't find it on eBay they probably have it.
 - [Information Unlimited](http://amazing1.com/) - Has a large selection of high voltage equipment, components and other interesting items.
 - [Ocean Optics](http://www.oceanoptics.com/) - Makers of miniature USB spectrometers. These can be found on eBay for a fraction of the cost.
