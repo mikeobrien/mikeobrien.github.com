@@ -25,7 +25,7 @@ The following resources have been very helpful in general. I will note resources
 
 ### <a id="supplies"></a> Supplies
 
-Finding and purchasing supplies can be challenging at first. The most cost effective approach, of course, is to buy surplus and [eBay](http://www.ebay.com/) has been the best place I've found for it. The following are a few tips for shopping for surplus on eBay:
+Finding and purchasing materials & supplies can be challenging at first. The most cost effective approach, of course, is to buy surplus and [eBay](http://www.ebay.com/) has been the best place I've found for it. The following are a few tips for shopping for surplus on eBay:
 
 - Always checkout the sellers negative and neutral reviews no matter what their feedback score is. The feedback score is a pretty poor indicator IMO. I've gotten burned a few times and if I would have looked at the negative reviews I would have saved myself a lot of trouble. You want to see how they handle customer service when something goes wrong and thats where you will see it. Two sellers in particular I would avoid are [supertechshop](http://www.ebay.com/usr/supertechshop) and [svcstore](http://www.ebay.com/usr/svcstore), both eBay stores for [Silicon Valley Compucycle](http://www.svc.com/). Read [supertechshop](http://www.ebay.com/usr/supertechshop)'s negative reviews and you'll understand why.
 
