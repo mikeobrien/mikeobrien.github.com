@@ -37,7 +37,7 @@ Finding and purchasing materials & supplies can be challenging at first. The mos
 
 - See how much the item has sold for in the past so you can get an idea of how much it will cost. Under the advanced search you will see an option for sold listings.
 
-- When listings have a Make Offer option don't be afraid to make a really low offer, even up to 80%. Some sellers are just trying to move surplus and are not necessarily sure how much its worth. Not every seller will go low but its always worth a try.
+- When listings have a Make Offer option don't be afraid to make a really low offer, even up to 80%. Some sellers are just trying to move surplus and are not necessarily sure how much its worth. Not every seller will go low but its always worth a try. I regularly get fantastic deals this way.
 
 - Use the OR notation when doing searches. One example of this is looking for KF style vacuum fittings as they can be called NW, QF or KF. The OR notation is a comma separated list surrounded by parenthesis. So if I wanted to search for a KF-25 tee I could search `(qf,kf,nw) 25 tee` and it will return all results no matter what the seller called it.
 
