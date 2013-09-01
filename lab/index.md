@@ -37,5 +37,13 @@ Finding and purchasing supplies can be challenging at first. The most cost effec
 
 - Use the OR notation when doing searches. One example of this is looking for KF style vacuum fittings as they can be called NW, QF or KF. The OR notation is a comma separated list surrounded by parenthesis. So if I wanted to search for a KF-25 tee I could search `(qf,kf,nw) 25 tee` and it will return all results no matter what the seller called it.
 
-The following are some vendors that sell new parts.
+If you can't find what you need surplus then you'll have to buy new. Here are a couple of things you'll need to know:
+
+- Some vendors like Ace Glass and Kurt J. Lesker will only sell to businesses or will not ship to residential addresses. Despite these restrictions you may be able to get an account with these vendors and have them ship to your home address. You will need to fill out the new account form on their website and submit it. They require a business name and I just use the business name I do consulting with, though its not an official business with a tax id and such. They will respond saying they only sell to businesses or don't ship to residential addresses and they ask for some proof that you are a business, like your tax id number. Call the rep (It's better than emailing) and explain that you are building an apparatus, what the apparatus is and ask them if there is any way to purchase from them despite the restrictions. They may be flexible with you if they feel confident you are not using their products in an illegal way or not going to illegally export them. If you are not able to setup an account with them, ask if there is a reseller you can buy from or try contacting their regional sales rep and explain your situation as they might be better able to get you setup with an account.
+
+- Many of these vendors sell large high ticket items so they will only ship USP or FedEx and usually ship in boxes. They aren't really setup to sell small low dollar items. They also don't tell you the shipping up front (Unlike what you're used to on most modern e-commerce sites). That being said, you can end up paying pretty high shipping, in the $10-$15 dollar range, for even the smallest parts and you won't know the shipping amount until after you've placed your order and given them your CC. For example I once bought a little o-ring for a vacuum pump for $2 and the shipping was going to be FedEx for $12. I caught that before they charged my card and told them that was pretty steep shipping for a tiny o-ring and could they just pop it in an envelope with a first class stamp. They agreed. Also you will want to minimize your purchases so instead of buying a number of things separately, try figuring out what you need up front so you can place one order and combine shipping. And sometimes you just have to bite the bullet, but at least you'll see it coming. Just remember it's not Amazon.com.
+
+
+
+
 
