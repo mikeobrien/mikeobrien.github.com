@@ -13,7 +13,7 @@ Building scientific apparatus can be challenging when you are first starting out
 
 The following resources have been very helpful in general. I will note resources that cover specific topics in their respective sections on the site.
 
-- [Exploring Quantum Physics through Hands-on Projects](http://www.amazon.com/Exploring-Quantum-Physics-through-Projects/dp/1118140664) by David and Shanni Prutchi. Most of the content on this site is inspired by this book so I would highly recommend picking up a copy as I will be referencing it often. Also take a look at [their website](http://www.diyphysics.com/) as it contains quite a bit of supplementary information.
+- [Exploring Quantum Physics through Hands-on Projects](http://www.amazon.com/Exploring-Quantum-Physics-through-Projects/dp/1118140664) by David and Shanni Prutchi. Much of the content on this site is inspired and informed by this book so I would highly recommend picking up a copy as I will be referencing it often. Also take a look at [their website](http://www.diyphysics.com/) as it contains quite a bit of supplementary information.
 
 - [Building Scientific Apparatus](http://www.amazon.com/Building-Scientific-Apparatus-John-Moore/dp/0521878586) - John H. Moore, Christopher C. Davis, Michael A. Coplan, Sandra C. Greer. This is the experimenters bible; fabricating, vacuum, electronics, optics and more. If you are doing any serious experimentation, this book is a must have, covers almost everything you need to know.
 
@@ -43,7 +43,11 @@ If you can't find what you need surplus then you'll have to buy new. Here are a 
 
 - Many of these vendors sell large high ticket items so they will only ship USP or FedEx and usually ship in boxes. They aren't really setup to sell small low dollar items. They also don't tell you the shipping up front (Unlike what you're used to on most modern e-commerce sites). That being said, you can end up paying pretty high shipping, in the $10-$15 dollar range, for even the smallest parts and you won't know the shipping amount until after you've placed your order and given them your CC. For example I once bought a little o-ring for a vacuum pump for $2 and the shipping was going to be FedEx for $12. I caught that before they charged my card and told them that was pretty steep shipping for a tiny o-ring and could they just pop it in an envelope with a first class stamp. They agreed. Also you will want to minimize your purchases so instead of buying a number of things separately, try figuring out what you need up front so you can place one order and combine shipping. And sometimes you just have to bite the bullet, but at least you'll see it coming. Just remember it's not Amazon.com.
 
+Here are some vendors you will want to be aware of:
 
-
-
+- [Kurt J. Lesker](http://www.lesker.com/newweb/index.cfm) - Sells all things vacuum. You can find a lot of Lesker items on eBay but there you may need to order from them directly. Has account restrictions, see above.
+- [Ace Glass](http://www.aceglass.com/) - Sells laboratory glassware. In particular internally threaded glassware and components that can be easily put together to build vacuum chambers. You can also find quite a bit of their products on eBay. Has account restrictions, see above.
+- [Ideal Vacuum Products](http://www.idealvac.com/) - Sells a wide range of vacuum components. If you can't find it on eBay they probably have it.
+- [Information Unlimited](http://amazing1.com/) - Has a large selection of high voltage equipment and other interesting items.
+- [Ocean Optics](http://www.oceanoptics.com/) - Makers of miniature USB spectrometers. These can be found on eBay for a fraction of the cost.
 
