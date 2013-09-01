@@ -36,3 +36,7 @@ p {
 p a {
     color: #428bca;
 }
+
+li p {
+    text-indent: 0px;
+}
