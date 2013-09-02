@@ -51,3 +51,9 @@ li p {
     display: block;
     padding: 10px 15px;
 }
+
+.lab-content h1:first-child, 
+.lab-content h2:first-child, 
+.lab-content h3:first-child {
+    margin-top: 8px;
+}
