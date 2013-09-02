@@ -45,3 +45,9 @@ p a, li a {
 li p {
     text-indent: 0px;
 }
+
+.nav>li>span {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+}
