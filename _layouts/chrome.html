@@ -7,17 +7,17 @@ layout: site
         <a href="/" title="Home"><img src="/img/logo-mikeobrien.png" /></a>
     </div>
     <div class="links">
-        <a href="http://www.mikeobrien.net/blog" title="Blog"><img class="blog-icon" src="/img/icon-blog-blue.png" /></a>
-        <a href="/cv" title="Curriculum Vitae"><img class="cv-icon" src="/img/icon-cv-blue.png" /></a>
-        <a href="/lab" title="Lab"><img class="lab-icon" src="/img/icon-lab-blue.png" /></a>
-        <a href="https://github.com/mikeobrien" title="GitHub"><img class="github-icon" src="/img/icon-github-blue.png" /></a>
+        <a href="http://www.mikeobrien.net/blog" title="Blog"><img class="blog-icon" src="/img/icon-blog.png" /></a>
+        <a href="/cv" title="Curriculum Vitae"><img class="cv-icon" src="/img/icon-cv.png" /></a>
+        <a href="/lab" title="Lab"><img class="lab-icon" src="/img/icon-lab.png" /></a>
+        <a href="https://github.com/mikeobrien" title="GitHub"><img class="github-icon" src="/img/icon-github.png" /></a>
     </div>
 </div>
 
 <script>
-if (window.location.pathname.indexOf('/cv') == 0) $('.cv-icon').attr('src', '/img/icon-cv-red.png');
-if (window.location.pathname.indexOf('/blog') == 0) $('.blog-icon').attr('src', '/img/icon-blog-red.png');
-if (window.location.pathname.indexOf('/lab') == 0) $('.lab-icon').attr('src', '/img/icon-lab-red.png');
+if (window.location.pathname.indexOf('/cv') == 0) $('.cv-icon').attr('src', '/img/icon-cv-selected.png');
+if (window.location.pathname.indexOf('/blog') == 0) $('.blog-icon').attr('src', '/img/icon-blog-selected.png');
+if (window.location.pathname.indexOf('/lab') == 0) $('.lab-icon').attr('src', '/img/icon-lab-selected.png');
 </script>
 
 {{ content }}
