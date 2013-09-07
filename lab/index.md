@@ -17,7 +17,7 @@ The following resources have been very helpful in general. I will note resources
 
 - [Building Scientific Apparatus](http://www.amazon.com/Building-Scientific-Apparatus-John-Moore/dp/0521878586) - John H. Moore, Christopher C. Davis, Michael A. Coplan, Sandra C. Greer. This is the experimenters bible; fabricating, vacuum, electronics, optics and more. If you are doing any serious experimentation, this book is a must have, covers almost everything you need to know.
 
-- [Introduction to Solid State Chemistry](https://www.youtube.com/watch?v=kI7D2lkcF8E&list=PL36EC6A6180271B0F) - [Donald Sadoway, MIT Department of Materials Science and Engineering](http://donaldsadoway.com/). Don't let the title fool you, this isn't your father's first year chemistry course. Sadoway is an amazing lecturer who really makes the material come alive. Lectures 1-14 cover quantum theory and condensed matter physics. The lectures on organic and biochemestry are also fantastic.
+- [Introduction to Solid State Chemistry](https://www.youtube.com/watch?v=kI7D2lkcF8E&list=PL36EC6A6180271B0F) - [Donald Sadoway, MIT Department of Materials Science and Engineering](http://donaldsadoway.com/). Don't let the title fool you, this isn't your father's first year chemistry course. Sadoway is an amazing lecturer who really makes the material come alive. Lectures 1-14 cover quantum theory and condensed matter physics. The lectures on organic and biochemistry are also fantastic.
 
 - [Modern Physics: From The Atom to Big Science](https://itunes.apple.com/us/itunes-u/history-181b-spring-2008-modern/id461116019) - [Cathryn Carson Berkley Department of History](http://history.berkeley.edu/people/cathryn-carson). This is a truly unique course that digs into the history of physics starting with Newton and on into the 21st century. She does a masterful job of explaining the relevant physics as well as the social and political context. I've listened to these over and over and glean something new each time. I've found that understanding the historical development and the people involved make learning the technical details much more fun and interesting. The discussion on radiation and quantum physics in lectures 12-15 and 20-26 is highly relevant to the content on this site.
 
@@ -40,6 +40,8 @@ Finding and purchasing materials & supplies can be challenging at first. The mos
 - When listings have a Make Offer option don't be afraid to make a really low offer, even up to 80%. Some sellers are just trying to move surplus and are not necessarily sure how much its worth. Not every seller will go low but its always worth a try. I regularly get fantastic deals this way.
 
 - Use the OR notation when doing searches. One example of this is looking for KF style vacuum fittings as they can be called NW, QF or KF. The OR notation is a comma separated list surrounded by parenthesis. So if I wanted to search for a KF-25 tee I could search `(qf,kf,nw) 25 tee` and it will return all results no matter what the seller called it.
+
+- Make sure the seller will do a DOA return. 
 
 If you can't find what you need surplus then you're stuck buying new. For common items I've found both [eBay](http://www.ebay.com) and [Amazon](http://amazon.com) to be invaluable. Amazon even has an [industrial and scientific department](http://www.amazon.com/industrial-scientific-supplies/b?node=16310091). I usually compare prices on those two sites. If you need specialized items, here are a couple of things you'll need to know:
 
