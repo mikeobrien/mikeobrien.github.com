@@ -15,7 +15,7 @@ The following resources have been very helpful in general. I will note resources
 
 - [Exploring Quantum Physics through Hands-on Projects](http://www.amazon.com/Exploring-Quantum-Physics-through-Projects/dp/1118140664) - David and Shanni Prutchi. Most of the content on this site is designed to complement this book, not replace it. So I would highly recommend picking up a copy as it contains a lot of information that I won't cover here. Also take a look at [their website](http://www.diyphysics.com/) as it contains quite a bit of supplementary information.
 
-- [Building Scientific Apparatus](http://www.amazon.com/Building-Scientific-Apparatus-John-Moore/dp/0521878586) - John H. Moore, Christopher C. Davis, Michael A. Coplan, Sandra C. Greer. This is the experimenters bible; fabricating, vacuum, electronics, optics and more. If you are doing any serious experimentation, this book is a must have, covers almost everything you need to know.
+- [Building Scientific Apparatus](http://www.amazon.com/Building-Scientific-Apparatus-John-Moore/dp/0521878586) - John H. Moore, Christopher C. Davis, Michael A. Coplan, Sandra C. Greer. This book contains general info on everything about building apparatus; fabricating, vacuum, electronics, optics and more. Although it is not super in depth on any of the topics it does give you a good overview.
 
 - [Introduction to Solid State Chemistry](https://www.youtube.com/watch?v=kI7D2lkcF8E&list=PL36EC6A6180271B0F) - [Donald Sadoway, MIT Department of Materials Science and Engineering](http://donaldsadoway.com/). Don't let the title fool you, this isn't your father's first year chemistry course. Sadoway is an amazing lecturer who really makes the material come alive. Lectures 1-14 cover quantum theory and condensed matter physics. The lectures on organic and biochemistry are also fantastic.
 
@@ -42,6 +42,8 @@ Finding and purchasing materials & supplies can be challenging at first. The mos
 - Use the OR notation when doing searches. One example of this is looking for KF style vacuum fittings as they can be called NW, QF or KF. The OR notation is a comma separated list surrounded by parenthesis. So if I wanted to search for a KF-25 tee I could search `(qf,kf,nw) 25 tee` and it will return all results no matter what the seller called it.
 
 - Make sure the seller will do a DOA return. 
+
+- Filter by item location of US only. There are a lot of listings out of China but expect weeks for delivery time. I've accidentially done this; not fun wating a month for a part.
 
 If you can't find what you need surplus then you're stuck buying new. For common items I've found both [eBay](http://www.ebay.com) and [Amazon](http://amazon.com) to be invaluable. Amazon even has an [industrial and scientific department](http://www.amazon.com/industrial-scientific-supplies/b?node=16310091). I usually compare prices on those two sites. If you need specialized items, here are a couple of things you'll need to know:
 

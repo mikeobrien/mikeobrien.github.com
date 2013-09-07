@@ -38,7 +38,7 @@ p {
     text-indent: 20px;
 }
 
-p a, li a {
+p a, li a, td a {
     color: #428bca;
 }
 
