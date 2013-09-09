@@ -43,7 +43,7 @@ Finding and purchasing materials & supplies can be challenging at first. The mos
 
 - Make sure the seller will do a DOA return. 
 
-- Filter by item location of US only. There are a lot of listings out of China but expect weeks for delivery time. I've accidentially done this; not fun wating a month for a part.
+- Be aware of where it's shipping from. I usually start out filtering the location by US only, then expand out if I can't find what I'm looking for. There are a lot of cheap listings out of China but expect weeks for delivery time. I've accidentally done this; not fun waiting a month for a part.
 
 If you can't find what you need surplus then you're stuck buying new. For common items I've found both [eBay](http://www.ebay.com) and [Amazon](http://amazon.com) to be invaluable. Amazon even has an [industrial and scientific department](http://www.amazon.com/industrial-scientific-supplies/b?node=16310091). I usually compare prices on those two sites. If you need specialized items, here are a couple of things you'll need to know:
 
