@@ -15,3 +15,5 @@ title: Lab
 - [Basic 1X and 10X Oscilloscope Probe tutorial](https://www.youtube.com/watch?v=SX4HGNWBe5M)
 
 - "ALWAYS use 10X mode until you run into a situation where﻿ you can't (due to low signal level)."
+
+- Always remember to discharge the power supply and CW multiplier or you're in for a nasty shock.
