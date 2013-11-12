@@ -166,20 +166,22 @@ So now that we understand provider, how is all this tied together? The following
 
 ![Angular provider flow](/blog/images/angular-provider-flow.png)
 
+So when you register a provider either directly or via one of the convenience methods (service, factory or value) the provider injector creates provider, injecting dependencies that exist in the *provider cache*. This explains why you can only take in providers or constants as dependencies in provider factory methods. It then decorates the provider (We'll cover that later) and then puts the provider in the cache.
 
+When a controller or directive is created, the instance injector tries to inject dependencies from the instance cache. If it can't find a dependency there it then looks to see if there is a provider for the dependency in the provider cache. If there is, it calls the `$get` function on the provider. It resolves the dependencies of the `$get` method the same way it does for controllers and directives; first checking the instance cache and then trying to find a provider, etc. The instance returned by the provider `$get` function is then cached in the instance cache for future use.  
 
-TODO: non singleton
+### Constants ###
 
-
-### Consts ###
-
-First we'll start off with consts as they are [not like the others](http://www.youtube.com/watch?v=ueZ6tvqhk8U). Constants are different 
+Now as you can probably see, constants are [not like the others](http://www.youtube.com/watch?v=ueZ6tvqhk8U). They are odd in that they get put into the provider cache, even though they are not providers, so that provider factories can take them as a dependency. They are also put into the instance cache so that providers (i.e. `$get`), controllers and directives can also take them as dependencies. You can see that clearly in the source:
 
 ```js
 function constant(name, value) {
-    assertNotHasOwnProperty(name, 'constant');
     providerCache[name] = value;
     instanceCache[name] = value;
 }
 ```
+
+Constants can be an object or primitive (Just in case the name makes you think primitives only). They cannot be altered by decorators so in that way they are "constant". If you don't need the value to be injectable into provider factories or you don't need it to be accessible to decorators, then its probably a toss up between defining "constant" values with `constant` and `value`.
+
+### Directives ###
 
