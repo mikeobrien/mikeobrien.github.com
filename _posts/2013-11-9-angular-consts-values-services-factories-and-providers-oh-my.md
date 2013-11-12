@@ -49,7 +49,7 @@ module('myModule', []).
     controller('GreetCtrl', function(greeting) { ... }); // 'Hi Richard Feynman' will be passed into the greeting parameter
 ```
 
-Notice how the `greeting` and `GreetCtrl` are taking in the dependencies `user` and `greeting` respectively. NB: minimization can mangle the parameter names killing Angular's DI. You can find more info in this [here](http://docs.angularjs.org/tutorial/step_05#controller_a-note-on-minification).
+Notice how the `greeting` and `GreetCtrl` are taking in the dependencies `user` and `greeting` respectively. NB: minimization can mangle the parameter names killing Angular's DI. You can find more info on how to handle this [here](http://docs.angularjs.org/tutorial/step_05#controller_a-note-on-minification).
 
 You can also define providers in the module config method if you need more flexibility:
 
@@ -72,7 +72,7 @@ Now the `provider` function doesn't just take object literals, you can also pass
 module('myModule', []).
     // Function constructor
     provider('name', function(...) {  // Dependencies (Providers or constants)
-        this.$get = function(...) {   // Dependencies (Instances or constants)
+        this.$get = function(...) {  // Dependencies (Instances or constants)
             return ...;               // Return the instance
         };
     }).
