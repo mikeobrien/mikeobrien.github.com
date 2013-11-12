@@ -19,9 +19,9 @@ Conceptually, Angular has an IoC container that only supports a singleton lifecy
 }
 ```
 
-That's it! An object with a `$get` method that returns an instance. Only one instance of the provider itself and the object it produces are maintained. You can also pass in dependencies. These dependencies can either be constants (Which we'll cover in a bit) or instances created by other providers (But not the providers themselves, more on that later). 
+That's it! An object with a `$get` function that returns an instance. Only one instance of the provider itself and the object it produces are maintained. You can also pass in dependencies. These dependencies can either be constants (Which we'll cover in a bit) or instances created by other providers (But not the providers themselves, more on that later). 
 
-A [convenience method](http://code.angularjs.org/1.2.0/docs/api/AUTO.$provide#methods_provider) on `Module` allows you to register providers, first specifying the name of the provider and then the provider itself:
+A [convenience function](http://code.angularjs.org/1.2.0/docs/api/AUTO.$provide#methods_provider) on `Module` allows you to register providers, first specifying the name of the provider and then the provider itself:
 
 ```js
 module('myModule', []).
@@ -32,7 +32,7 @@ module('myModule', []).
     });
 ```
 
-You can also define providers in the module `config` method if you need more flexibility:
+You can also define providers in the module `config` function if you need more flexibility:
 
 ```js
 module('myModule', []).
@@ -109,7 +109,7 @@ So the first provider takes in a constant and the second provider takes in the m
 
 ### Service, Factories and Values ###
 
-Up until now I haven't said anything about services, factories or values. Why? Because those concepts don't actually exist in Angular, there are only providers and the instances they produce, period. The `service()`, `factory()` and `value()` methods on `Module` and `$provide` are just *convenience methods* that accept functions or instances and turn them into providers, they don't represent any special Angular constructs by those names. To make this clearer, here are the convenience methods (I expanded them out for demonstrative purposes as they were DRY, see the actual ones [here](https://github.com/angular/angular.js/blob/v1.2.0/src/auto/injector.js#L632)):
+Up until now I haven't said anything about services, factories or values. Why? Because those concepts don't exist in Angular as distinct constructs, there are only providers and the instances they produce. The `service()`, `factory()` and `value()` functions on `Module` and `$provide` are just *convenience functions* (Poorly named IMO) that accept functions or instances and turn them into providers, they don't represent any special Angular constructs by those names. To make this clearer, here are the convenience functions (I expanded them out for demonstrative purposes as they were DRY, see the actual ones [here](https://github.com/angular/angular.js/blob/v1.2.0/src/auto/injector.js#L632)):
 
 ```js
 function factory(name, factoryFn) { 
@@ -133,25 +133,19 @@ function value(name, val) {
 }
 ```
 
-So `factory()` is just a convenience method for creating a provider from a function that returns the instance. `service()` is just a convenience method for creating a provider from a function constructor that is instantiated as the instance (If you're using CoffeeScript of like that pattern). And `value()` is just a convenience method for creating a provider that returns an instance. In the beginning we talked about how IoC containers typically allow you to register either instances, factories that create instances or a type to instantiate. That's exactly the functionality these convenience methods enable. But as you can see, its all just providers, the convenience methods just make it easier to do what you will want to do 99% of the time. So you could rename those convenience methods to something like this and I think it would make more sense (albeit more keystrokes):
+So `factory()` is just a convenience function for creating a provider from a function that returns the instance. `service()` is just a convenience function for creating a provider from a function constructor that is instantiated as the instance (If you're using CoffeeScript of like that pattern). And `value()` is just a convenience function for creating a provider that returns an instance. In the beginning we talked about how IoC containers typically allow you to register either instances, factories that create instances or a type to instantiate. That's exactly the functionality these convenience functions enable. But as you can see, its all just providers and the convenience functions just make it easier to do what you will want to do 99% of the time. 
 
-```js
-function registerFactoryProvider(name, factoryFn) { ... }
+At this point Zoidberg would say "why with all the Angular services??" That's just the colloquial name Angular folks have given to anything in Angular's IoC container. So in angular parlance, *providers* create *services* and *services* can then be taken as dependencies in other services, controllers, filters and directives. `service()`, `factory()` and `value()` are all shortcuts for registering *providers* that create *services* (Despite the Starbucks drink size naming).
 
-function registerConstructorProvider(name, constructor) { ... }
-
-function registerInstanceProvider(name, val) { ... }
-```
-
-So you're probably not going to work with providers directly as I've been showing up till this point, you will probably be using the `service()`, `factory()` and `value()` convenience methods. But hopefully you will now understand what they actually mean and the underlying construct they are creating. 
+Finally, you're probably not going to work with providers directly as I've been showing up till this point, you will probably be using the `service()`, `factory()` and `value()` convenience functions. But hopefully you will now understand what they actually mean and the underlying construct they are creating.
 
 ### Fitting it all together ###
 
-So now that we understand providers (and their convenience methods), how is all this tied together? The following illustrates this:
+So now that we understand providers (and their convenience functions), how is all this tied together? The following illustrates this:
 
 ![Angular provider flow](/blog/images/angular-provider-flow.png)
 
-So when you register a provider either directly or via one of the convenience methods (`service()`, `factory()` or `value()`) the provider injector creates an instance of the provider. If you registered a provider factory or constructor function with dependencies, dependencies are injected from the *provider cache*. This explains why you can only take in providers or constants as dependencies in provider factory or constructor functions (And remember we're not talking about dependencies injected into the `$get` function, that's different). It then decorates the provider (We'll cover that later) and then puts the provider in the provider cache.
+So when you register a provider either directly or via one of the convenience functions (`service()`, `factory()` or `value()`) the provider injector creates an instance of the provider. If you registered a provider factory or constructor function with dependencies, dependencies are injected from the *provider cache*. This explains why you can only take in providers or constants as dependencies in provider factory or constructor functions (And remember we're not talking about dependencies injected into the `$get` function, that's different). It then decorates the provider (We'll cover that later) and then puts the provider in the provider cache.
 
 When a controller or directive is created, the instance injector tries to inject dependencies from the *instance cache*. If it can't find a dependency there, it then looks to see if there is a provider for the dependency in the *provider cache*. If there is, it calls the `$get` function on the provider to get the instance. It resolves the dependencies of the `$get` function the same way it does for controllers and directives; first checking the instance cache and if it can't find it there, tries to find a provider, and so on. The instance returned by the provider `$get` function is injected and then cached in the instance cache for future use.
 
@@ -168,7 +162,7 @@ function constant(name, value) {
 }
 ```
 
-They are also not providers even though they get put into the provider cache. This allows provider factories and constructor functions can take them as a dependency. And of course the provider `$get` function, controllers and directives can also take them as dependencies. Constants can be an object or primitive (Just in case the name makes you think primitives only). Since they are not providers they cannot be altered by decorators, so in that way they are "constant".
+They are also not providers even though they get put into the provider cache. This allows provider factories and constructor functions can take them as a dependency. And of course the provider `$get` function, controllers and directives can also take them as dependencies. Constants can be an object or primitive (Just in case the name makes you think primitives only). Since they are not providers and skip the provider workflow, they cannot be altered by decorators, so in that way they are "constant".
 
 ### Decorators ###
 
