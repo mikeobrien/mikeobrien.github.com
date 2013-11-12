@@ -98,14 +98,14 @@ module('myModule', []).
             $get: function(...) { ... }
         };
     }).
-    provider('math2', function(pi, mathProvider) {
+    provider('math2', function(mathProvider) {
         return {
             $get: function(...) { ... }
         };
     });
 ```
 
-So the second provider takes in a constant and the math provider. Notice how `Provider` is prepended to the provider name. Thats the convention Angular uses for naming providers.
+So the first provider take in a constant and the second provider takes in the math provider. Notice how `Provider` is prepended to the provider name. Thats the convention Angular uses for naming providers.
 
 Up until now I haven't said anything about services, factories or values. Why? Because they don't exist in Angular, there are only providers, period. The service, factory and value methods on `Module` and `$provide` are just *convenience methods* that accept different things and turn them into providers. *THERE ARE NO SERVICES, FACTORIES OR VALUES IN ANGULAR!* Here are the convenience methods (I expanded them out for demonstrative purposes, see the actual ones [here](https://github.com/angular/angular.js/blob/v1.2.0/src/auto/injector.js#L632)):
 
