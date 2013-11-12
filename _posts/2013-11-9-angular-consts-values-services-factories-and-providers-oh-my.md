@@ -32,24 +32,24 @@ module('myModule', []).
     });
 ```
 
-You pass in the provider name and the provider. Dependencies are resolved by mapping , for example:
+You pass in the provider name and the provider. Dependencies are resolved by mapping the function parameter names to provider names, for example:
 
 ```js
 module('myModule', []).
-    provider('repository', {
-        $get: function($http) {
-            return ...;
+    provider('user', {
+        $get: function() {
+            return 'Richard Feynman'; 
         }
     }).
-    provider('loggingRepository', {
-        $get: function(repository) {
-            return ...;
+    provider('greeting', {
+        $get: function(user) { // 'Richard Feynman' will be passed into the user parameter
+            return 'Hi ' + user;
         }
     }).
-    controller('UserCtrl', function(loggingRepository) { ... });
+    controller('GreetCtrl', function(greeting) { ... }); // 'Hi Richard Feynman' will be passed into the greeting parameter
 ```
 
-Notice how the `loggingRepository` and `UserCtrl` are taking in the dependencies `repository` and `loggingRepository` respectively. The `repository` is taking `$http` as a dependency which was provided by Angular. NB: minimization can mangle the parameter names killing Angular's DI. You can find more info in this [here](http://docs.angularjs.org/tutorial/step_05#controller_a-note-on-minification).
+Notice how the `greeting` and `GreetCtrl` are taking in the dependencies `user` and `greeting` respectively. NB: minimization can mangle the parameter names killing Angular's DI. You can find more info in this [here](http://docs.angularjs.org/tutorial/step_05#controller_a-note-on-minification).
 
 You can also define providers in the module config method if you need more flexibility:
 
