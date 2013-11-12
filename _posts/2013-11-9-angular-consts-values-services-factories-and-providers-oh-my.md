@@ -51,7 +51,7 @@ module('myModule', []).
 
 Notice how the `greeting` and `GreetCtrl` are taking in the dependencies `user` and `greeting` respectively. NB: minimization can mangle the parameter names killing Angular's DI. You can find more info on how to handle this [here](http://docs.angularjs.org/tutorial/step_05#controller_a-note-on-minification).
 
-You can also define providers in the module config method if you need more flexibility:
+You can also define providers in the module `config` method if you need more flexibility:
 
 ```js
 module('myModule', []).
@@ -70,14 +70,14 @@ Now the `provider` function doesn't just take object literals, you can also pass
 
 ```js
 module('myModule', []).
-    // Function constructor
+    // Function constructor that can be instantiated
     provider('name', function(...) {  // Dependencies (Providers or constants)
         this.$get = function(...) {  // Dependencies (Instances or constants)
             return ...;               // Return the instance
         };
     }).
 
-    // Object literal factory
+    // Function that returns a provider
     provider('name', function(...) {  // Dependencies (Providers or constants)
         return {
             $get: function(...) {     // Dependencies (Instances or constants)
@@ -87,7 +87,7 @@ module('myModule', []).
     });
 ```
 
-According to [petebd](petebd), [constructor functions were supported mainly because CoffeeScript classes use them](https://groups.google.com/forum/#!msg/angular/56sdORWEoqg/kWGd1jo5_5cJ). So don't feel compelled to use them unless you're using CoffeeScript or you like the constructor invocation pattern. As you can see, provider factories can take dependencies but they are not the same dependencies that are injected into the provider `$get` function. This can be a little confusing at first. The only dependencies that the provider factory can take are other providers (Not the instances they produce) and constants (You'll see why in a bit). So for example:
+According to [petebd](petebd), [constructor functions were supported mainly because CoffeeScript classes use them](https://groups.google.com/forum/#!msg/angular/56sdORWEoqg/kWGd1jo5_5cJ). So don't feel compelled to use them unless you're using CoffeeScript or you like the constructor invocation pattern. You may find it simpler to just pass a function that returns a provider. As you can see, provider factories can take dependencies and this can be an advantage. But they are not the same dependencies that are injected into the provider `$get` function. This can be a little confusing at first. The only dependencies that the provider factory can take are other providers (Not the instances they produce) and constants (You'll see why in a bit). So for example:
 
 
 ```js
