@@ -178,7 +178,7 @@ function($delegate, ...) { // Dependencies
 
 You have a couple of options here, you can either replace the instance or augment/wrap the instance. If you want to do the former it's much simpler to just use `service()`, `factory()` or `value()`. But if you want to do the latter this is the right place.
 
-You can apply decorators using the `decorator()` function:
+You can apply decorators using the `decorator()` function on the `$provide`:
 
 ```js
 angular.module('myModule', []).
