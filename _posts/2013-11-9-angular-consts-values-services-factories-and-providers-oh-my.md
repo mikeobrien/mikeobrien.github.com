@@ -213,7 +213,7 @@ Hopefully all these concepts are a little clearer now. Main things to remember a
 * The `service()`, `factory()` and `value()` functions are just shortcuts for creating providers, despite what their name might imply.
 * Everything in the Angular IoC container is *colloquially* known as a "service". And they are just vanilla objects and functions, they are not special Angular constructs.
 * Constants are just objects added directly to the Angular IoC container.
-* Decorators augment or configure providers.
+* Decorators augment or configure services.
 
 
 
