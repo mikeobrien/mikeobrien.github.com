@@ -131,7 +131,34 @@ function value(name, val) {
 }
 ```
 
-So `factory` is just a convenience method for passing a function that creates an instance. `service` is just a convenience method for passing in a function constructor. And `value` is just a convenience method for passing a value. But as you can see, its all just providers. I really think this nomenclature confuses people leading people to believe that there are these separate constructs when really there is just one. The methods should be renamed to something along these lines IMO:
+So `factory` is just a convenience method for passing a function that creates an instance. `service` is just a convenience method for passing in a function constructor. And `value` is just a convenience method for passing an instance. But as you can see, its all just providers. Or if you're coming from C# these would be analogous to this respectively:
+
+```csharp
+public class Module 
+{
+    public Module CreateProvider(Provider provider) { ... }
+
+    public Module CreateProvider(Func<object> factory) 
+    { 
+        CreateProvider(new Provider(factory));
+        return this;
+    }
+
+    public Module CreateProvider(Type type)
+    { 
+        CreateProvider(new Provider(() => Activator.CreateInstance(type))));
+        return this;
+    }
+
+    public Module CreateProvider(object instance)
+    { 
+        CreateProvider(new Provider(() => instance)));
+        return this;
+    }
+}
+```
+
+I really think this nomenclature confuses people leading people to believe that there are these three separate constructs when really there is just one. The methods should be renamed to something along these lines IMO:
 
 ```js
 providerFactory()
