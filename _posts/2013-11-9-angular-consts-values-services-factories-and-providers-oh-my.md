@@ -5,11 +5,11 @@ title: Angular Consts, Values, Factories, Services, Providers and Decorators, Oh
 tags: [AngularJS]
 ---
 
-Consts, values, factories, services, providers and directives; pretty confusing when you first start working with Angluar. [@mhevery](https://twitter.com/mhevery) wrote up a nice comparison [here](https://groups.google.com/forum/#!msg/angular/56sdORWEoqg/b8hdPskxZXsJ) that really helped me make sense of most of these concepts (Values, factories, services and providers). [@liormessinger](https://twitter.com/liormessinger) wrote up a fantastic SO answer explaining his comparison [here](http://stackoverflow.com/a/15666049/126068). The following is yet another overview that also includes consts and decorators (Based on Angular 1.2.0). All these combined make up the [$provide service](http://code.angularjs.org/1.2.0/docs/api/AUTO.$provide) ([src](https://github.com/angular/angular.js/blob/v1.2.0/src/auto/injector.js#L269)). 
+Consts, values, factories, services, providers and directives; pretty confusing when you first start working with Angluar. [@mhevery](https://twitter.com/mhevery) wrote up a nice comparison [here](https://groups.google.com/forum/#!msg/angular/56sdORWEoqg/b8hdPskxZXsJ) that really helped me make sense of most of these concepts (Values, factories, services and providers at least). [@liormessinger](https://twitter.com/liormessinger) also wrote up a fantastic SO answer explaining [@mhevery](https://twitter.com/mhevery)'s comparison [here](http://stackoverflow.com/a/15666049/126068). The following is yet another overview that also includes consts and decorators (Based on Angular 1.2.0). All these combined make up the [$provide service](http://code.angularjs.org/1.2.0/docs/api/AUTO.$provide). The name soup is pretty confusing and IMO makes it harder to grok than it should be so hopefully this discussion will help clear it up.
 
-### Providers (docs | src)
+### Providers ###
 
-The name soup is pretty confusing and IMO makes it harder to grok than it should be. Conceptually Angular has an IoC container that only supports a singelton lifecycle. IoC containers typically allow you to register either instances or factories that create instances. All that should sound familiar if you come from .NET or Java and use an IoC container. Internally Angular's IoC container only allows you register a *provider* (in Angular parlance). A provider is essentially a *factory* that can create an instance:
+Conceptually Angular has an IoC container that only supports a singelton lifecycle. IoC containers typically allow you to register either instances or factories that create instances. All that should sound familiar if you come from .NET or Java and use an IoC container. Internally Angular's IoC container only allows you register a *provider* (in Angular parlance). A provider is essentially a *factory* that can create an instance:
 
 ```js
 {
@@ -19,7 +19,7 @@ The name soup is pretty confusing and IMO makes it harder to grok than it should
 }
 ```
 
-That's it! An object with a `$get` method that returns an object or a primitive. Only one instance of the provider itself and the value it produces is maintained. You can also pass in dependencies. These dependencies can either be *constants* (In Angular parlance) or the results of other providers. 
+That's it! An object with a `$get` method that returns an object or a primitive. Only one instance of the provider itself and the value it produces are maintained. You can also pass in dependencies. These dependencies can either be *constants* (In Angular parlance) or the results of other providers. 
 
 A [convenience method](http://code.angularjs.org/1.2.0/docs/api/AUTO.$provide#methods_provider) on `Module` allows you to register providers:
 
@@ -175,7 +175,7 @@ So now that we understand this how is all this tied together? The following illu
 TODO: non singleton
 
 
-### Consts (docs | src)
+### Consts ###
 
 First we'll start off with consts as they are [not like the others](http://www.youtube.com/watch?v=ueZ6tvqhk8U). Constants are different 
 
