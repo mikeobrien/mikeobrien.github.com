@@ -9,7 +9,7 @@ Consts, values, factories, services, providers and directives; pretty confusing 
 
 ### Providers ###
 
-Conceptually, Angular has an IoC container that only supports a singelton lifecycle. IoC containers typically allow you to register either instances or factories that create instances. All that should sound familiar if you come from .NET or Java and use an IoC container. Internally Angular's IoC container only allows you register a *provider* (in Angular parlance). A provider is essentially a *factory* that can create an instance:
+Conceptually, Angular has an IoC container that only supports a singleton lifecycle. IoC containers typically allow you to register either instances or factories that create instances. All that should sound familiar if you come from .NET or Java and use an IoC container. Internally Angular's IoC container only allows you register a *provider* (in Angular parlance). A provider is just a *factory* that can create an instance:
 
 ```js
 {
@@ -19,7 +19,7 @@ Conceptually, Angular has an IoC container that only supports a singelton lifecy
 }
 ```
 
-That's it! An object with a `$get` method that returns an object or a primitive. Only one instance of the provider itself and the value it produces are maintained. You can also pass in dependencies. These dependencies can either be *constants* (Which we'll cover in a bit) or the results of other providers (But not the providers themselves). 
+That's it! An object with a `$get` method that returns an object or a primitive. Only one instance of the provider itself and the instance it produces are maintained. You can also pass in dependencies. These dependencies can either be *constants* (Which we'll cover in a bit) or instances created by other providers (But not the providers themselves, more on that later). 
 
 A [convenience method](http://code.angularjs.org/1.2.0/docs/api/AUTO.$provide#methods_provider) on `Module` allows you to register providers:
 
