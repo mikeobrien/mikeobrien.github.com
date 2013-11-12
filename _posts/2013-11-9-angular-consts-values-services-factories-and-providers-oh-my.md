@@ -65,12 +65,12 @@ module('myModule', []).
 
 Notice how the `greeting` and `GreetCtrl` are taking in the dependencies `user` and `greeting` respectively. NB: minimization can mangle the parameter names killing Angular's DI. You can find more info on how to handle this [here](http://docs.angularjs.org/tutorial/step_05#controller_a-note-on-minification).
 
-Now the `provider` function doesn't just take providers, you can also pass in constructor functions or functions that return the provider:
+Now the `provider` function doesn't just take providers, you can also pass in [constructor functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects#Using_a_constructor_function) and functions that return a provider (or provider factories):
 
 
 ```js
 module('myModule', []).
-    // Function constructor
+    // Constructor function 
     provider('name', function(...) {  // Dependencies (Providers or constants)
         this.$get = function(...) {  // Dependencies (Instances or constants)
             return ...;               // Return the instance
