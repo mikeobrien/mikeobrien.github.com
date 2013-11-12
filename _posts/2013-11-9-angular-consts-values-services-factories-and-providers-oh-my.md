@@ -230,9 +230,11 @@ Here you can configure the `$log` service before its created.
 
 Hopefully all these concepts are a little clearer now. Main things to remember are:
 
-* 
-
-
+* Providers are simply factories that create instances in the Angular IoC container.
+* The `service()`, `factory()` and `value()` functions are just shortcuts for creating providers, despite what their name might imply.
+* Everything in the Angular IoC container is *colloquially* known as a "service". And they are just vanilla objects and functions, they are not special Angular constructs.
+* Constants are just objects added directly to the Angular IoC container.
+* Decorators augment or configure providers.
 
 
 
