@@ -1,11 +1,11 @@
 ---
 published: true
 layout: post
-title: Angular Consts, Values, Factories, Services, Providers and Decorators, Oh My!
+title: Angular Constants, Values, Factories, Services, Providers and Decorators, Oh My!
 tags: [AngularJS]
 ---
 
-Consts, values, factories, services, providers and directives; pretty confusing when you first start working with Angluar. [@mhevery](https://twitter.com/mhevery) wrote up a nice comparison [here](https://groups.google.com/forum/#!msg/angular/56sdORWEoqg/b8hdPskxZXsJ) that really helped me make sense of most of these concepts (Values, factories, services and providers at least). [@liormessinger](https://twitter.com/liormessinger) also wrote up a fantastic SO answer summarizing [@mhevery](https://twitter.com/mhevery)'s comparison [here](http://stackoverflow.com/a/15666049/126068). The following is yet another overview that also includes consts and decorators (Based on Angular 1.2.0). All these combined make up the [$provide service](http://code.angularjs.org/1.2.0/docs/api/AUTO.$provide). The name soup is pretty confusing and IMO makes things harder to grok than they should be so hopefully this discussion will help clear it up.
+Constants, values, factories, services, providers and decorators; pretty confusing when you first start working with Angluar. [@mhevery](https://twitter.com/mhevery) wrote up a nice comparison [here](https://groups.google.com/forum/#!msg/angular/56sdORWEoqg/b8hdPskxZXsJ) that really helped me make sense of most of these concepts (Values, factories, services and providers at least). [@liormessinger](https://twitter.com/liormessinger) also wrote up a fantastic SO answer summarizing [@mhevery](https://twitter.com/mhevery)'s comparison [here](http://stackoverflow.com/a/15666049/126068). The following is yet another overview that also includes consts and decorators (Based on Angular 1.2.0). All these combined make up the [$provide service](http://code.angularjs.org/1.2.0/docs/api/AUTO.$provide). The name soup is pretty confusing and IMO makes things harder to grok than they should be so hopefully this discussion will help clear it up.
 
 ### Providers ###
 
@@ -107,6 +107,8 @@ module('myModule', []).
 
 So the first provider takes in a constant and the second provider takes in the math provider. Notice how `Provider` is prepended to the provider name. Thats the convention Angular uses for naming providers.
 
+### Service, Factories and Values ###
+
 Up until now I haven't said anything about services, factories or values. Why? Because they don't exist in Angular, there are only providers, period. The service, factory and value methods on `Module` and `$provide` are just *convenience methods* that accept different things and turn them into providers. *THERE ARE NO SERVICES, FACTORIES OR VALUES IN ANGULAR!* Here are the convenience methods (I expanded them out for demonstrative purposes, see the actual ones [here](https://github.com/angular/angular.js/blob/v1.2.0/src/auto/injector.js#L632)):
 
 ```js
@@ -162,13 +164,17 @@ public class Module
 }
 ```
 
+### Fitting it all together ###
+
 So now that we understand provider, how is all this tied together? The following illustrates this:
 
 ![Angular provider flow](/blog/images/angular-provider-flow.png)
 
 So when you register a provider either directly or via one of the convenience methods (service, factory or value) the provider injector creates provider, injecting dependencies that exist in the *provider cache*. This explains why you can only take in providers or constants as dependencies in provider factory methods. It then decorates the provider (We'll cover that later) and then puts the provider in the cache.
 
-When a controller or directive is created, the instance injector tries to inject dependencies from the instance cache. If it can't find a dependency there it then looks to see if there is a provider for the dependency in the provider cache. If there is, it calls the `$get` function on the provider. It resolves the dependencies of the `$get` method the same way it does for controllers and directives; first checking the instance cache and then trying to find a provider, etc. The instance returned by the provider `$get` function is then cached in the instance cache for future use.  
+When a controller or directive is created, the instance injector tries to inject dependencies from the instance cache. If it can't find a dependency there it then looks to see if there is a provider for the dependency in the provider cache. If there is, it calls the `$get` function on the provider. It resolves the dependencies of the `$get` method the same way it does for controllers and directives; first checking the instance cache and then trying to find a provider, etc. The instance returned by the provider `$get` function is then cached in the instance cache for future use.
+
+I put constants and decorators last as it will probably be easier to see how they fit in after this point.
 
 ### Constants ###
 
@@ -185,4 +191,8 @@ Constants can be an object or primitive (Just in case the name makes you think p
 
 ### Decorators ###
 
-The last piece of the puzzle is decorators. Looking at the image above you will see a step in the provider injector called decorate. After a provider is created the provider injector checks to see if there are any decorators for it and if so calls them and passes in the provider. This allows you to override or augment the functionality of a provider. One example of this is how Angular mocks overrides functionality. Check out how it overrides `$http` [here](https://github.com/angular/angular.js/blob/v1.2.0/src/ngMock/angular-mocks.js#L1748). 
+The last piece of the puzzle are decorators. Looking at the image above you will see a step in the provider injector called decorate. After a provider is created, the provider injector checks to see if there are any decorators for it and if so calls them and passes in the provider. This allows you to override or augment the functionality of a provider. One example of this is how Angular mocks overrides functionality. Check out how it overrides `$http` [here](https://github.com/angular/angular.js/blob/v1.2.0/src/ngMock/angular-mocks.js#L1748). 
+
+
+
+
