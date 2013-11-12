@@ -159,7 +159,7 @@ I put constants and decorators last as it will probably be easier to see how the
 
 ### Constants ###
 
-Now as you can probably see, constants are [not like the others](http://www.youtube.com/watch?v=ueZ6tvqhk8U). They are oddball in that they get put directly into both the provider and instance cache. You can see this clearly in the source:
+Now as you can probably see from the image above, constants are [not like the others](http://www.youtube.com/watch?v=ueZ6tvqhk8U). They are oddball in that they get put directly into both the provider and instance cache. You can see this clearly in the source:
 
 ```js
 function constant(name, value) {
@@ -172,7 +172,7 @@ They are also not providers even though they get put into the provider cache. Th
 
 ### Decorators ###
 
-The last piece of the puzzle are decorators. Looking at the image above you will see a step in the provider injector called decorate. After a provider is created, the provider injector checks to see if there are any decorators for it and if so calls them and passes in the provider. This allows you to override or augment the functionality of a provider. One example of this is how Angular mocks overrides functionality. Check out how it overrides `$http` [here](https://github.com/angular/angular.js/blob/v1.2.0/src/ngMock/angular-mocks.js#L1748). 
+The last piece of the puzzle are decorators. Looking at the image above you will see a step in the provider injector called decorate. After a provider is created, the provider injector checks to see if there are any decorators for it and if so, calls them and passes in the provider. This allows you to override or augment the functionality of a provider. One example of this is how Angular mocks override functionality. Check out how it overrides `$http` [here](https://github.com/angular/angular.js/blob/v1.2.0/src/ngMock/angular-mocks.js#L1748). 
 
 
 
