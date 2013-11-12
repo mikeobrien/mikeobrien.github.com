@@ -5,7 +5,7 @@ title: Angular Constants, Values, Factories, Services, Providers and Decorators,
 tags: [AngularJS]
 ---
 
-Constants, values, factories, services, providers and decorators; pretty confusing when you first start working with Angluar. [@mhevery](https://twitter.com/mhevery) wrote up a nice comparison [here](https://groups.google.com/forum/#!msg/angular/56sdORWEoqg/b8hdPskxZXsJ) that really helped me make sense of most of these concepts (Values, factories, services and providers at least). [@liormessinger](https://twitter.com/liormessinger) also wrote up a fantastic SO answer summarizing [@mhevery](https://twitter.com/mhevery)'s comparison [here](http://stackoverflow.com/a/15666049/126068). The following is yet another overview that also includes consts and decorators (Based on Angular 1.2.0). All these combined make up the [$provide service](http://code.angularjs.org/1.2.0/docs/api/AUTO.$provide). The name soup is pretty confusing and IMO makes things harder to grok than they should be so hopefully this discussion will help clear it up.
+Constants, values, factories, services, providers and decorators; pretty confusing when you first start working with Angluar. [@mhevery](https://twitter.com/mhevery) wrote up a nice comparison [here](https://groups.google.com/forum/#!msg/angular/56sdORWEoqg/b8hdPskxZXsJ) that really helped me make sense of most of these concepts (Values, factories, services and providers at least). [@liormessinger](https://twitter.com/liormessinger) also wrote up a fantastic SO answer summarizing [@mhevery](https://twitter.com/mhevery)'s comparison [here](http://stackoverflow.com/a/15666049/126068). The following is yet another overview that also includes constants and decorators (Based on Angular 1.2.0). All these combined make up the [$provide service](http://code.angularjs.org/1.2.0/docs/api/AUTO.$provide). The name soup is pretty confusing and IMO makes things harder to grok than they should be so hopefully this discussion will help clear it up.
 
 ### Providers ###
 
@@ -19,7 +19,7 @@ Conceptually, Angular has an IoC container that only supports a singleton lifecy
 }
 ```
 
-That's it! An object with a `$get` method that returns an object or a primitive. Only one instance of the provider itself and the instance it produces are maintained. You can also pass in dependencies. These dependencies can either be *constants* (Which we'll cover in a bit) or instances created by other providers (But not the providers themselves, more on that later). 
+That's it! An object with a `$get` method that returns an object or a primitive. Only one instance of the provider itself and the instance it produces are maintained. You can also pass in dependencies. These dependencies can either be constants (Which we'll cover in a bit) or instances created by other providers (But not the providers themselves, more on that later). 
 
 A [convenience method](http://code.angularjs.org/1.2.0/docs/api/AUTO.$provide#methods_provider) on `Module` allows you to register providers:
 
@@ -56,7 +56,7 @@ You can also define providers in the module `config` method if you need more fle
 ```js
 module('myModule', []).
     config(function($provide) {
-        // Do some stuff here...
+        // Do some crazy stuff here...
         $provide.provider('repository', {
             $get: function($http) {
                 return ...;
@@ -109,7 +109,7 @@ So the first provider takes in a constant and the second provider takes in the m
 
 ### Service, Factories and Values ###
 
-Up until now I haven't said anything about services, factories or values. Why? Because they don't exist in Angular, there are only providers, period. The service, factory and value methods on `Module` and `$provide` are just *convenience methods* that accept different things and turn them into providers. *THERE ARE NO SERVICES, FACTORIES OR VALUES IN ANGULAR!* Here are the convenience methods (I expanded them out for demonstrative purposes, see the actual ones [here](https://github.com/angular/angular.js/blob/v1.2.0/src/auto/injector.js#L632)):
+Up until now I haven't said anything about services, factories or values. Why? Because those concepts don't actually exist in Angular, there are only providers and the instances they produce, period. The `service`, `factory` and `value` methods on `Module` and `$provide` are just *convenience methods* that accept functions or instances and turn them into providers. I think the most overloaded term is service. There are no "Angular services", although *you* may call certain things services (Perhaps because they are similar to DDD services). But there is no inherent concept of a "service" in Angular. "Factory" and "value" are less ambiguous and better describe what their providers are doing. But even so, there are no inherit "Angular factories" or "Angular values". To make this clearer, here are the convenience methods (I expanded them out for demonstrative purposes as they were DRY, see the actual ones [here](https://github.com/angular/angular.js/blob/v1.2.0/src/auto/injector.js#L632)):
 
 ```js
 function factory(name, factoryFn) { 
@@ -133,7 +133,9 @@ function value(name, val) {
 }
 ```
 
-So `factory` is just a convenience method for creating a provider from a function. `service` is just a convenience method for creating a provider from a function constructor (If you are using CoffeeScript of like that pattern). And `value` is just a convenience method for creating a provider that returns an instance. But as you can see, its all just providers, the convenience methods just make it easier to do what you will want to do 99% of the time. In other words, you're probably not going to work with providers as I've been showing up till this point, you will be using those convenience methods. But hopefully now it will be clearer what is going on and how you can drop down to working with providers directly when you need to. BTW, if you're coming from C#, these convenience methods would be analogous to this respectively:
+So `factory` is just a convenience method for creating a provider from a function that returns the instance. `service` is just a convenience method for creating a provider from a function constructor that can be instantiated as the instance (If you are using CoffeeScript of like that pattern). And `value` is just a convenience method for creating a provider that returns an instance. But as you can see, its all just providers, the convenience methods just make it easier to do what you will want to do 99% of the time. In other words, you're probably not going to work with providers as I've been showing up till this point, you will be using those convenience methods. But hopefully you will now understand what they mean and the underlying constructs they are creating. 
+
+BTW, if you're coming from C#, those convenience methods would be analogous to this respectively:
 
 ```csharp
 public class Module 
