@@ -109,7 +109,7 @@ So the first provider takes in a constant and the second provider takes in the m
 
 ### Service, Factories and Values ###
 
-Up until now I haven't said anything about services, factories or values. Why? Because those concepts don't actually exist in Angular, there are only providers and the instances they produce, period. The `service`, `factory` and `value` methods on `Module` and `$provide` are just *convenience methods* that accept functions or instances and turn them into providers, they don't represent any special Angular constructs by those names. I think the worst and most overloaded term is service. There are no "Angular services", although *you* may call certain things services (Perhaps because they are similar to DDD services). But there is no inherent concept of a "service" in Angular. "Factory" and "value" are less ambiguous and better describe what their providers end up doing. But even so, there are no inherit "Angular factories" or "Angular values". To make this clearer, here are the convenience methods (I expanded them out for demonstrative purposes as they were DRY, see the actual ones [here](https://github.com/angular/angular.js/blob/v1.2.0/src/auto/injector.js#L632)):
+Up until now I haven't said anything about services, factories or values. Why? Because those concepts don't actually exist in Angular, there are only providers and the instances they produce, period. The `service()`, `factory()` and `value()` methods on `Module` and `$provide` are just *convenience methods* that accept functions or instances and turn them into providers, they don't represent any special Angular constructs by those names. To make this clearer, here are the convenience methods (I expanded them out for demonstrative purposes as they were DRY, see the actual ones [here](https://github.com/angular/angular.js/blob/v1.2.0/src/auto/injector.js#L632)):
 
 ```js
 function factory(name, factoryFn) { 
@@ -133,38 +133,17 @@ function value(name, val) {
 }
 ```
 
-So `factory` is just a convenience method for creating a provider from a function that returns the instance. `service` is just a convenience method for creating a provider from a function constructor that is instantiated as the instance (If you are using CoffeeScript of like that pattern). And `value` is just a convenience method for creating a provider that returns an instance. In the beginning we talked about how IoC containers typically allow you to register either instances, factories that create instances or a type to instantiate. That's exactly the functionality these convenience methods enable. But as you can see, its all just providers, the convenience methods just make it easier to do what you will want to do 99% of the time. In other words, you're probably not going to work with providers as I've been showing up till this point, you will be using these convenience methods. But hopefully you will now understand what they actually mean and the underlying construct they are creating. 
+So `factory()` is just a convenience method for creating a provider from a function that returns the instance. `service()` is just a convenience method for creating a provider from a function constructor that is instantiated as the instance (If you are using CoffeeScript of like that pattern). And `value()` is just a convenience method for creating a provider that returns an instance. In the beginning we talked about how IoC containers typically allow you to register either instances, factories that create instances or a type to instantiate. That's exactly the functionality these convenience methods enable. But as you can see, its all just providers, the convenience methods just make it easier to do what you will want to do 99% of the time. So you could rename those convenience methods to something like this and I think it would make more sense (albeit more keystrokes):
 
-BTW, if you're coming from C#, those convenience methods would be analogous to this respectively:
+```js
+function registerFactoryProvider(name, factoryFn) { ... }
 
-```csharp
-public class Module 
-{
-    public Module CreateProvider(Provider provider) { ... }
+function registerConstructorProvider(name, constructor) { ... }
 
-    public Module Factory(string name, Expression<Func<object>> factory) 
-    { 
-        return CreateProvider(new Provider(name, factory));
-    }
-
-    public Module Factory(string name, Expression<Func<object, object>> factory) 
-    { 
-        return CreateProvider(new Provider(name, factory));
-    }
-
-    ...
-
-    public Module Service(string name, Type type)
-    { 
-        return CreateProvider(new Provider(name, args => Activator.CreateInstance(args)));
-    }
-
-    public Module Value(string name, object instance)
-    { 
-        return CreateProvider(new Provider(name, () => instance)));
-    }
-}
+function registerInstanceProvider(name, val) { ... }
 ```
+
+So you're probably not going to work with providers as I've been showing up till this point, you will be using these convenience methods. But hopefully you will now understand what they actually mean and the underlying construct they are creating. 
 
 ### Fitting it all together ###
 
