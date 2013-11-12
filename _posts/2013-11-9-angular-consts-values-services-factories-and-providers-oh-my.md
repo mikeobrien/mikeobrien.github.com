@@ -9,7 +9,7 @@ Consts, values, factories, services, providers and directives; pretty confusing 
 
 ### Providers ###
 
-Conceptually Angular has an IoC container that only supports a singelton lifecycle. IoC containers typically allow you to register either instances or factories that create instances. All that should sound familiar if you come from .NET or Java and use an IoC container. Internally Angular's IoC container only allows you register a *provider* (in Angular parlance). A provider is essentially a *factory* that can create an instance:
+Conceptually, Angular has an IoC container that only supports a singelton lifecycle. IoC containers typically allow you to register either instances or factories that create instances. All that should sound familiar if you come from .NET or Java and use an IoC container. Internally Angular's IoC container only allows you register a *provider* (in Angular parlance). A provider is essentially a *factory* that can create an instance:
 
 ```js
 {
@@ -19,7 +19,7 @@ Conceptually Angular has an IoC container that only supports a singelton lifecyc
 }
 ```
 
-That's it! An object with a `$get` method that returns an object or a primitive. Only one instance of the provider itself and the value it produces are maintained. You can also pass in dependencies. These dependencies can either be *constants* (In Angular parlance) or the results of other providers. 
+That's it! An object with a `$get` method that returns an object or a primitive. Only one instance of the provider itself and the value it produces are maintained. You can also pass in dependencies. These dependencies can either be *constants* (Which we'll cover in a bit) or the results of other providers (But not the providers themselves). 
 
 A [convenience method](http://code.angularjs.org/1.2.0/docs/api/AUTO.$provide#methods_provider) on `Module` allows you to register providers:
 
@@ -32,7 +32,7 @@ module('myModule', []).
     });
 ```
 
-You pass in the provider name and the provider. The name you specify is then used to resolve dependencies, for example:
+You pass in the provider name and the provider. Dependencies are resolved by mapping , for example:
 
 ```js
 module('myModule', []).
@@ -168,7 +168,7 @@ providerInstance()
 
 So now that we understand this how is all this tied together? The following illustrates this:
 
-![Angular provider flow](images/angular-provider-flow.png)
+![Angular provider flow](/blog/images/angular-provider-flow.png)
 
 
 
