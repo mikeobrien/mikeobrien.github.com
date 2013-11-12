@@ -37,7 +37,7 @@ You can also define providers in the module `config` function if you need more f
 ```js
 module('myModule', []).
     config(function($provide) {
-        // Do some crazy stuff here...
+        // Do some crazy config stuff here...
         $provide.provider('theProviderName', {
             $get: function(...) {
                 return ...;
@@ -135,7 +135,7 @@ function value(name, val) {
 
 So `factory()` is just a convenience function for creating a provider from a function that returns the instance. `service()` is just a convenience function for creating a provider from a function constructor that is instantiated as the instance (If you're using CoffeeScript of like that pattern). And `value()` is just a convenience function for creating a provider that returns an instance. In the beginning we talked about how IoC containers typically allow you to register either instances, factories that create instances or a type to instantiate. That's exactly the functionality these convenience functions enable. But as you can see, its providers all the way down and the convenience functions just make it easier to do what you will want to do 99% of the time. 
 
-At this point Zoidberg would say "why with all the Angular services??" "service" is just the colloquial name Angular folks have given to anything in Angular's IoC container. So in angular parlance, *providers* create *services* and *services* can then be taken as dependencies in other services, controllers, filters and directives. `service()`, `factory()` and `value()` are all shortcuts for registering *providers* that create *services* (Despite the Starbucks drink size naming).
+At this point Zoidberg would say "then why with all the Angular services??" "service" is just the colloquial name Angular folks have given to anything in Angular's IoC container. So in angular parlance, *providers* create *services* and *services* can then be taken as dependencies in other services, controllers, filters and directives. `service()`, `factory()` and `value()` are all shortcuts for registering *providers* that create *services* (Despite the Starbucks drink size naming).
 
 Finally, you're probably not going to work with providers directly as I've been showing up till this point, you will probably be using the `service()`, `factory()` and `value()` convenience functions. But hopefully you will now understand what they actually do and the underlying construct they are creating.
 
@@ -145,9 +145,9 @@ So now that we understand providers (and their convenience functions), how is al
 
 ![Angular provider flow](/blog/images/angular-provider-flow.png)
 
-So when you register a provider either directly or via one of the convenience functions (`service()`, `factory()` or `value()`) the provider injector creates an instance of the provider. If you registered a provider factory or constructor function with dependencies, dependencies are injected from the *provider cache*. This explains why you can only take in providers or constants as dependencies in provider factory or constructor functions (And remember we're not talking about dependencies injected into the `$get` function, that's different). It then decorates the provider (We'll cover that later) and then puts the provider in the provider cache.
+So when you register a provider either directly or via one of the convenience functions (`service()`, `factory()` or `value()`) the provider injector creates an instance of the provider. If you registered a provider factory or constructor function with dependencies, dependencies are injected from the *provider cache*. This explains why you can only take in providers or constants as dependencies in provider factory or constructor functions (And remember we're not talking about dependencies injected into the `$get` function, that's different). It then puts the provider in the provider cache.
 
-When a controller, directive or filter is created, the instance injector tries to inject dependencies from the *instance cache*. If it can't find a dependency there, it then looks to see if there is a provider for the dependency in the *provider cache*. If there is, it calls the `$get` function on the provider to get the instance. It resolves the dependencies of the `$get` function the same way it does for controllers and directives; first checking the *instance cache* and if it can't find it there, tries to find a provider, and so on. The instance returned by the provider `$get` function is injected and then cached in the instance cache for future use.
+When a controller, directive or filter is created, the instance injector tries to inject dependencies from the *instance cache*. If it can't find a dependency there, it then looks to see if there is a provider for the dependency in the *provider cache*. If there is, it calls the `$get` function on the provider to get the instance. It resolves the dependencies of the `$get` function the same way it does for controllers, directives and filters; first checking the *instance cache* and if it can't find it there, tries to find a provider, and so on. The instance returned by the provider `$get` function is injected and then cached in the instance cache for future use.
 
 I put constants and decorators last as it will probably be easier to see how they fit in after this point.
 
@@ -166,7 +166,101 @@ They are also not providers even though they get put into the provider cache. Th
 
 ### Decorators ###
 
-The last piece of the puzzle are decorators. Looking at the image above you will see a step in the provider injector called decorate. After a provider is created, the provider injector checks to see if there are any decorators for it and if so, calls them and passes in the provider. This allows you to override or augment the functionality of a provider. One example of this is how Angular mocks override functionality. Check out how it overrides `$http` [here](https://github.com/angular/angular.js/blob/v1.2.0/src/ngMock/angular-mocks.js#L1748). 
+The last piece of the puzzle are decorators. Decorators allow you to override or augment the functionality of a provider. One example of this is how Angular mocks override functionality. Check out how it overrides `$http` [here](https://github.com/angular/angular.js/blob/v1.2.0/src/ngMock/angular-mocks.js#L1748). 
+
+Decorators are simply functions that take in a provider and dependencies and then return a provider. The dependencies are injected from the instance cache, so services or constants. A special dependency called `$delegate` is a reference to the provider you are overriding.
+
+```js
+function($delegate, ...) { // Dependencies
+    return ...;            // Return a provider
+});
+```
+
+You have a couple of options here, you can either replace the provider or augment the provider. If you want to do the former it's much simpler to just use `provider()` or one of its convenience functions. Here is an example illustrating the latter:
+
+```js
+function($delegate) {
+    var get = $delegate.$get;
+
+    // Modify result
+    $delegate.$get = function() {
+        var result = get();
+        // Do some stuff here with the result...
+        return result;
+    };
+
+    // Modify or configure provider
+    $delegate.$get = function() {
+        // Do some stuff here with the provider...
+        return get();
+    };
+
+    return $delegate;
+});
+```
+
+The first example illustrates modifying the results of the provider before passing it on. The second shows modifying or configuring the provider before `$get` is called. 
+
+You can apply decorators using the `decorator()` function:
+
+```js
+angular.module('myModule', []).
+    config(function($provide) {
+        $provide.decorator('providerName', function($delegate, ...) {
+            return ...;
+        });
+    });
+```
+
+The first parameter of the `decorator()` function is the name of the provider you want to decorate, followed by the decorator. The following example is taken right out of the angular docs but it nicely demonstrates a real life usage of decorators:
+
+```js
+angular.module('myModule', []).
+    config(function($provide) {
+        $provider.decorator('$log', function($delegate) {
+              $delegate.warn = $delegate.error;
+              return $delegate;
+        });
+    });
+```
+
+Here you can configure the `$log` service before its created.
+
+### Conclusion ###
+
+Hopefully all these concepts are a little clearer now. Main things to remember are:
+
+* 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
