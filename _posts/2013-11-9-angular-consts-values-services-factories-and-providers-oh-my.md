@@ -159,7 +159,7 @@ I put constants and decorators last as it will probably be easier to see how the
 
 ### Constants ###
 
-Now as you can probably see, constants are [not like the others](http://www.youtube.com/watch?v=ueZ6tvqhk8U). They are odd in that they get put into the provider cache, even though they are not providers, so that provider factories can take them as a dependency. They are also put into the instance cache so that providers (i.e. `$get`), controllers and directives can also take them as dependencies. You can see that clearly in the source:
+Now as you can probably see, constants are [not like the others](http://www.youtube.com/watch?v=ueZ6tvqhk8U). They are oddball in that they get put directly into both the provider and instance cache. You can see this clearly in the source:
 
 ```js
 function constant(name, value) {
@@ -168,7 +168,7 @@ function constant(name, value) {
 }
 ```
 
-Constants can be an object or primitive (Just in case the name makes you think primitives only). Since they are not providers they cannot be altered by decorators, so in that way they are "constant".
+They are also not providers even though they get put into the provider cache. This allows provider factories and constructor functions can take them as a dependency. And of course the provider `$get` function, controllers and directives can also take them as dependencies. Constants can be an object or primitive (Just in case the name makes you think primitives only). Since they are not providers they cannot be altered by decorators, so in that way they are "constant".
 
 ### Decorators ###
 
