@@ -70,24 +70,24 @@ Now the `provider` function doesn't just take object literals, you can also pass
 
 ```js
 module('myModule', []).
-    // Constructor invocation pattern
-    provider('name', function(...) {  // Dependencies (Other providers or constants)
-        this.$get = function(...) {   // Dependencies (Values created by providers or constants)
+    // Function constructor
+    provider('name', function(...) {  // Dependencies (Providers or constants)
+        this.$get = function(...) {   // Dependencies (Instances or constants)
             return ...;               // Return the instance
         };
     }).
 
     // Object literal factory
-    provider('name', function(...) {  // Dependencies (Other providers or constants)
+    provider('name', function(...) {  // Dependencies (Providers or constants)
         return {
-            $get: function(...) {     // Dependencies (Values created by providers or constants)
+            $get: function(...) {     // Dependencies (Instances or constants)
                 return ...;           // Return the instance
             }
         };
     });
 ```
 
-According to [https://twitter.com/petebd‎](petebd) [the constructor invocation pattern was supported mainly because of CoffeeScript classes](https://groups.google.com/forum/#!msg/angular/56sdORWEoqg/kWGd1jo5_5cJ) which follow that. As you can see provider factories can take dependencies but they are not the same dependencies as the provider `$get` function can take. This can be a little confusing at first. The only dependencies that the provider factory can take are other providers (Not the values they produce) and constants (You'll see why in a bit). So for example:
+According to [https://twitter.com/petebd](petebd), [constructor functions were supported mainly because CoffeeScript classes use them](https://groups.google.com/forum/#!msg/angular/56sdORWEoqg/kWGd1jo5_5cJ). So don't feel compelled to use them unless you're using CoffeeScript or you like the constructor invocation pattern. As you can see provider factories can take dependencies but they are not the same dependencies that are injected into the provider `$get` function. This can be a little confusing at first. The only dependencies that the provider factory can take are other providers (Not the instances they produce) and constants (You'll see why in a bit). So for example:
 
 
 ```js
@@ -105,9 +105,9 @@ module('myModule', []).
     });
 ```
 
-So the second provider takes in a constant and the math provider. Notice how `Provider` is prepended to the provider name.
+So the second provider takes in a constant and the math provider. Notice how `Provider` is prepended to the provider name. Thats the convention Angular uses for naming providers.
 
-Up until now I haven't said anything about services, factories or values. Why? Because they don't exist in Angular, there are just providers, period. The service, factory and value methods on `Module` and `$provide` are just *convenience methods* that accept different things and turn them into providers. *THERE ARE NO SERVICES, FACTORIES OR VALUES IN ANGULAR!* Here are the convenience methods (I expanded them out for demonstrative purposes, see the actual ones [here](https://github.com/angular/angular.js/blob/v1.2.0/src/auto/injector.js#L632)):
+Up until now I haven't said anything about services, factories or values. Why? Because they don't exist in Angular, there are only providers, period. The service, factory and value methods on `Module` and `$provide` are just *convenience methods* that accept different things and turn them into providers. *THERE ARE NO SERVICES, FACTORIES OR VALUES IN ANGULAR!* Here are the convenience methods (I expanded them out for demonstrative purposes, see the actual ones [here](https://github.com/angular/angular.js/blob/v1.2.0/src/auto/injector.js#L632)):
 
 ```js
 function factory(name, factoryFn) { 
@@ -131,7 +131,7 @@ function value(name, val) {
 }
 ```
 
-So `factory` is just a convenience method for passing a function that creates an instance. `service` is just a convenience method for passing in a function constructor. And `value` is just a convenience method for passing an instance. But as you can see, its all just providers. Or if you're coming from C# these would be analogous to this respectively:
+So `factory` is just a convenience method for passing a function that creates an instance. `service` is just a convenience method for passing in a function constructor (If you are using CoffeeScript of like that pattern). And `value` is just a convenience method for passing an instance. But as you can see, its all just providers, the convenience methods just make it easier to do what people will want to do 99% of the time. If you're coming from C# these convenience methods would be analogous to this respectively:
 
 ```csharp
 public class Module 
