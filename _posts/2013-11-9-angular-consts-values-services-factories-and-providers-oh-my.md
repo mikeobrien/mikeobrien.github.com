@@ -93,12 +93,12 @@ According to [petebd](petebd), [constructor functions were supported mainly beca
 ```js
 module('myModule', []).
     constant('pi', 3.14159).
-    provider('math', function(pi) {
+    provider('math', function(pi) {               // Takes in a constant
         return {
             $get: function(...) { ... }
         };
     }).
-    provider('math2', function(mathProvider) {
+    provider('math2', function(mathProvider) {    // Takes in another provider
         return {
             $get: function(...) { ... }
         };
