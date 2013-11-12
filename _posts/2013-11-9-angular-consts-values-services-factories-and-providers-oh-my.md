@@ -133,7 +133,7 @@ function value(name, val) {
 }
 ```
 
-So `factory()` is just a convenience method for creating a provider from a function that returns the instance. `service()` is just a convenience method for creating a provider from a function constructor that is instantiated as the instance (If you are using CoffeeScript of like that pattern). And `value()` is just a convenience method for creating a provider that returns an instance. In the beginning we talked about how IoC containers typically allow you to register either instances, factories that create instances or a type to instantiate. That's exactly the functionality these convenience methods enable. But as you can see, its all just providers, the convenience methods just make it easier to do what you will want to do 99% of the time. So you could rename those convenience methods to something like this and I think it would make more sense (albeit more keystrokes):
+So `factory()` is just a convenience method for creating a provider from a function that returns the instance. `service()` is just a convenience method for creating a provider from a function constructor that is instantiated as the instance (If you're using CoffeeScript of like that pattern). And `value()` is just a convenience method for creating a provider that returns an instance. In the beginning we talked about how IoC containers typically allow you to register either instances, factories that create instances or a type to instantiate. That's exactly the functionality these convenience methods enable. But as you can see, its all just providers, the convenience methods just make it easier to do what you will want to do 99% of the time. So you could rename those convenience methods to something like this and I think it would make more sense (albeit more keystrokes):
 
 ```js
 function registerFactoryProvider(name, factoryFn) { ... }
@@ -143,7 +143,7 @@ function registerConstructorProvider(name, constructor) { ... }
 function registerInstanceProvider(name, val) { ... }
 ```
 
-So you're probably not going to work with providers as I've been showing up till this point, you will be using these convenience methods. But hopefully you will now understand what they actually mean and the underlying construct they are creating. 
+So you're probably not going to work with providers directly as I've been showing up till this point, you will probably be using the `service()`, `factory()` and `value()` convenience methods. But hopefully you will now understand what they actually mean and the underlying construct they are creating. 
 
 ### Fitting it all together ###
 
