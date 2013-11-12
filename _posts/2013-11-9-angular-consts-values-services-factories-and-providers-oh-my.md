@@ -181,7 +181,7 @@ function constant(name, value) {
 }
 ```
 
-Constants can be an object or primitive (Just in case the name makes you think primitives only). Unlike providers (and therefore "constants" defined by `value()`), they cannot be altered by decorators so in that way they are "constant". If you don't need the value to be injectable into provider factories and you don't need it to be accessible to decorators, then its probably a toss up between defining "constant" values with `constant()` and `value()`.
+Constants can be an object or primitive (Just in case the name makes you think primitives only). Since they are not providers they cannot be altered by decorators, so in that way they are "constant".
 
 ### Directives ###
 
