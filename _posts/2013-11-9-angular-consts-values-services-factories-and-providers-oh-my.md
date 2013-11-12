@@ -147,7 +147,7 @@ So you're probably not going to work with providers directly as I've been showin
 
 ### Fitting it all together ###
 
-So now that we understand provider, how is all this tied together? The following illustrates this:
+So now that we understand providers (and their convenience methods), how is all this tied together? The following illustrates this:
 
 ![Angular provider flow](/blog/images/angular-provider-flow.png)
 
