@@ -102,3 +102,10 @@
 .markdown-body h3 {
     margin: 20px 0;
 }
+
+.markdown-body img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px 0;
+}
