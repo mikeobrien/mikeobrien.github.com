@@ -131,42 +131,31 @@ function value(name, val) {
 }
 ```
 
-So `factory` is just a convenience method for passing a function that creates an instance. `service` is just a convenience method for passing in a function constructor (If you are using CoffeeScript of like that pattern). And `value` is just a convenience method for passing an instance. But as you can see, its all just providers, the convenience methods just make it easier to do what people will want to do 99% of the time. If you're coming from C# these convenience methods would be analogous to this respectively:
+So `factory` is just a convenience method for creating a provider from a function. `service` is just a convenience method for creating a provider from a function constructor (If you are using CoffeeScript of like that pattern). And `value` is just a convenience method for creating a provider that returns an instance. But as you can see, its all just providers, the convenience methods just make it easier to do what people will want to do 99% of the time. If you're coming from C#, these convenience methods would be analogous to this respectively:
 
 ```csharp
 public class Module 
 {
     public Module CreateProvider(Provider provider) { ... }
 
-    public Module CreateProvider(Func<object> factory) 
+    public Module CreateProvider(string name, Func<object> factory) 
     { 
-        CreateProvider(new Provider(factory));
-        return this;
+        return CreateProvider(new Provider(name, factory));
     }
 
-    public Module CreateProvider(Type type)
+    public Module CreateProvider<T>(string name) where T : new()
     { 
-        CreateProvider(new Provider(() => Activator.CreateInstance(type))));
-        return this;
+        return CreateProvider(new Provider(name, () => new T()));
     }
 
-    public Module CreateProvider(object instance)
+    public Module CreateProvider(string name, object instance)
     { 
-        CreateProvider(new Provider(() => instance)));
-        return this;
+        return CreateProvider(new Provider(name, () => instance)));
     }
 }
 ```
 
-I really think this nomenclature confuses people leading people to believe that there are these three separate constructs when really there is just one. The methods should be renamed to something along these lines IMO:
-
-```js
-providerFactory()
-providerConstructor()
-providerInstance()
-```
-
-So now that we understand this how is all this tied together? The following illustrates this:
+So now that we understand this, how is all this tied together? The following illustrates this:
 
 ![Angular provider flow](/blog/images/angular-provider-flow.png)
 
