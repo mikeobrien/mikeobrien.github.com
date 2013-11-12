@@ -131,7 +131,7 @@ function value(name, val) {
 }
 ```
 
-So `factory` is just a convenience method for creating a provider from a function. `service` is just a convenience method for creating a provider from a function constructor (If you are using CoffeeScript of like that pattern). And `value` is just a convenience method for creating a provider that returns an instance. But as you can see, its all just providers, the convenience methods just make it easier to do what you will want to do 99% of the time. In other words, you're probably not going to work with providers as I've been showing up till this point, you will be using those convenience methods. BTW, if you're coming from C#, these convenience methods would be analogous to this respectively:
+So `factory` is just a convenience method for creating a provider from a function. `service` is just a convenience method for creating a provider from a function constructor (If you are using CoffeeScript of like that pattern). And `value` is just a convenience method for creating a provider that returns an instance. But as you can see, its all just providers, the convenience methods just make it easier to do what you will want to do 99% of the time. In other words, you're probably not going to work with providers as I've been showing up till this point, you will be using those convenience methods. But hopefully now it will be clearer what is going on and how you can drop down to working with providers directly when you need to. BTW, if you're coming from C#, these convenience methods would be analogous to this respectively:
 
 ```csharp
 public class Module 
@@ -162,7 +162,7 @@ public class Module
 }
 ```
 
-So now that we understand this, how is all this tied together? The following illustrates this:
+So now that we understand provider, how is all this tied together? The following illustrates this:
 
 ![Angular provider flow](/blog/images/angular-provider-flow.png)
 
