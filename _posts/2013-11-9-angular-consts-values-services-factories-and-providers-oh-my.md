@@ -131,21 +131,28 @@ function value(name, val) {
 }
 ```
 
-So `factory` is just a convenience method for creating a provider from a function. `service` is just a convenience method for creating a provider from a function constructor (If you are using CoffeeScript of like that pattern). And `value` is just a convenience method for creating a provider that returns an instance. But as you can see, its all just providers, the convenience methods just make it easier to do what people will want to do 99% of the time. If you're coming from C#, these convenience methods would be analogous to this respectively:
+So `factory` is just a convenience method for creating a provider from a function. `service` is just a convenience method for creating a provider from a function constructor (If you are using CoffeeScript of like that pattern). And `value` is just a convenience method for creating a provider that returns an instance. But as you can see, its all just providers, the convenience methods just make it easier to do what you will want to do 99% of the time. In other words, you're probably not going to work with providers as I've been showing up till this point, you will be using those convenience methods. BTW, if you're coming from C#, these convenience methods would be analogous to this respectively:
 
 ```csharp
 public class Module 
 {
     public Module CreateProvider(Provider provider) { ... }
 
-    public Module CreateProvider(string name, Func<object> factory) 
+    public Module CreateProvider(string name, Expression<Func<object>> factory) 
     { 
         return CreateProvider(new Provider(name, factory));
     }
 
-    public Module CreateProvider<T>(string name) where T : new()
+    public Module CreateProvider(string name, Expression<Func<object, object>> factory) 
     { 
-        return CreateProvider(new Provider(name, () => new T()));
+        return CreateProvider(new Provider(name, factory));
+    }
+
+    ...
+
+    public Module CreateProvider(string name, Type type)
+    { 
+        return CreateProvider(new Provider(name, args => Activator.CreateInstance(args)));
     }
 
     public Module CreateProvider(string name, object instance)
