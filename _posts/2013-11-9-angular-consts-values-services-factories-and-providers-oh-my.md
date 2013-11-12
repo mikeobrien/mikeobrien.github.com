@@ -162,7 +162,7 @@ function constant(name, value) {
 }
 ```
 
-They are also not providers even though they get put into the provider cache. This allows provider factories and constructor functions can take them as a dependency. And of course the provider `$get` function, controllers and directives can also take them as dependencies. Constants can be an object or primitive (Just in case the name makes you think primitives only). Since they are not providers and skip the provider workflow, they cannot be altered by decorators, so in that way they are "constant".
+They are also not providers even though they get put into the provider cache. This allows provider factories and constructor functions can take them as a dependency. And of course the provider `$get` function, controllers, directives and filters can also take them as dependencies. Constants can be an object or primitive (Just in case the name makes you think primitives only). Since they are not providers and skip the provider workflow, they cannot be altered by decorators, so in that way they are "constant".
 
 ### Decorators ###
 
