@@ -183,6 +183,6 @@ function constant(name, value) {
 
 Constants can be an object or primitive (Just in case the name makes you think primitives only). Since they are not providers they cannot be altered by decorators, so in that way they are "constant".
 
-### Directives ###
+### Decorators ###
 
-The last piece of the puzzle
+The last piece of the puzzle is decorators. Looking at the image above you will see a step in the provider injector called decorate. After a provider is created the provider injector checks to see if there are any decorators for it and if so calls them and passes in the provider. This allows you to override or augment the functionality of a provider. One example of this is how Angular mocks overrides functionality. Check out how it overrides `$http` [here](https://github.com/angular/angular.js/blob/v1.2.0/src/ngMock/angular-mocks.js#L1748). 
