@@ -189,7 +189,7 @@ angular.module('myModule', []).
     });
 ```
 
-The first parameter of the `decorator()` function is the name of the provider you want to decorate, followed by the decorator. Under the hood the provider `$get` function is being wrapped by the decorator. So decorators can be applied multiple times and you end up with a chain of calls that operate on the instance.
+The first parameter of the `decorator()` function is the name of the provider you want to decorate, followed by the decorator. [Under the hood](https://github.com/angular/angular.js/blob/v1.2.0/src/auto/injector.js#L648) the provider `$get` function is being wrapped by the decorator. So decorators can be applied multiple times and you end up with a chain of calls that operate on the instance.
 
 The following example is taken right out of the angular docs but it nicely demonstrates a real life usage of decorators:
 
