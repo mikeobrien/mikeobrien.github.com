@@ -147,7 +147,7 @@ So now that we understand providers (and their convenience functions), how is al
 
 So when you register a provider either directly or via one of the convenience functions (`service()`, `factory()` or `value()`) the provider injector creates an instance of the provider. If you registered a provider factory or constructor function with dependencies, dependencies are injected from the *provider cache*. This explains why you can only take in providers or constants as dependencies in provider factory or constructor functions (And remember we're not talking about dependencies injected into the `$get` function, that's different). It then puts the provider in the provider cache.
 
-When a controller, directive or filter is created, the instance injector tries to inject dependencies from the *instance cache*. If it can't find a dependency there, it then looks to see if there is a provider for the dependency in the *provider cache*. If there is, it calls the `$get` function on the provider to get the instance. It resolves the dependencies of the `$get` function the same way it does for controllers, directives and filters; first checking the *instance cache* and if it can't find it there, tries to find a provider, and so on. The instance returned by the provider `$get` function is injected and then cached in the instance cache for future use.
+When a controller, directive or filter is created, the instance injector tries to inject dependencies from the *instance cache*. If it can't find a dependency there, it then looks to see if there is a provider for the dependency in the *provider cache*. If there is, it calls the `$get` function on the provider to get the instance. It resolves the dependencies of the `$get` function the same way it does for controllers, directives and filters; first checking the *instance cache* and if it can't find it there, tries to find a provider, and so on. The instance returned by the provider `$get` function is then cached in the instance cache for future use.
 
 I put constants and decorators last as it will probably be easier to see how they fit in after this point.
 
@@ -166,40 +166,17 @@ They are also not providers even though they get put into the provider cache. Th
 
 ### Decorators ###
 
-The last piece of the puzzle are decorators. Decorators allow you to override or augment the functionality of a provider. One example of this is how Angular mocks override functionality. Check out how it overrides `$http` [here](https://github.com/angular/angular.js/blob/v1.2.0/src/ngMock/angular-mocks.js#L1748). 
+The last piece of the puzzle are decorators. Decorators allow you to override or augment an instance right after the provider creates it. One example of this is how Angular mocks override functionality. Check out how it overrides `$http` [here](https://github.com/angular/angular.js/blob/v1.2.0/src/ngMock/angular-mocks.js#L1748). 
 
-Decorators are simply functions that take in a provider and dependencies and then return a provider. The dependencies are injected from the instance cache, so services or constants. A special dependency called `$delegate` is a reference to the provider you are overriding.
+Decorators are simply functions that take in an instance and dependencies and then return an instance. The dependencies are injected from the instance cache, so services or constants. A special dependency called `$delegate` is a reference to the instance you are overriding.
 
 ```js
 function($delegate, ...) { // Dependencies
-    return ...;            // Return a provider
+    return ...;            // Return an instance
 });
 ```
 
-You have a couple of options here, you can either replace the provider or augment the provider. If you want to do the former it's much simpler to just use `provider()` or one of its convenience functions. Here is an example illustrating the latter:
-
-```js
-function($delegate) {
-    var get = $delegate.$get;
-
-    // Modify result
-    $delegate.$get = function() {
-        var result = get();
-        // Do some stuff here with the result...
-        return result;
-    };
-
-    // Modify or configure provider
-    $delegate.$get = function() {
-        // Do some stuff here with the provider...
-        return get();
-    };
-
-    return $delegate;
-});
-```
-
-The first example illustrates modifying the results of the provider before passing it on. The second shows modifying or configuring the provider before `$get` is called. 
+You have a couple of options here, you can either replace the instance or augment/wrap the instance. If you want to do the former it's much simpler to just use `service()`, `factory()` or `value()`. But if you want to do the latter this is the right place.
 
 You can apply decorators using the `decorator()` function:
 
@@ -212,7 +189,9 @@ angular.module('myModule', []).
     });
 ```
 
-The first parameter of the `decorator()` function is the name of the provider you want to decorate, followed by the decorator. The following example is taken right out of the angular docs but it nicely demonstrates a real life usage of decorators:
+The first parameter of the `decorator()` function is the name of the provider you want to decorate, followed by the decorator. Under the hood the provider `$get` function is being wrapped by the decorator. So decorators can be applied multiple times and you end up with a chain of calls that operate on the instance.
+
+The following example is taken right out of the angular docs but it nicely demonstrates a real life usage of decorators:
 
 ```js
 angular.module('myModule', []).
@@ -224,7 +203,7 @@ angular.module('myModule', []).
     });
 ```
 
-Here you can configure the `$log` service before its created.
+Here you can configure the `$log` service right after it is created.
 
 ### Conclusion ###
 
