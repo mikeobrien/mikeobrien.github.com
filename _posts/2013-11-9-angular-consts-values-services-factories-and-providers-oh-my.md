@@ -105,7 +105,7 @@ module('myModule', []).
     });
 ```
 
-So the first provider takes in a constant and the second provider takes in the math provider. Notice how `Provider` is appended to the provider name. Thats the convention Angular uses for naming providers.
+So the first provider takes in a constant and the second provider takes in the math provider. Notice how "Provider" is appended to the provider name. Thats the convention Angular uses for naming providers.
 
 ### Service, Factories and Values ###
 
