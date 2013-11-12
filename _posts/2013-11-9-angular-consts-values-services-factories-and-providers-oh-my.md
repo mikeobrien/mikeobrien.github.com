@@ -70,7 +70,7 @@ Now the `provider` function doesn't just take providers, you can also pass in co
 
 ```js
 module('myModule', []).
-    // Function constructor that can be instantiated
+    // Function constructor
     provider('name', function(...) {  // Dependencies (Providers or constants)
         this.$get = function(...) {  // Dependencies (Instances or constants)
             return ...;               // Return the instance
