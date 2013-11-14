@@ -35,7 +35,7 @@ describe('whatever', function() {
 });
 ```
 
-`module()` also be called as many times as you want as show above.
+`module()` can be called as many times as you want as show above.
 
 The other function provided by angular-mocks is `$inject`. This method injects services registered with the Angular IoC container. Here is a common way of using `inject()` in tests:
 
