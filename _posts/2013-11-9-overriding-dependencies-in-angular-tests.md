@@ -53,7 +53,7 @@ describe('whatever', function() {
 });
 ```
 
-So the second `beforeEach()` and test function are wrapped by inject so that it can resolve the dependencies specified in the parameters. One important thing to be aware of is that `module()` cannot be called after `inject()`. The configuration performed in the context of `module()` is for providers using the `$provide` service. Configuration in the context of inject would be working with services. If you want to scope provider configuration to a particular test you can use this approach:
+So the second `beforeEach()` and test function are wrapped by inject so that it can resolve the dependencies specified in the parameters. One important thing to be aware of is that `module()` cannot be called after `inject()`. The configuration performed in the context of `module()` is for providers using the `$provide` service. Configuration in the context of inject would be for services. If you want to scope provider configuration to a particular test you can use this approach:
 
 ```js
 describe('whatever', function() {
