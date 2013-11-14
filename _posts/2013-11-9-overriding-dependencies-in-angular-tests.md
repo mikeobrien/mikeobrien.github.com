@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 layout: post
 title: Overriding Dependencies in AngularJS Tests
 tags: [AngluarJS, Testing]
