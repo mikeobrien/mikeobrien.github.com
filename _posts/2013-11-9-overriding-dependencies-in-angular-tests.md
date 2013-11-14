@@ -1,7 +1,7 @@
 ---
 published: true
 layout: post
-title: Overriding Dependencies in AngularJS Tests
+title: Overriding Dependencies in Angular Tests
 tags: [AngluarJS, Testing]
 ---
 
@@ -9,9 +9,9 @@ One of the great things about Angular is how it encourages compositional design 
 
 ### Getting Started ###
 
-Angular ships with some tools to make testing Angular code easier. These tools are included in [ngMock module](http://docs.angularjs.org/api/ngMock) which must be referenced by your test runner. This library mocks a few common services (e.g. `$httpBackend`, `$exceptionHandler`, `$exceptionHandlerProvider`, `$log`, `$interval` and `$timeout`) so that you can test your services in isolation. It also provides two functions, `module()` and `inject()` which load modules and inject dependencies.
+Angular ships with some tools to make testing Angular code easier. These tools are included in [ngMock module](http://docs.angularjs.org/api/ngMock) which must be referenced by your test runner. This library mocks a few common services (e.g. `$httpBackend`, `$exceptionHandler`, `$exceptionHandlerProvider`, `$log`, `$interval` and `$timeout`) so that you can test your services in isolation. It also provides two functions, `module()` and `inject()` which load modules and inject dependencies. Currently `ngMock` only works with [Jasmine](http://pivotal.github.io/jasmine/) or [Mocha](http://visionmedia.github.io/mocha/) and the syntax used below is the same for both. You'll also see a little [expect.js](https://github.com/LearnBoost/expect.js/) sprinkled in.
 
-First, We need to load the modules we want available in the tests. This requires two things, one we need to reference the actual js file that contains the module in our test runner so it can be loaded (This will vary so I'm not going to get in to that). Then we need to call `module()` before each test to load it:
+We need to load the modules we want available to our tests. This requires two things, first, we need to reference the actual js file that contains the module, in our test runner so it can be loaded (This will vary so I'm not going to get into that). Second we need to call `module()` before each test to load it:
 
 ```js
 describe('whatever', function() {
@@ -35,9 +35,9 @@ describe('whatever', function() {
 });
 ```
 
-`module()` can also be called as many times as you want as show above.
+`module()` also be called as many times as you want as show above.
 
-The other function provided by angular-mocks is `$inject`. This method injects services in the Angular IoC container. Here is a common way of using `inject()` in tests:
+The other function provided by angular-mocks is `$inject`. This method injects services registered with the Angular IoC container. Here is a common way of using `inject()` in tests:
 
 ```js
 describe('whatever', function() {
@@ -53,7 +53,7 @@ describe('whatever', function() {
 });
 ```
 
-So the second `beforeEach()` and test function are wrapped by inject so that it can resolve the dependencies for you. One important thing to be aware of is that `module()` cannot be called after `inject()`. The configuration performed in the context of `module()` is for providers using the `$provide` service. Configuration in the context of inject would be working with services. If you want to scope provider configuration to a particular test you can use this approach:
+So the second `beforeEach()` and test function are wrapped by inject so that it can resolve the dependencies specified in the parameters. One important thing to be aware of is that `module()` cannot be called after `inject()`. The configuration performed in the context of `module()` is for providers using the `$provide` service. Configuration in the context of inject would be working with services. If you want to scope provider configuration to a particular test you can use this approach:
 
 ```js
 describe('whatever', function() {
@@ -82,12 +82,11 @@ beforeEach(module(function($provide) {
 }));
 ```
 
-Or can modify it:
+Or you can modify it:
 
 ```js
 beforeEach(inject(function(serviceIWantToModify) {
     serviceIWantToModify.doSomething = function() { ... };
-}
 }));
 ```
 
