@@ -11,7 +11,7 @@ One of the great things about Angular is how it encourages compositional design 
 
 Angular ships with some tools to make testing Angular code easier. These tools are included in [ngMock module](http://docs.angularjs.org/api/ngMock) which must be referenced by your test runner. This library mocks a few common services (e.g. `$httpBackend`, `$exceptionHandler`, `$exceptionHandlerProvider`, `$log`, `$interval` and `$timeout`) so that you can test your services in isolation. It also provides two functions, `module()` and `inject()` which load modules and inject dependencies. Currently `ngMock` only works with [Jasmine](http://pivotal.github.io/jasmine/) or [Mocha](http://visionmedia.github.io/mocha/) and the syntax used below is the same for both. You'll also see a little [expect.js](https://github.com/LearnBoost/expect.js/) sprinkled in.
 
-We need to load the modules we want available to our tests. This requires two things, first, we need to reference the actual js file that contains the module, in our test runner so it can be loaded (This will vary so I'm not going to get into that). Second we need to call `module()` before each test to load it:
+We need to load the modules we want available to our tests. This requires two things. First, we need to reference the actual js file, that contains the module, in our test runner so it can be loaded (This will vary so I'm not going to get into that). Second we need to call `module()` before each test to load it:
 
 ```js
 describe('whatever', function() {
