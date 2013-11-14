@@ -2,7 +2,7 @@
 published: true
 layout: post
 title: Overriding Dependencies in Angular Tests
-tags: [AngluarJS, Testing]
+tags: [AngularJS, Testing]
 ---
 
 One of the great things about Angular is how it encourages compositional design with baked in DI. And one of the benefits of compositional design is ease of testing as dependencies can be swapped out. But how do you override dependencies when testing Angular code? Let's see...
