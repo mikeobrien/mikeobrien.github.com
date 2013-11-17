@@ -55,7 +55,7 @@ Communication with the server can fail in a number of ways. Connectivity could b
 angular.module('errorHandling', []). 
     constant('HTTP_DEFAULT_ERROR_MSG', 'An error has occured. Please contact customer support for assistance.').
     constant('HTTP_NETWORK_ERROR_MSG', 'Unable to communicate with the server. Make sure you are connected to the internet and try again.').
-    config(function($provide, $httpProvider) {
+    config(function($httpProvider) {
         $httpProvider.interceptors.push(function($q, $rootScope, HTTP_DEFAULT_ERROR_MSG, HTTP_NETWORK_ERROR_MSG) {
             return { 
                 responseError: function(response) {
@@ -118,7 +118,7 @@ Angular ships with a service called [`$exceptionHandler`](http://docs.angularjs.
 angular.module('errorHandling', []). 
     constant('SCRIPT_ERROR_MSG', 'An error has occured and the details have been logged. Please contact customer support for assistance.').
     constant('LOGGING_URL', '/errors/javascript').
-    config(function($provide, $httpProvider) {
+    config(function($provide) {
         $provide.decorator('$exceptionHandler', function($delegate, $injector, $window, SCRIPT_ERROR_MSG, LOGGING_URL) {
             return function(exception, cause) {
                 // Using injector to get around cyclic dependencies
