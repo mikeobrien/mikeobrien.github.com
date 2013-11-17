@@ -9,7 +9,7 @@ Logging exceptions on the client side is just as important as logging them on th
 
 ### Outside of Angular ###
 
-Exceptions can occur both inside and outside of Angular. In order to catch all unhandled errors that occur outside of Angular, you can setup a global error handler:
+Exceptions can occur both inside and outside of Angular. In order to catch all unhandled errors that occur outside of Angular, you can setup a [global error handler](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers.onerror):
 
 ```js
 window.onerror = function(message, source, line, column) {
@@ -47,7 +47,7 @@ This hander is placed before all script tags. It is also *very* lo-fi so it shou
 
 Now that we are logging unhandled exception outside of Angular we want to handle ones that happen *inside* of Angular. There are two places where we will see errors, first with http calls and second in our code. 
 
-## Http Errors ##
+#### Http Errors ####
 
 Communication with the server can fail in a number of ways. Connectivity could be broken, server errors and server side validation could return error statuses. In all these situations you'll want to notify the user that something went wrong and why. I've found that Angular events are a nice way to signal that there was an error. This keeps the error handling and display of the error loosely coupled and easier to test. Below is an example of an [http interceptor](http://docs.angularjs.org/api/ng.$http#description_interceptors) that broadcasts http errors. It [broadcasts](http://docs.angularjs.org/api/ng.$rootScope.Scope#methods_$broadcast) the error from the [`$rootScope`](http://docs.angularjs.org/api/ng.$rootScope.Scope) so that all child scopes can subscribe to the event.
 
@@ -110,7 +110,7 @@ describe('Http error notification', function() {
 });
 ``` 
 
-## Unhandled Exceptions ##
+#### Unhandled Exceptions ####
 
 Angular ships with a service called [`$exceptionHandler`](http://docs.angularjs.org/api/ng.$exceptionHandler). The stock version simply logs the exception to the `$log` service. [Decorating](http://docs.angularjs.org/api/AUTO.$provide#methods_decorator) the `$exceptionHandler` service allows us to shoehorn in logging and notification as shown here:
 
