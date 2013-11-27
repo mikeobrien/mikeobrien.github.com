@@ -30,7 +30,10 @@
 .cv-container a:link, .cv-container a:visited { text-decoration: none; }
 .cv-container a:active, .cv-container a:hover { text-decoration: underline; }
 
-.cv-container h3 { margin: 10 0; } 
+.cv-container h3 { 
+    margin: 10 0; 
+    text-align: left;
+} 
 
 .cv-experience-header {
 	font-weight: bold;
