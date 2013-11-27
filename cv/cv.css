@@ -64,3 +64,9 @@
 .tag-cloud-item-3 { font-size: 16px; }			
 .tag-cloud-item-4 { font-size: 18px; }
 .tag-cloud-item-5 { font-size: 20px; }
+
+@media print {
+  a[href]:after {
+    content: none !important;
+  }
+}
