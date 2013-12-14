@@ -2,7 +2,7 @@
 published: true
 layout: post
 title: Setting up git bash prompt on OSX
-tags: [git, bash, osx]
+tags: [Git, Bash, OSX]
 ---
 
 [This post](http://blog.kramerapps.com/post/40839091386/git-on-osx) has a nice rundown of setting up your git prompt on osx. I'm going to list an abridged version here with my own custom prompt.
