@@ -75,17 +75,19 @@ createSpec     0:00  0%
 createPackage  0:01  7%
 ```
 
-When a build fails, TeamCity will include failed test results in the email but not other failure information. I wanted to also add the failure summary (Like the one seen on the build summary page) in every failed build notification. Add the following anywhere in the `bodyHtml` section of `build_failed.ftl`. The code below breaks at the ruby runtime error because in general it doesen't give you any valuable info and the stack trace is huge. The error messages you want to see appear before that point (Unless of course there is a bug in the ruby code itself). Also everything after it is not important. So I omit it and everything after it. If you want to see everything just remove the line where it breaks.
+When a build fails, TeamCity does not include the last chunk of the build log in the email like it does on the build summary page. This is ok for builds that fail because of tests since test failures are included. To include this information in build notifications, add the following anywhere in the `bodyHtml` section of `build_failed.ftl`. The code below breaks at the ruby runtime error because in general it doesn't give you any valuable info and the stack trace is huge. The error messages you want to see appear before that point (Unless of course there is a bug in the ruby code itself). Also everything after it is not important. So I omit it and everything after it. If you want to see everything just remove the line where it breaks.
 
 ```html
-<div style="color:red">
-	<code style="font-family:monospace;font-family:Menlo,Bitstream Vera Sans Mono,Courier New,Courier,monospace;font-size:12px">
-		<#list build.buildLog.messages[(build.buildLog.messages?size - 30)..] as message>
-			<#if message.text?trim?starts_with("RuntimeError:")><#break></#if>
-			${message.text?replace("\n", "\lbr/\g")?replace(" ", "&nbsp;")}<br/>
-		</#list>
-	</code>
-</div>
+<#if (var.failedTestsBean.failedTestCount == 0)>
+	<div style="color:red">
+		<code style="font-family:monospace;font-family:Menlo,Bitstream Vera Sans Mono,Courier New,Courier,monospace;font-size:12px">
+			<#list build.buildLog.messages[(build.buildLog.messages?size - 30)..] as message>
+				<#if message.text?trim?starts_with("RuntimeError:")><#break></#if>
+				${message.text?replace("\n", "\lbr/\g")?replace(" ", "&nbsp;")}<br/>
+			</#list>
+		</code>
+	</div>
+</#if>
 ```
 
 This will give you a notification along the lines of:
