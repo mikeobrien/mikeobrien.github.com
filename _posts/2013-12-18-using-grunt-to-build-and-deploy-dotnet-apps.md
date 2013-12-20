@@ -24,7 +24,7 @@ The project layout will be along the lines of this:
     ...
 ```
 
-At the root of your project will be a [`package.json`](https://npmjs.org/doc/json.html) that contains your [NPM](https://npmjs.org/) dependencies. Also a [`gruntfile.js`](http://gruntjs.com/getting-started#the-gruntfile) which is your build script. 
+At the root of your project will be a [`package.json`](https://npmjs.org/doc/json.html) that specifies your [NPM](https://npmjs.org/) dependencies. Also a [`gruntfile.js`](http://gruntjs.com/getting-started#the-gruntfile) which is your build script. 
 
 ### Initial Setup ###
 
@@ -59,13 +59,13 @@ Above we have a special `default` task alias that gets run when you type `grunt`
 
 ### Assembly Info ###
 
-First thing you will want to do is set the version number in the project assembly info files (And any other info you'd like). I personally let TeamCity manage version and then grab it from an environment variable, but you can do whatever works best for you. To do this we'll use the [grunt-dotnet-assembly-info](https://github.com/mikeobrien/grunt-dotnet-assembly-info) task (`npm install grunt-dotnet-assembly-info --save`). In your gruntfile, load the task and configure it as follows:
+First thing you will want to do is set the version number in the project assembly info files (And any other info you'd like). I personally let TeamCity manage the version and then grab it from an environment variable, but you can do whatever works best for you. To do this we'll use the [grunt-dotnet-assembly-info](https://github.com/mikeobrien/grunt-dotnet-assembly-info) task (`npm install grunt-dotnet-assembly-info --save`). In your `gruntfile.js`, load the task and configure it as follows:
 
 ```js
 module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-dotnet-assembly-info');
     ...
-    grunt.registerTask('deploy', ['assemblyinfo']);
+    grunt.registerTask('ci', ['assemblyinfo']);
 
     grunt.initConfig({
         assemblyinfo: {
@@ -88,14 +88,14 @@ The task supports all the standard assembly attributes, see [here](https://githu
 
 ### Building ###
 
-Now the most important step, building. To do that we will use the [grunt-msbuild](https://github.com/stevewillcock/grunt-msbuild) task by [@stevewillcock](https://twitter.com/stevewillcock) (`npm install grunt-msbuild --save`). In your gruntfile, load the task and configure it as follows:
+Now the most important step, building. To do that we will use the [grunt-msbuild](https://github.com/stevewillcock/grunt-msbuild) task by [@stevewillcock](https://twitter.com/stevewillcock) (`npm install grunt-msbuild --save`). In your `gruntfile.js`, load the task and configure it as follows:
 
 ```js
 module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-dotnet-assembly-info');
     grunt.loadNpmTasks('grunt-msbuild');
     ...
-    grunt.registerTask('deploy', ['assemblyinfo', 'msbuild']);
+    grunt.registerTask('ci', ['assemblyinfo', 'msbuild']);
 
     grunt.initConfig({
         ...
@@ -124,7 +124,7 @@ A solution can be found [here](http://stackoverflow.com/a/19351747/126068).
 
 ### Running Tests ###
 
-Next you will want to run your tests. If you are using NUnit, you're in luck as there is a Grunt task for that. We will use the [grunt-nunit-runner](https://github.com/mikeobrien/grunt-nunit-runner) task (`npm install grunt-nunit-runner --save`). In your gruntfile, load the task and configure it as follows:
+Next you will want to run your tests. If you are using NUnit, you're in luck as there is a Grunt task for that. We will use the [grunt-nunit-runner](https://github.com/mikeobrien/grunt-nunit-runner) task (`npm install grunt-nunit-runner --save`). In your `gruntfile.js`, load the task and configure it as follows:
 
 ```js
 module.exports = function(grunt) {
@@ -132,7 +132,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-msbuild');
     grunt.loadNpmTasks('grunt-nunit-runner');
     ...
-    grunt.registerTask('deploy', ['assemblyinfo', 'msbuild', 'nunit']);
+    grunt.registerTask('ci', ['assemblyinfo', 'msbuild', 'nunit']);
 
     grunt.initConfig({
         ...
@@ -150,7 +150,7 @@ The `teamcity` option integrates the test results with TeamCity. The task suppor
 
 ### Deploying ###
 
-I'm a big fan of using [Robocopy](http://technet.microsoft.com/en-us/library/cc733145.aspx) (n&eacute;e xcopy) to deploy web apps. We can use the [grunt-robocopy](https://github.com/mikeobrien/grunt-robocopy) task to run it (`npm install grunt-robocopy --save`). In your gruntfile, load the task and configure it as follows:
+I'm a big fan of using [Robocopy](http://technet.microsoft.com/en-us/library/cc733145.aspx) (n&eacute;e xcopy) to deploy web apps. We can use the [grunt-robocopy](https://github.com/mikeobrien/grunt-robocopy) task to run it (`npm install grunt-robocopy --save`). In your `gruntfile.js`, load the task and configure it as follows:
 
 ```js
 module.exports = function(grunt) {
@@ -159,7 +159,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-nunit-runner');
     grunt.loadNpmTasks('grunt-robocopy');
     ...
-    grunt.registerTask('deploy', ['assemblyinfo', 'msbuild', 'nunit', 'robocopy']);
+    grunt.registerTask('ci', ['assemblyinfo', 'msbuild', 'nunit', 'robocopy']);
 
     grunt.initConfig({
         ...
