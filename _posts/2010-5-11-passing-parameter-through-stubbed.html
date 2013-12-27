@@ -1,6 +1,0 @@
----
-layout: post
-title: Passing a Parameter Through a Stubbed Method to a Lambda in RhinoMocks
-tags: [.NET, RhinoMocks]
----
-<p>Couldn't quite figure this out at first. Found something on the internets somewhere that explained how to do it:</p>  <pre class="code">someObject.Stub(x =&gt; x.Calculate(<span style="color: #2b91af">Arg</span>&lt;<span style="color: blue">int</span>&gt;.Is.Anything)).Do(<span style="color: blue">new </span><span style="color: #2b91af">Func</span>&lt;<span style="color: blue">int</span>, <span style="color: blue">int</span>&gt;(i =&gt; i * 2)); </pre>  

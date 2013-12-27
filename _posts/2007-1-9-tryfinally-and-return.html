@@ -1,6 +1,0 @@
----
-layout: post
-title: Try...finally and return
-tags: [VB.NET, .NET, C#]
----
-<P>I was looking over a peice of my code today and noticed I had some finalization code in a try-finally block but there was a code path that had a return statement. So I thought, "thats a bug because I'm jumping out of the method before the finally block is called!". Silly me! <A href="http://msdn2.microsoft.com/en-us/library/zwc8s4fz.aspx">MSDN says</A> "Control is always passed to the finally block <STRONG>regardless of how the try block exits</STRONG>". For some reason I always thought that the finally block was bypassed when you exited a method via the return statement... :-S</P>
