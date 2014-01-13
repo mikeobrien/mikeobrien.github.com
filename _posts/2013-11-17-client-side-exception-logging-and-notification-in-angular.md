@@ -34,9 +34,14 @@ window.onerror = function(message, source, line, column) {
         '}');
     }
     finally {
-        // Display a message to the user
-        var errorContainer = document.getElementById('page-error');
-        ...
+        window.onload = function() {
+            if (document.getElementById('page-error')) return; // The error is already displayed
+            var errorMessage = document.createElement('div');
+            errorMessage.setAttribute('id', 'page-error');
+            errorMessage.innerHTML = 'An error has occured and the details have been logged. ' +
+                                     'Please contact customer support for assistance.';
+            document.body.appendChild(errorMessage);
+        }
     }
 };
 ```
