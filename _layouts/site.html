@@ -67,27 +67,29 @@
         <link href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
         <link href="/css/site.css" rel="stylesheet" type="text/css" />
         <link href="/css/markdown.css" rel="stylesheet" type="text/css" />
-        <link href="/css/pygments.css" rel="stylesheet" type="text/css" />
-
-    		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    		<script src="/js/bootstrap.js"></script>
-        
-        <script type="text/javascript">
-
-          var _gaq = _gaq || [];
-          _gaq.push(['_setAccount', 'UA-32636564-1']);
-          _gaq.push(['_trackPageview']);
-
-          (function() {
-            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-          })();
-
-        </script>        
+        <link href="/css/pygments.css" rel="stylesheet" type="text/css" />      
 	</head>
 
 	<body>
+        <div class="banner"></div>
         {{ content }}
 	</body>
+
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-32636564-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script>  
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/analytics.js"></script>
 </html>

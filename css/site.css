@@ -11,6 +11,10 @@ a {
     color: #3C4246;
 }
 
+.banner {
+    display: none;
+}
+
 .header {
     height: 55px;
     background-color: #4C6E8F;
