@@ -188,6 +188,44 @@ module.exports = function(grunt) {
 
 The options above are pretty self explanatory. The `mirror` option allows you to synchronize your destination with your source folder, removing any deleted files. The `retry` options allow you to retry the copy after so many seconds if it failed. Both these options in particular have been useful when deploying websites. The task fully supports all the robocopy options, see [here](https://github.com/mikeobrien/grunt-robocopy) for more info.
 
+### Nuget ###
+
+If you are publishing a library instead of deploying an app there is a package for that too. We can use the [grunt-nuget](https://github.com/spatools/grunt-nuget) task by [@somaticIT](https://twitter.com/somaticIT) (`npm install grunt-nuget --save`). In your `gruntfile.js`, load the task and configure it as follows:
+
+```js
+module.exports = function(grunt) {
+    grunt.loadNpmTasks('grunt-dotnet-assembly-info');
+    grunt.loadNpmTasks('grunt-msbuild');
+    grunt.loadNpmTasks('grunt-nunit-runner');
+    grunt.loadNpmTasks('grunt-nuget');
+    ...
+    grunt.registerTask('deploy', ['assemblyinfo', 'msbuild', 'nunit', 'nugetpack', 'nugetpush']);
+
+    grunt.initConfig({
+        ...,
+        nugetpack: {
+            myApp: {
+                src: 'MyApp.nuspec',
+                dest: './'
+            },
+            options: {
+                version: process.env.BUILD_NUMBER
+            }
+        },
+        nugetpush: {
+            myApp: {
+                src: '*.nupkg'
+            },
+            options: {
+                apiKey: process.env.NUGET_API_KEY
+            }
+        }    
+    });
+}
+```
+
+The `grunt-nuget` package ships with nuget so there is no need to install it on your build server. As demonstrated above you can dynamically set the version number and pass in your nuget API key. One thing to note is that even though you are passing in the version, the version element must exist in the nuspec file and have a value, otherwise `nuget pack` will fail. The options you specify are pass directly to the nuget so all [nuget CLI parameters](http://docs.nuget.org/docs/reference/command-line-reference#wiki-Pack_Command) are supported.
+
 ### Build Server ###
 
 The last step is to setup your build server to run Grunt. I'm going to assume you're using [TeamCity](http://www.jetbrains.com/teamcity/) for your builds. Follow the steps below on your build server:
