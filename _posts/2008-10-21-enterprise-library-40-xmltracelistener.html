@@ -2,6 +2,8 @@
 layout: post
 title: Enterprise Library 4.0 XmlTraceListener Behaving Badly...
 tags: [XML/XSL, .NET, IIS 6, Configuration, Logging, IIS 7, Enterprise Library]
+redirect_from:
+  - /blog/2008/10/enterprise-library-40-xmltracelistener.html
 ---
 <P>I have been having XmlTraceListener woes... None of which are showstoppers just major time wasters! <FONT color=#ff0000><STRONG>The following bug is fixed as of version 4.1!</STRONG></FONT>&#160;<STRIKE>The first of which has to do the message. The message is <STRONG><EM>not</EM></STRONG> <EM><STRONG>escaped</STRONG></EM> and/or CDATA qualified. So if you have an ampersand or greater/less than sign in the message it will throw this cryptic error:</STRIKE></P>
 <P><STRIKE>An error occurred while parsing EntityName. Line x, position y.</STRIKE></P>

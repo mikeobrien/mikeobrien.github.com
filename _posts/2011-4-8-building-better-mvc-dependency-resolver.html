@@ -2,6 +2,8 @@
 layout: post
 title: Building a Better MVC Dependency Resolver
 tags: [Dependency Injection, StructureMap, ASP.NET MVC]
+redirect_from:
+  - /blog/2011/04/building-better-mvc-dependency-resolver.html
 ---
 <p><font color="#ff0000"><strong><em>Updated to include global filters.</em></strong></font></p>  <p>Unfortunately the latest effort to add DI to MVC falls short in a number of ways. There are 3 areas in particular that are causing me pain:</p>  <ol>   <li>No distinction between infrastructure and a request. </li>    <li>No container per request. </li>    <li>No request container create and release mechanism. </li> </ol>  <p>In order to accommodate functionality specific to a request there would need to be a distinction between building up infrastructure related objects (created once at startup, e.g. IControllerFactory, IControllerActivator, etc.) and request related objects (created for each request, e.g. controllers, views, etc.) Unfortunately, all objects are built up from the same two methods regardless of if they're infrastructure or request related. I use a StructureMap nested container per request. I want all dependencies for an individual request to be managed by that nested container. Also once the request completes I want to "clean up" the nested container (Like commit a transaction or whatever). Currently the dependency resolver offers no way to do this. Here is a better interface IMO:</p>  <pre class="code"><span style="color: blue">public interface </span><span style="color: #2b91af">IDependencyResolver
 </span>{

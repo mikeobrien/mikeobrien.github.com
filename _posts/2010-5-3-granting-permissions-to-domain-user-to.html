@@ -2,5 +2,7 @@
 layout: post
 title: Granting Permissions to a Domain User to Control Windows Services
 tags: [Windows Services]
+redirect_from:
+  - /blog/2010/05/granting-permissions-to-domain-user-to.html
 ---
 <p>This is one I will not remember; granting permissions to a domain user to control a Windows service. Needed to grant our build user this permission. <a href="http://support.microsoft.com/kb/325349">Here</a> is an article that demonstrates how to do it with SUBINACL. </p>  <p><font color="#0000a0" face="Courier New">SUBINACL /SERVICE </font><a href="file://\\MyServer\SomeService"><font color="#0000a0" face="Courier New">\\MyServer\SomeService</font></a><font color="#0000a0" face="Courier New"> /GRANT=MyDomain\MyUser=F</font></p>  <p>Here are the permissions:</p>  <p>F : Full Control   <br />R : Generic Read    <br />W : Generic Write    <br />X : Generic eXecute    <br />L : Read controL    <br />Q : Query Service Configuration    <br />S : Query Service Status    <br />E : Enumerate Dependent Services    <br />C : Service Change Configuration    <br />T : Start Service    <br />O : Stop Service    <br />P : Pause/Continue Service    <br />I : Interrogate Service     <br />U : Service User-Defined Control Commands</p>  

@@ -2,6 +2,8 @@
 layout: post
 title: Creating Custom Linq Query Operators that Support both IQuerable<T> and IEnumerable<T>
 tags: [.NET, C#, Linq]
+redirect_from:
+  - /blog/2011/02/creating-custom-linq-query-operators.html
 ---
 <p>If your creating a custom query provider you may end up creating some custom query operators. I've found this to be a very powerful way to add additional functionality. If your doing this I would suggest also adding versions of your operators that work with IEnumerable&lt;T&gt;. The benefit of this is you can swap out your query provider for a List&lt;T&gt; (Or some other in memory collection that implements IEnumerable&lt;T&gt;) for unit testing. </p>  <p>Lets start with an sample query operator that represents a bubble sort:</p>  <pre class="code"><span style="color: blue">public static class </span><span style="color: #2b91af">Queryable
 </span>{

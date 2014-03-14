@@ -2,6 +2,8 @@
 layout: post
 title: JavaScript Prototyping Reference
 tags: [JavaScript, CoffeeScript]
+redirect_from:
+  - /blog/2011/12/javascript-prototyping-reference.html
 ---
 <p>I've had problems remembering what is actually happening when working with constructor functions and prototyping. I created the following table to demonstrate what's going on. If I'm missing something please let me know as I'm not a JavaScript ninja by any means. </p>  <p>A couple of things to note:</p>  <ul>   <li>The <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object/proto">__proto__ property is deprecated and non standard</a>. I include it only as a way to indicate an object's prototype. </li>    <li>I included the <a href="http://documentcloud.github.com/underscore/#extend">underscore.js extend function</a> only to show how it compares to protypal inheritance in JS or CS. I think the name of this function is not clear. </li>    <li>The <a href="http://documentcloud.github.com/backbone/docs/backbone.html#section-121">backbone.js extend method</a> is functionally equivalent to the <a href="http://jashkenas.github.com/coffee-script/#classes">CoffeeScript extends operator</a>. </li> </ul>  <br /><center>   
 
@@ -603,6 +605,8 @@ b = {
 Parent.prototype.name = <span class="str">'Niels Bohr'</span>;
 Parent.identity = 0;
 
+redirect_from:
+  - /blog/2011/12/javascript-prototyping-reference.html
 ---
 
 Parent = {
@@ -867,6 +871,8 @@ Parent = {
 }
 Child.prototype.url = <span class="str">'http://www.google.com'</span>;
 
+redirect_from:
+  - /blog/2011/12/javascript-prototyping-reference.html
 ---
 
 Child = {

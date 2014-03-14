@@ -2,6 +2,8 @@
 layout: post
 title: Multiple SQL Server job instances running simultaneously
 tags: [TSQL/SQL Server]
+redirect_from:
+  - /blog/2007/01/multiple-sql-server-job-instances.html
 ---
 <P>The question came up regarding the scheduling of SQL Server jobs and whether multiple instances of a job could run at the same time. So for example if I have a job that is scheduled to run every 15 minutes and for some reason the job runs 30 minutes, will a new instance of the job be started so now I will have 2 instances of the job running at the same time? The answer is no. <A href="http://msdn2.microsoft.com/en-us/library/ms175138.aspx">SQL Server will not allow multiple instances of a job to run at any given time</A>&#160;(See the note). I did some testing and the behavior of the SQL Server Agent is this; the Agent will run the job, if the job runs longer than the interval the Agent will wait the interval after the previous job had completed before running the job again, if it runs less than the interval it will allow the interval to completely pass (From the time the job was started) before running it again. For example if you have a job that is scheduled to run every 15 minutes the activity might look something like this:</P>
 <P><FONT face="Courier New" size=1>01:00 PM - Agent runs the job</FONT></P>

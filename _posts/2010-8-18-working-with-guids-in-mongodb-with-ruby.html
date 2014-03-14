@@ -2,6 +2,8 @@
 layout: post
 title: Working with Guids in MongoDB with Ruby and C#/NoRM
 tags: [MongoDB, .NET, Ruby, NoRM]
+redirect_from:
+  - /blog/2010/08/working-with-guids-in-mongodb-with-ruby.html
 ---
 <p>So here is the scenario; I have data that needs to be imported into MongoDB that has a guid id. I'm using Ruby to import the data but the data will be consumed by a .NET app using NoRM. How do I represent that guid id in MongoDB and how do I work with it in Ruby and C# via NoRM? Easy. <a href="http://api.mongodb.org/ruby/1.0.3/BSON/Binary.html">Here</a> you can see the Ruby BSON Binary class enables you to work with binary data of a certain MongoDB sub type. The sub type that NoRM recognizes as a guid is UUID (Pretty obvious right? Don't say yes, I've been fighting with this for a couple of hours! :). So all you have to do is convert your guid into a binary type, with the UUID subtype specified, using the aforementioned class. Here is an example in Ruby (Noticed I've stripped the hyphens from the guid): </p>  <pre class="code"><span style="color: black">item </span>= {<span style="color: #a31515">&quot;_id&quot; </span>=&gt; <span style="color: black">BSON</span>::Binary.<span style="color: blue">new</span>(<span style="color: #a31515">&quot;fd4fc014ef2d48b092ccf17208ee29eb&quot;</span>, <span style="color: black">BSON</span>::Binary::SUBTYPE_UUID), ... }</pre>
 <a href="http://11011.net/software/vspaste"></a>

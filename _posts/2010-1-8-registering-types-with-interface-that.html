@@ -2,6 +2,8 @@
 layout: post
 title: Registering Types with an Interface that Derives from an Open Generic Type in StructureMap
 tags: [.NET, StructureMap]
+redirect_from:
+  - /blog/2010/01/registering-types-with-interface-that.html
 ---
 <p><a href="http://www.lostechies.com/blogs/jimmy_bogard/default.aspx">Jimmy Bogard</a> has written a couple of posts <a href="http://www.lostechies.com/blogs/jimmy_bogard/archive/2010/01/07/advanced-structuremap-custom-registration-conventions-for-partially-closed-types.aspx">here</a> and <a href="http://www.lostechies.com/blogs/jimmy_bogard/archive/2009/09/01/partially-closed-generic-types.aspx">here</a> discussing the registering partially closed generic types with <a href="http://structuremap.sourceforge.net">StructureMap</a>. These posts helped me solve a problem I was having which is a little bit different. To set the stage let me explain what we're doing. First we have a generic repository interface:</p>  <pre class="code"><span style="color: blue">public interface </span><span style="color: #2b91af">IRepository</span><TEntity> : <span style="color: #2b91af">IQueryable</span><TEntity> <span style="color: blue">where </span>TEntity : <span style="color: blue">class
 </span>{

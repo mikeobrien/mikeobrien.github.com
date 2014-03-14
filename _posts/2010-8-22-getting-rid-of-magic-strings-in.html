@@ -2,6 +2,8 @@
 layout: post
 title: Getting Rid of the Magic Strings in RedirectToRoute & Action
 tags: [ASP.NET MVC]
+redirect_from:
+  - /blog/2010/08/getting-rid-of-magic-strings-in.html
 ---
 <p>I don't really like the magic strings in the RedirectToRoute and Action methods. Not to worry, its pretty easy to get rid of them by extending the Controller class and adding some additional helper methods so you get the following experience: </p>  <pre class="code"><span style="color: blue">return </span>RedirectToAction&lt;<span style="color: #2b91af">HomeController</span>&gt;(x =&gt; x.RegisterSuccess());</pre>
 

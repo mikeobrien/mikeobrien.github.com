@@ -2,6 +2,8 @@
 layout: post
 title: Creating an Overridable MVC3 Global Filter
 tags: [ASP.NET MVC3]
+redirect_from:
+  - /blog/2011/04/creating-overridable-mvc3-global-action.html
 ---
 <p>The new global filters in MVC3 are a nice way to apply behavior globally. Sometimes though you'll want to opt out an action or controller from that behavior. Lets take authentication as an example; we want everything to be secure by default but we may have individual controllers or actions that will be public. The following authorize attribute enables us to create a global filter and then override the global behavior where we need to:</p>  <pre class="code"><span style="color: green">// Make sure we specify that this attribute should only be specified once.
 </span>[<span style="color: #2b91af">AttributeUsage</span>(<span style="color: #2b91af">AttributeTargets</span>.Method, AllowMultiple = <span style="color: blue">false</span>)]

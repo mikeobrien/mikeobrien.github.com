@@ -2,6 +2,8 @@
 layout: post
 title: Timer With Elapse Reentrance and Start Options
 tags: [C#]
+redirect_from:
+  - /blog/2009/10/timer-with-elapse-reentrance-and-start.html
 ---
 <p>I needed a timer that I could set to elapse immediately when it was enabled (Instead of waiting for the first elapse event) and also not be reentrant on the elapsed event. I couldn't seem to find anything out there so I rolled my own. Unfortunately the System.Timers.Timer doesn't offer a lot in the way of extension so I ended up just using composition over inheritance. Here is a quick test:</p>  <pre class="code"><span style="color: blue">static </span><span style="color: #2b91af">Timer </span>_timer = 
     <span style="color: blue">new </span><span style="color: #2b91af">Timer</span>(5000, 

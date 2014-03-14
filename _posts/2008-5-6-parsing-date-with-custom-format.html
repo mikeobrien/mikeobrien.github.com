@@ -2,6 +2,8 @@
 layout: post
 title: Parsing a Date With a Custom Format
 tags: [C#]
+redirect_from:
+  - /blog/2008/05/parsing-date-with-custom-format.html
 ---
 <P>Parsing a date with a custom format is as easy as pie with the <A href="http://msdn.microsoft.com/en-us/library/w2sa9yss.aspx">DateTime.ParseExact</A> method, check it:</P><PRE class=code><SPAN style="COLOR: #2b91af">DateTime</SPAN>.ParseExact(<SPAN style="COLOR: #a31515">"04292008"</SPAN>, <SPAN style="COLOR: #a31515">"MMddyyyy"</SPAN>, <SPAN style="COLOR: blue">null</SPAN>)</PRE>
 <P><A href="http://11011.net/software/vspaste"></A>Where the first parameter is the value to parse, the second is a <A href="http://msdn.microsoft.com/en-us/library/az4se3k1.aspx">format string</A> and for the culture info you can pass null for the current culture (Unless you need to specify one). </P>

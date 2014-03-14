@@ -2,6 +2,8 @@
 layout: post
 title: Building a Better MVC Filter Attribute Provider
 tags: [ASP.NET MVC3]
+redirect_from:
+  - /blog/2011/04/building-better-mvc-filter-attribute.html
 ---
 <p>As I mentioned <a href="http://blog.mikeobrien.net/2011/04/on-filters-in-mvc3.html">here</a> the filter attribute design in MVC is terrible. That other post explains why so I'm not going to rehash. This post is about how we can do it better. I don't really have anything against using the attributes to annotate an action or controller it's mainly that MVC makes the attribute itself the filter. What if, instead, the attribute was simply a marker that said that a particular filter should be applied and allowed you to customize it:</p>  <pre class="code"><span style="color: blue">public interface </span><span style="color: #2b91af">IFilterAttribute
 </span>{

@@ -2,6 +2,8 @@
 layout: post
 title: Xml Configuration For NAnt Scripts
 tags: [XML/XSL, Configuration, Nant]
+redirect_from:
+  - /blog/2007/11/xml-configuration-for-nant-scripts.html
 ---
 <P>NAnt scripts can get cluttered with configuration values. One way to clean this up is to create properties that are used throughout the script. Although, you could take this a step further and store NAnt script configuration values in an Xml file. I like this approach because it creates a clear separation between the script and modifiable parameters. For example lets say we have an Xml configuration file called Build.config that contains paths:</P>
 <P><FONT face="Courier New"><?xml version="1.0"?><BR><buildConfiguration><BR>&#160;&#160;&#160; <paths><BR>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <path name="SubversionPath" value="C:\Program Files\CollabNet Subversion Server\svn.exe" /><BR>&#160;&#160;&#160; </paths><BR></buildConfiguration></FONT></P>

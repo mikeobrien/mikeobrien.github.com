@@ -2,6 +2,8 @@
 layout: post
 title: Working with Solution/Project Configurations in Visual Studio
 tags: [Visual Studio 2005, Configuration, Visual Studio 2008, MSBuild]
+redirect_from:
+  - /blog/2007/11/working-with-solutionproject.html
 ---
 <P>I've tried playing with custom configurations (Outside the stock Debug/Release configurations) in the past and found it confusing. So today I tried it again and had much better success. One thing that had me confused is the relationship between Solution level configuration and Project level configuration. What I didn't realize is that they are all completely separate entities... The "Debug" configuration in SolutionA is different from the "Debug" configuration in ProjectA. The "Debug" configuration in ProjectA is different from the "Debug" configuration in ProjectB. They all just happen to have the same name for consistency (Which is where my confusion began; guess I should have read the manual...). Although they are different entities, project level configurations can be mapped to a solution level configuration.</P>
 <P>The example below shows a possible configuration. The <EM>solution</EM> has 2 configurations: "PlanA" and "PlanB". The BLL <EM>project</EM> have 2 configurations: "Production" and "Staging". The UI <EM>project</EM> has 2 configurations: "Red" and "Blue". The "PlanA" <EM>solution</EM> configuration has the BLL <EM>project</EM> configuration set to "Staging" while the UI <EM>project</EM> configuration is set to "Red".</P>

@@ -2,6 +2,8 @@
 layout: post
 title: F# Function or Value?
 tags: [F#]
+redirect_from:
+  - /blog/2009/10/f-function-or-value.html
 ---
 <p>I didn't really understand this until today when <a href="http://cs.hubfs.net/forums/thread/11952.aspx">I asked the following on hubFS</a>:</p>  <p><span style="widows: 2; text-transform: none; text-indent: 0px; border-collapse: separate; font: medium 'Times New Roman'; white-space: normal; orphans: 2; letter-spacing: normal; color: rgb(0,0,0); word-spacing: 0px; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px" class="Apple-style-span"><span style="text-align: left; font-family: tahoma, arial, helvetica; font-size: 12px" class="Apple-style-span"><em>"I'm wondering if the F# compiler has an optimization that will make it so that the sqrt5 and Phi functions only execute once, no matter how many times the fibn function is called, since the results of those functions are always constant.</em></span> </span></p>  <div style="font-family: 'Courier New'; background: white; color: black; font-size: 10pt; -webkit-background-clip: initial; -webkit-background-origin: initial">   <pre style="margin: 0px"><span style="color: blue">let</span> sqrt5 = sqrt 5.0</pre>
 

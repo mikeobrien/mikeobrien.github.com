@@ -2,6 +2,8 @@
 layout: post
 title: Sending Keystrokes to a Flash Movie in the WebBrowser Control
 tags: [.NET, Win32 API, C#, Flash]
+redirect_from:
+  - /blog/2007/02/sending-keystrokes-to-flash-movie-in.html
 ---
 <P>I had a baffling problem arise today. Here is the scenario; I have a .NET WinForms app with a WebBrowser control. The WebBrowser control loads a web page that contains an embedded Flash movie. I need to send keystrokes to the Flash movie from the WinForms app. Now MS provides the SendKeys class under the Windows.Forms namespace for this very purpose, but in this instance it doesent pass them on to the Flash movie (Although it does pass them to HTML elements in the page). Hmmmmmm...&#160;<STRIKE>A little digging in </STRIKE><A href="http://www.aisto.com/roeder/dotnet/"><STRIKE>Reflector</STRIKE></A><STRIKE> uncovers the reason. The SendKeys class internally calls the SetKeyboardState() native method to send the keyboard input. Here is what </STRIKE><A href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winui/winui/windowsuserinterface/userinput/keyboardinput/keyboardinputreference/keyboardinputfunctions/setkeyboardstate.asp"><STRIKE>MSDN says about that call</STRIKE></A><STRIKE>:</STRIKE></P>
 <P><FONT face=Arial color=#000080><STRIKE>The SetKeyboardState function copies a 256-byte array of keyboard key states into <STRONG>the calling thread's keyboard input-state table</STRONG>. This is the same table accessed by the GetKeyboardState and GetKeyState functions. <STRONG>Changes made to this table do not affect keyboard input to any other thread.</STRONG></STRIKE></FONT></P>

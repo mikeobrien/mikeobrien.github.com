@@ -2,6 +2,8 @@
 layout: post
 title: Setting Up a .NET 4.0 Build Server
 tags: [Visual Studio 2010, MSBuild]
+redirect_from:
+  - /blog/2010/05/setting-up-net-40-build-server.html
 ---
 <p><i>UPDATE: Annoyingly the SDK does not include the build targets... But you can download them <a href="https://docs.google.com/a/mikeobrien.net/uc?id=0Bynmohn6qHD_YzEwN2MyYjEtZmVjZi00ZjI2LTkyZDYtMWZkZWMwN2Q2YTFk&export=download&hl=en">here</a>. The .NET 4.0 SDK can be downloaded <a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=6b6c21d2-2006-4afa-9702-529fa782d63b&displaylang=en">here</a>.</i> <strike>Evidentially the .NET 4.0 SDK, or more accurately "Win SDK for Windows 7 and .NET 4", <a href="http://blogs.msdn.com/windowssdk/archive/2010/04/07/coming-soon-win-sdk-for-windows-7-and-net-4.aspx#comments">will not be released until "mid June"</a> (See the last comment from Brian Cost). Need to setup your build server now? No problem, here's all you have to do (BTW, our developer workstation and build server are both x64 so the paths were the same on both. If you're going from x86 to x64 or vice versa you'll have to translate the paths):</p><ol><li>Export the following registry key from a box with VS2010 installed and import the keys on the build server (These registry keys contain the paths so as noted above you may need to adjust them if your going from x86 to x64 or vice versa): <strong>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.0A</strong></li>
 <li>Copy the following path from the same machine above to the corresponding path on the build server: %<strong>ProgramFiles%\Microsoft SDKs\Windows\v7.0A</strong></li></strike>

@@ -2,6 +2,8 @@
 layout: post
 title: Prototyping in Lua
 tags: [JavaScript, Lua, Prototypal]
+redirect_from:
+  - /blog/2011/12/prototyping-in-lua.html
 ---
 <p>One of the hardest things to get my head around in JavaScript (Besides "<a href="http://www.quirksmode.org/js/this.html">this</a>") was prototyping. I wasn't sure if it was prototyping itself that was hard to grok (It seemed amazingly simple to me in principle) or if it was how JavaScript implemented it. I thought it would be an interesting exercise to explore how another prototypal language worked to see where the difficulty lay. So let's take a look at how <a href="http://www.lua.org/">Lua</a> implements prototyping (Disclaimer: I only have a passing knowledge of Lua so please excuse my na&#239;vet&#233;).</p>  <p>Lua "<a href="http://www.lua.org/pil/16.html">tables</a>" form the basis of objects. They are essentially hash tables, &#224; la JavaScript objects. Prototyping in Lua is <a href="http://www.lua.org/pil/16.1.html">enabled by two actions</a>; first setting the objects' metatable (Which can be any table) and second, setting the prototype field in that metatable (Which is the __index field). Here is how it works (NB: see <a href="http://www.lua.org/pil/16.html">here about the use of colon vs. dot</a>. Compare it to call/apply in JavaScript):</p>  <pre class="code csharpcode"><span class="rem">-- Create the prototype</span>
 Greeting = { hello = <span class="str">'hello'</span> }

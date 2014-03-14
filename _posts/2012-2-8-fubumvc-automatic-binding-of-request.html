@@ -2,6 +2,8 @@
 layout: post
 title: FubuMVC Automatic Binding of Request Properties
 tags: [FubuMVC]
+redirect_from:
+  - /blog/2012/02/fubumvc-automatic-binding-of-request.html
 ---
 <p>One very nifty feature of FubuMVC is the automatic binding of request properties to your input model. From what I can tell, any item in the <a href="https://github.com/DarthFubuMVC/fubumvc/blob/master/src/FubuMVC.Core/Http/AspNet/AspNetAggregateDictionary.cs">AspNetAgregateDictionary</a> will be bound if the name/type of your input model property match. So for example, the following input model would have the user agent bound to the UserAgent property, talk about loose coupling:</p>  <pre class="code csharpcode"><span class="kwrd">public</span> <span class="kwrd">class</span> InputModel
 {

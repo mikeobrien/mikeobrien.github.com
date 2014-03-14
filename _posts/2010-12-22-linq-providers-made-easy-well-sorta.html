@@ -2,6 +2,8 @@
 layout: post
 title: Linq Providers Made Easy (Well, sorta)
 tags: [.NET, C#, Linq]
+redirect_from:
+  - /blog/2010/12/linq-providers-made-easy-well-sorta.html
 ---
 <p>Currently I'm implementing a simple Linq enabled ORM to handle an edge case in our system (For everything else we use NHibernate). I've found that the hard part about writing a Linq provider is parsing expression trees; the provider is actually the easy part. In the course of writing it I've created a simple base class that makes it even easier to create the provider:</p>  <pre class="code"><span style="color: blue">public abstract class </span><span style="color: #2b91af">QueryableBase</span>&lt;T&gt; : <span style="color: #2b91af">IOrderedQueryable</span>&lt;T&gt;, <span style="color: #2b91af">IQueryProvider
 </span>{

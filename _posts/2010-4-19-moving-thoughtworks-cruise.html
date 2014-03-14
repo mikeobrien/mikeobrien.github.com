@@ -2,6 +2,8 @@
 layout: post
 title: Moving the ThoughtWorks Cruise Configuration File on Windows
 tags: [ThoughtWorks Cruise]
+redirect_from:
+  - /blog/2010/04/moving-thoughtworks-cruise.html
 ---
 <p>Relocating the ThoughtWorks Cruise configuration file is pretty simple. We have our build artifacts located on a separate partition and we wanted the Cruise config file to be located there also. </p><ol><li>Open the server service config file: [Program Files]\Cruise Server\config\wrapper-server.conf </li>
 <li>Change the location of the "cruise.config.file" parameter to the new location of the config file.  <br />

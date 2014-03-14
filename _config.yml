@@ -1,3 +1,5 @@
 paginate: 10
 permalink: /blog/:title
 markdown: redcarpet
+gems:
+  - jekyll-redirect-from

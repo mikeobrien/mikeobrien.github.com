@@ -2,6 +2,8 @@
 layout: post
 title: Exporting Database/Table to CSV in a Stored Procedure...quickly
 tags: [TSQL/SQL Server]
+redirect_from:
+  - /blog/2006/12/exporting-databasetable-to-csv-in.html
 ---
 <P>We had a situation come up where we needed to quickly export about 3000 tables from SQL Server to CSV. We bought a tool in hopes that we could do this quickly (Why wont DTS export to multiple text files?!?), well the tool stunk and it would have literally taken a week to complete. So I wrote a two&#160;SP's that use BCP to export an entire database or a single table to CSV (Or use whatever delimiter and qualifier you want). <STRONG>I whiped them up pretty quick so they could probably use some fine tuning if you are going to use them in production.</STRONG> Two things to note:</P>
 <P>1) In SQL Server 2005 you have to explicitly turn on the ability to use xp_cmdshell in order to make the BCP call.</P>

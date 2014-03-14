@@ -2,6 +2,8 @@
 layout: post
 title: Removing special chars using Regex
 tags: [VB.NET, .NET, C#]
+redirect_from:
+  - /blog/2007/01/removing-special-chars-using-regex.html
 ---
 <P>Removing special chars (Control chars 0-31 and extended ASCII 127-255) is pretty easy to do with a regular expression. Simply select chars that are not in the range of ASCII 32-126 (Hex 20-7E) and replace these chars with an empty string.</P>
 <P><SPAN style="FONT-SIZE: 11px; COLOR: black; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">Regex SpecialCharExpression <SPAN style="FONT-SIZE: 11px; COLOR: red; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">=</SPAN> <SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">new</SPAN> Regex(<SPAN style="FONT-SIZE: 11px; COLOR: #666666; FONT-FAMILY: Courier New; BACKGROUND-COLOR: #e4e4e4">@"[^\x20-\x7E]"</SPAN>);<BR><SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">string</SPAN> NewData <SPAN style="FONT-SIZE: 11px; COLOR: red; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">=</SPAN> SpecialCharExpression.Replace(OldData, <SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">string</SPAN>.Empty);<BR></SPAN></P>

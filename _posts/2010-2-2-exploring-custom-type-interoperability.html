@@ -2,6 +2,8 @@
 layout: post
 title: Exploring Custom Type Interoperability between F# and C#
 tags: [F#, C#]
+redirect_from:
+  - /blog/2010/02/exploring-custom-type-interoperability.html
 ---
 <p>I'm currently working on an F# library that will be accessed from C#. When doing this the obvious question is; "How will this look from C#?" This wasn't quite clear to me at first so I'll go through a couple custom F# types and show how they are compiled.</p>  <p>Record type, Fermion.fs:</p>  <pre class="code"><span style="color: blue">type </span>Spin = 
     | Up = <span style="color: brown">0

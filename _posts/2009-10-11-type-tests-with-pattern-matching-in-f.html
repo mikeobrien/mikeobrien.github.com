@@ -2,6 +2,8 @@
 layout: post
 title: Type Tests with Pattern Matching in F#
 tags: [.NET, F#]
+redirect_from:
+  - /blog/2009/10/type-tests-with-pattern-matching-in-f.html
 ---
 <p>I'm working on an application where I'm sending output to a console window. If the output is an integer or double I wanted the print function to perform special formatting. For everything else just call .ToString(). Page 115 in Expert F# shows an example of how to do this sort of thing with pattern matching, here is an example (Stripped down for clarity):</p>  <pre class="code"><span style="color: blue">let </span>Print (t:obj) =
     <span style="color: blue">let </span>text =

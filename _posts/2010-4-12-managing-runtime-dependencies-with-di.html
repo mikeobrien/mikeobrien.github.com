@@ -2,6 +2,8 @@
 layout: post
 title: Managing Runtime Dependencies with DI and Abstract Factories
 tags: [Dependency Injection, DDD, .NET, StructureMap]
+redirect_from:
+  - /blog/2010/04/managing-runtime-dependencies-with-di.html
 ---
 <p>While most dependency initialization can be setup at compile time, some dependencies need to be initialized at runtime. How can this be done? Let's try a couple of approaches. As an example lets think about an Excel worksheet, where we need to provide a path, worksheet name and the existence of a header row to initialize the Excel worksheet object. I'll use StructureMap in this example.</p>  <p>One way this can be accomplished is by creating an interface that has a "init" method:</p>  <pre class="code"><span style="color: blue">public interface </span><span style="color: #2b91af">IExcelWorksheet
 </span>{

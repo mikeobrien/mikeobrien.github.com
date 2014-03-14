@@ -2,6 +2,8 @@
 layout: post
 title: Setting Default SMTP Information in the .config File
 tags: [SMTP, C#, .NET 2.0]
+redirect_from:
+  - /blog/2008/06/setting-default-smtp-information-in.html
 ---
 <p>I never realized this but you can set the default SMTP information in the .config file (Thanks <a href="http://www.karpach.com/22.aspx">Viktar</a>!). This applies to the new System.Net.Mail.* classes (Not the deprecated System.Web.Mail.* classes). MSDN defines the elements <a href="http://msdn.microsoft.com/en-us/library/ms164240.aspx">here</a> and <a href="http://msdn.microsoft.com/en-us/library/ms164242.aspx">here</a>.</p>  <pre class="code"><span style="color: blue"><</span><span style="color: #a31515">configuration</span><span style="color: blue">>
   <</span><span style="color: #a31515">system.net</span><span style="color: blue">>

@@ -2,6 +2,8 @@
 layout: post
 title: Setting up a Secure WCF Service that uses a UserNamePasswordValidator and runs on Cassini
 tags: [.NET 4.0, WCF]
+redirect_from:
+  - /blog/2011/03/setting-up-secure-wcf-service-that-uses.html
 ---
 <p>I spent the better part of today trying to figure this out so here is the brain dump. Basically I needed to do some prototyping that required a web service that used a custom UserNamePasswordValidator. Normally I have SSL setup in IIS and use credentials over a secured transport layer but I just wanted to whip up something simple for my prototype that would run in Cassini (Yes I know about IIS Express, haven't had time to try it out so it may have been a better route). Although WCF supposedly supports a <a href="http://msdn.microsoft.com/en-us/library/system.servicemodel.channels.securitybindingelement.allowinsecuretransport.aspx">new option to enable credentials over any transport</a>, unsecured or not, it's the usual <a href="http://blogs.msdn.com/b/distributedservices/archive/2010/05/13/wcf-and-intermediate-devices.aspx">half baked Microsoft "feature" that doesn't really get you anywhere</a> and wont generate the WSDL (I'm lazy and I didn't want to wire up the client config by hand). In any event you can just use message security and forgo the transport level security with this configuration:</p>  <pre class="code">  <span style="color: blue">&lt;</span><span style="color: #a31515">system.serviceModel</span><span style="color: blue">&gt;
 </span><span style="color: blue">    &lt;</span><span style="color: #a31515">bindings</span><span style="color: blue">&gt;

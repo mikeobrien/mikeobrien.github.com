@@ -2,6 +2,8 @@
 layout: post
 title: Using a Recursive CTE to Build a Filter from a Comma Seperated List of Id's
 tags: [TSQL/SQL Server, SQL Server 2005]
+redirect_from:
+  - /blog/2008/03/using-recursive-cte-to-build-filter.html
 ---
 <p><a href="http://msdn2.microsoft.com/en-us/library/ms175972.aspx">Common Table Expressions</a> (CTE's) are a handy feature introduced in SQL Server 2005. Making them more handy is the fact that they can be used recursively. This opens up a number of possibilities; one of which being a set based way to build a virtual table out of a comma separated list and filter off of that virtual table. Lets say for example we have a comma separated list of ID's we want to use to filter the results of a query. </p><pre class="code"><span style="color: blue">DECLARE </span>@Filter <span style="color: blue">varchar</span><span style="color: gray">(</span>1000<span style="color: gray">)
 

@@ -2,6 +2,8 @@
 layout: post
 title: Weird Issue with PocketSOAP in Classic ASP and IIS7
 tags: [SSL, SOAP, Web Services, IIS 7]
+redirect_from:
+  - /blog/2009/04/weird-issue-with-pocketsoap-in-classic.html
 ---
 <p>I'm doing due diligence on our new SOAP API and seeing what platforms can access it and also get a feel for how it is to use our API from different platforms. Unfortunately there are still a lot of Classic ASP developers/companies out there so I'm trying to see if they can use our SOAP interface or it they will have to just use our REST interface (Not really a bad thing actually, REST rocks, but sometimes clients want to use a specific technology). The only COM SOAP library I could find that supports SOAP 1.2 (Which is what our services are speaking) is <a href="http://www.pocketsoap.com/">PocketSOAP</a>. Although I ran into a weird problem using it in Classic ASP on IIS7. When I would hit a service running over SSL I would get the following error:</p> <p><font size="2" face="Courier New">Pocket.HTTP.1 error '80070005'</font></p> <p><font size="2" face="Courier New">Error opening CertificateStore</font></p> <p><font size="2" face="Courier New">/soap.asp, line 26</font></p> <p>Struggled with this for a while and dug up a post from the PocketSOAP developer where he posts the actual source code that causes the error:</p><pre class="code"><span style="color: green">// Open the "MY" certificate store, which is where Internet Explorer
 // stores its client
