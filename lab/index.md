@@ -25,7 +25,7 @@ The following resources have been very helpful in general. I will note resources
 
 - [Theoretical Concepts in Physics](http://www.amazon.com/Theoretical-Concepts-Physics-Alternative-Reasoning/dp/052152878X) - [Malcolm Longair](http://www.phy.cam.ac.uk/people/longairm.php). This fantastic text takes you through the history of physics, closely examining a number pivotal theories and their development. Chapters 11-15 on quantum theory are highly relevant to the content on this site.
 
-- [Richard Feynman: Fun to Imagine](http://www.youtube.com/watch?v=aXtnYnoutKk) - And of course some Feynman for inspiration!
+- [Richard Feynman: Fun to Imagine](https://www.youtube.com/watch?v=GqvggMpJgL0) - And of course some Feynman for inspiration!
 
 ### <a id="supplies"></a> Materials & Supplies
 
