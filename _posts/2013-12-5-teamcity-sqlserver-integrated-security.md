@@ -21,8 +21,10 @@ If you are running a 32 bit OS:
 If you are running a 64 bit OS:
 
 3. Copy the `\auth\x64\sqljdbc_auth.dll` (Note the `x64` in the path) from the JDBC driver folder to your `C:\Windows\System32` folder (Or some location in the system path).
-4. Copy the contents of the `C:\Program Files\TeamCity\jre` folder into `C:\Program Files\TeamCity\jre\x86` as a backup.
+4. Copy the contents of the `jre` folder under the [TeamCity home directory](http://confluence.jetbrains.com/display/TCD8/TeamCity+Specific+Directories) (By default `C:\Program Files\TeamCity\`) into `jre\x86` as a backup.
 5. Download the 64 bit Windows `tar.gz` version (*Not the installer*) of the JRE [here](http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html) and extract it to a folder. Depending on your compression tool you may have to uncompress and then extract the tar archive in two separate steps. [7-zip](http://www.7-zip.org/) will do this.
 6. Copy the JRE that you extracted to `C:\Program Files\TeamCity\jre` folder. The JRE is one folder deep in the archive so don't just directly copy the folder that is extracted. Your `C:\Program Files\TeamCity\jre` folder should end up with a `bin` and `libs` folder.
 
 Finally restart TeamCity and you should be golden.
+
+Thanks to [dneelyep](http://disqus.com/dneelyep/) for his corrections.
