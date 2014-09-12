@@ -7,7 +7,7 @@ title: Lab
 
 <div class="alert alert-danger">Comming Soon</div>
 
-[The scientific glassblowing learning center](http://www.ilpi.com/glassblowing/]
+[The scientific glassblowing learning center](http://www.ilpi.com/glassblowing/)
 
 [Teralab Glass Blowing for Vacuum Devices](http://www.teralab.co.uk/Glass_Blowing/Glass_Blowing_Menu.htm)
 
