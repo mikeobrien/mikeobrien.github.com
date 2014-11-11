@@ -57,25 +57,53 @@ Above we have a special `default` task alias that gets run when you type `gulp` 
 [14:48:30] Starting 'default'...
 [14:48:30] Finished 'default' after 32 μs
 ```
+### Task Sequence ###
+
+Gulp will try to run every task in parallel. Obviously you will need to run certain tasks in a particular order in your build. The current version of gulp allows you to do this a couple of ways. First you will need to specify a dependency and then some way to indicate the dependency has completed. [According to the gulp docs](https://github.com/gulpjs/gulp/blob/master/docs/API.md#async-task-support) gulp can only know when a dependency has completed by either returning a stream, returning a promise or taking in a callback and calling it when done. The following demonstrates the stream and callback approaches:
+
+```js
+// Return a stream so gulp can determine completion
+gulp.task('clean', function() {
+    return gulp
+        .src('app/tmp/*.js', { read: false })
+        .pipe(clean());
+});
+
+// OR
+
+// Take in the gulp callback and call it when done
+gulp.task('clean', function(callback) {
+    gulp.src('app/tmp/*.js', { read: false })
+        .pipe(clean());
+    callback();
+});
+
+// Specify the dependencies in the second parameter
+gulp.task('build', ['clean'], function() {
+    // Build...
+});
+```
+
+So if you run the build task in this example, the clean task will run and complete first, then the build task will run. I will favor returning the stream throughout this post unless the callback approach is needed as is the case in async tasks.
+
+Seem awkward and/or confusing? [You're not alone](https://github.com/orchestrator/orchestrator/issues/26). The upcoming gulp 4 release will [revamp how this is handled](https://github.com/gulpjs/gulp/issues/355). When that is released I will update this post to reflect those changes.
 
 ### Assembly Info ###
 
 First thing you will want to do is set the version number in the project assembly info files (And any other info you'd like). I personally let TeamCity manage the version and then grab it from an environment variable, but you can do whatever works best for you. To do this we'll use the [gulp-dotnet-assembly-info](https://github.com/mikeobrien/gulp-dotnet-assembly-info) gulp plugin (`npm install gulp-dotnet-assembly-info --save`).
 
 ```js
-var gulp = require('gulp'),
-    assemblyInfo = require('gulp-dotnet-assembly-info');
-
-gulp.task('ci', ['assemblyInfo']);
+var assemblyInfo = require('gulp-dotnet-assembly-info');
 
 gulp.task('assemblyInfo', function() {
-    return gulp.src('**/AssemblyInfo.cs')
+    return gulp
+        .src('**/AssemblyInfo.cs')
         .pipe(assemblyInfo({
             version: process.env.BUILD_NUMBER,
             fileVersion: process.env.BUILD_NUMBER,
             company: 'Planet Express',
             copyright: function(value) { 
-                return value.replace('{year}', new Date().getFullYear()); 
+                return value + '-' + new Date().getFullYear(); 
             },
             ...
         }))
@@ -90,20 +118,20 @@ So we pipe in all `AssemblyInfo.cs` files, modify them and then save them back o
 Now for building. To do that we will use the [gulp-msbuild](https://github.com/hoffi/gulp-msbuild) plugin (`npm install gulp-msbuild --save`). Configure it as follows:
 
 ```js
-var gulp = require('gulp'),
-    ...
-    assemblyInfo = require('gulp-msbuild');
+var msbuild = require('gulp-msbuild');
 
 gulp.task('build', ['assemblyInfo'], function() {
-    return gulp.src('**/*.sln')
+    return gulp
+        .src('**/*.sln')
         .pipe(msbuild({
+            toolsVersion: 12.0,
             targets: ['Clean', 'Build'],
             stdout: true
-        });
+        }));
 });
 ```
 
-The task supports more options than shown here, see [here](https://github.com/hoffi/gulp-msbuild) for more info.
+The plugin looks for msbuild in the `PATH`. You can also specify the version you want to target with the `toolsVersion` option. This plugin supports more options than shown here, see [here](https://github.com/hoffi/gulp-msbuild) for more info.
 
 On a side note, you may run into the following when building web applications on your build server:
 
@@ -116,29 +144,21 @@ A solution can be found [here](http://stackoverflow.com/a/19351747/126068).
 
 ### Running Tests ###
 
-Next you will want to run your tests. If you are using NUnit, you're in luck as there is a Grunt task for that. We will use the [grunt-nunit-runner](https://github.com/mikeobrien/grunt-nunit-runner) task (`npm install grunt-nunit-runner --save`). In your `gruntfile.js`, load the task and configure it as follows:
+Next you will want to run your tests. If you are using NUnit, you're in luck as there is a gulp plugin for that. We will use the [gulp-nunit-runner](https://github.com/keithmorris/gulp-nunit-runner) plugin (`npm install gulp-nunit-runner --save`). Configure it as follows:
 
 ```js
-module.exports = function(grunt) {
-    grunt.loadNpmTasks('grunt-dotnet-assembly-info');
-    grunt.loadNpmTasks('grunt-msbuild');
-    grunt.loadNpmTasks('grunt-nunit-runner');
-    ...
-    grunt.registerTask('ci', ['assemblyinfo', 'msbuild', 'nunit']);
+var nunit = require('gulp-nunit-runner');
 
-    grunt.initConfig({
-        ...
-        nunit: {
-            options: {
-                files: ['src/MyApp.sln'],
-                teamcity: true
-            }
-        }
-    });
-}
+gulp.task('test', ['build'], function () {
+    return gulp
+        .src(['**/*Tests.dll'], { read: false })
+        .pipe(nunit({
+            teamcity: true
+        }));
+});
 ```
 
-The `teamcity` option integrates the test results with TeamCity. The task supports many more options than shown here, see [here](https://github.com/mikeobrien/grunt-nunit-runner) for more info.
+The plugin looks for NUnit in the `PATH` and by default runs the `anycpu` version of NUnit (The x32 version can be specified with the `platform` option). You'll notice we're passing `read: false` into the source; this indicates that only filenames, and not content, are to be returned. Also, the `teamcity` option integrates the test results with TeamCity. The plugin supports many more options than shown here, see [here](https://github.com/keithmorris/gulp-nunit-runner) for more info.
 
 ### Deploying ###
 
@@ -146,7 +166,8 @@ There are a couple of ways to deploy files. Out of the box, gulp's innate abilit
 
 ```js
 gulp.task('deploy', ['nunit'], function() {
-    gulp.src(‘./src/MyApp.Web/**/*.{config,html,htm,js,dll,pdb,png,jpg,jpeg,gif,css}’)
+    return gulp
+        .src(‘./src/MyApp.Web/**/*.{config,html,htm,js,dll,pdb,png,jpg,jpeg,gif,css}’)
         .pipe(gulp.dest(‘D:/Websites/www.myapp.com/wwwroot’));
 });
 ```
@@ -179,7 +200,7 @@ gulp.task('deploy', ['nunit'], function(callback) {
 });
 ```
 
-You'll notice that we're passing the task callback into the robocopy task. This will tell gulp when the copy is complete as it will run asynchronously.
+You'll notice that we're passing the task callback into the robocopy task. This will tell gulp when the copy is complete as it runs asynchronously.
 
 The Robocopy options above are pretty self explanatory. The `mirror` option allows you to synchronize your destination with your source folder, removing any deleted files. The `retry` options allow you to retry the copy after so many seconds if it failed. Both these options in particular have been useful when deploying websites. The task fully supports all the robocopy options, see [here](https://github.com/mikeobrien/node-robocopy) for more info.
 
