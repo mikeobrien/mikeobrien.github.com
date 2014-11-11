@@ -7,7 +7,7 @@ tags: [Grunt,.NET,Build/Deploy]
 
 I've been using [Rake](http://rake.rubyforge.org) and [Albacore](http://albacorebuild.net/) to build and deploy .NET apps for a while now. Its a huge improvement over the XML based build tools but the rise of Node.js got me interested in moving to [Grunt](http://gruntjs.com/). I was also shelling out to Grunt from Rake for all client side tasks (like testing, linting, ect) so it only made sense to consolidate these into the same build tool. Turns out its pretty easy to do.
 
-To setup Grunt builds you will be using NPM and obviously Grunt. If you're not familiar with these take a look [here](http://nodejs.org/about/) and [here](http://gruntjs.com/getting-started) for an introduction.
+If you're not familiar with NPM or Grunt take a look [here](http://nodejs.org/about/) and [here](http://gruntjs.com/getting-started) for an introduction.
 
 ### Project Layout ###
 
