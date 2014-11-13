@@ -22,9 +22,15 @@ If you are running a 64 bit OS:
 
 3. Copy the `\auth\x64\sqljdbc_auth.dll` (Note the `x64` in the path) from the JDBC driver folder to your `C:\Windows\System32` folder (Or some location in the system path).
 4. Copy the contents of the `jre` folder, under the [TeamCity home directory](http://confluence.jetbrains.com/display/TCD8/TeamCity+Specific+Directories) (By default `C:\Program Files\TeamCity\`), into `jre\x86` as a backup.
-5. Download the 64 bit Windows `tar.gz` version (*Not the installer*) of the JRE [here](http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html) and extract it to a folder. Depending on your compression tool you may have to uncompress and then extract the tar archive in two separate steps. [7-zip](http://www.7-zip.org/) will do this.
+5. Download the 64 bit Windows `tar.gz` version (*Not the installer*) of the JRE [here](http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html) and uncompress it to a folder. Depending on your compression tool you may have to then extract the files from the tar archive (Which may not have an extension) as a second step. [7-zip](http://www.7-zip.org/) will do this.
 6. Copy the JRE that you extracted to `C:\Program Files\TeamCity\jre` folder. The JRE is one folder deep in the archive so don't just directly copy the folder that is extracted. Your `C:\Program Files\TeamCity\jre` folder should end up with a `bin` and `libs` folder.
 
 Finally restart TeamCity and you should be golden.
+
+*UPDATE*: When you upgrade TeamCity, the `jre` folder is overwritten with an `x32` version of the JRE. So if you're using the `x64` version this will lead to the following error:
+
+![TeamCity Upgrade Error](/blog/images/TeamCityUpgradeError.png)
+
+You will have to stop the TeamCity server and agents, replace the `x32` version with the `x64` version as described above, and restart the services. So you might want to keep a copy of the `x64` JRE handy for upgrades.
 
 Thanks to [dneelyep](http://disqus.com/dneelyep/) for his corrections.
