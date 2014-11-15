@@ -1,5 +1,5 @@
 ---
-published: false
+draft: true
 layout: post
 title: Using Gulp to Build and Deploy .NET Apps
 tags: [Gulp,.NET,Build/Deploy]
@@ -159,7 +159,7 @@ gulp.task('test', ['build'], function () {
 });
 ```
 
-The plugin looks for NUnit in the `PATH` and by default runs the `anycpu` version of NUnit (The x32 version can be specified with the `platform` option). You'll notice we're passing `read: false` into the source; this indicates that only filenames, and not content, are to be returned. Also, the `teamcity` option integrates the test results with TeamCity. The plugin supports many more options than shown here, see [here](https://github.com/keithmorris/gulp-nunit-runner) for more info.
+The plugin looks for NUnit in the `PATH` and by default runs the `anycpu` version of NUnit (The x32 version can be specified with the `platform` option). You can also explicitly pass the nunit runner path if you like. You'll notice we're passing `read: false` into the source; this indicates that only filenames, and not content, are to be returned. Also, the `teamcity` option integrates the test results with TeamCity. The plugin supports many more options than shown here, see [here](https://github.com/keithmorris/gulp-nunit-runner) for more info.
 
 ### Deploying ###
 
@@ -211,14 +211,12 @@ If you are publishing a library instead of deploying an app there is a plugin fo
 var nuget = require('gulp-nuget');
 
 gulp.task('publish', ['nunit'], function() {
-    var nugetPath = './path/to/nuget.exe';
-
-    return gulp.src(['./*.js', './package.json'])
-        .pipe(nuget.pack({ nuspec: 'project.nuspec', nuget: nugetPath, version: process.env.BUILD_NUMBER }))
-        .pipe(gulp.dest('project.1.0.0.nupkg'));
-
-    return gulp.src('project.1.0.0.nupkg')
-        .pipe(nuget.push({ feed: 'http://your-nuget-feed.org/', nuget: nugetPath, apiKey: process.env.NUGET_API_KEY }));
+    gulp.src(['src/MyLibrary/bin/Release/MyLibrary.*'])
+        .pipe(nuget.pack({ 
+            nuspec: 'MyLibrary.nuspec', 
+            nuget: 'nuget.exe', 
+            version: process.env.BUILD_NUMBER }))
+        .pipe(gulp.dest('MyLibrary.nupkg'));
 });
 
 module.exports = function(grunt) {

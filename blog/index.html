@@ -5,21 +5,26 @@ title: Blog
 
 <div class="posts">
 
-{% for post in site.posts limit:10 %}
+    {% for post in site.posts limit:10 %}
 
-    <div class="page-header">
-        <h2><a href="{{ post.url }}">{{ post.title }}</a> <small>{{ post.date | date: "%B, %Y" }}</small></h2>
-    </div>
-    <div class="markdown-body">{{ post.content }}</div>
-    <div class="footer">
-        <hr/>
-        <div class="published">Posted {{ post.date | date: "%m-%d-%Y" }}</div>
-        <div class="tags">
-        {% for tag in post.tags %}{% assign last = forloop.last %}{% for siteTag in site.tags %}{% if tag == siteTag[0] %}<a href="/blog/tags#tag-{{forloop.index}}">{{ tag }}</a>{% if last != true %}, {% endif %}{% endif %}{% endfor %}{% endfor %}
+    {% if user.draft == true %}
+        <!-- {{ post.title }}: {{ post.url }} -->
+    {% else %}
+
+        <div class="page-header">
+            <h2><a href="{{ post.url }}">{{ post.title }}</a> <small>{{ post.date | date: "%B, %Y" }}</small></h2>
         </div>
-    </div>
-    {% if forloop.last != true %}<hr class="seperator"/>{% endif %}
+        <div class="markdown-body">{{ post.content }}</div>
+        <div class="footer">
+            <hr/>
+            <div class="published">Posted {{ post.date | date: "%m-%d-%Y" }}</div>
+            <div class="tags">
+            {% for tag in post.tags %}{% assign last = forloop.last %}{% for siteTag in site.tags %}{% if tag == siteTag[0] %}<a href="/blog/tags#tag-{{forloop.index}}">{{ tag }}</a>{% if last != true %}, {% endif %}{% endif %}{% endfor %}{% endfor %}
+            </div>
+        </div>
+        {% if forloop.last != true %}<hr class="seperator"/>{% endif %}
     
+    {% endif %}
 {% endfor %}
 
 </div>
