@@ -238,4 +238,4 @@ call gulp ci
 
 ### Conclusion ###
 
-Hopefully this demonstrates how easy it is to setup a .NET build/deploy with gulp. If you are doing client side development, this will be even more of a win as your tools (Like Karma, JSHint, etc) will be run by the same build tool.
+Hopefully this demonstrates how easy it is to setup a .NET build/deploy on Windows with gulp. If you are doing client side development, this will be even more of a win as your tools (Like Karma, JSHint, etc) will be run by the same build tool.
