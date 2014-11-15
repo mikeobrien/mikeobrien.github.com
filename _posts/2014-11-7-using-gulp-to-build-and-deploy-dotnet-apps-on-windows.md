@@ -1,7 +1,7 @@
 ---
 draft: true
 layout: post
-title: Using Gulp to Build and Deploy .NET Apps
+title: Using Gulp to Build and Deploy .NET Apps on Windows
 tags: [Gulp,.NET,Build/Deploy]
 ---
 
@@ -225,7 +225,7 @@ As demonstrated above you can set the version number and your nuget API key from
 The last step is to setup your build server to run gulp. I'm going to demonstrate how to configure gulp with [TeamCity](http://www.jetbrains.com/teamcity/) but this should loosely apply to any build server.
 
 - [Download](http://nodejs.org/download/) and install Node.js.
-- Install `gulp`: `npm install gulp -g -prefix="C:\Program Files\nodejs"`. You will need to set the prefix to a folder in the build server's `PATH`. I simply put it in the node install directory along side NPM. By default this folder is added to the PATH by the Node.js installer. Note that depending on your UAC settings you may need to run that command in an elevated command prompt as `Program Files` can be locked down. Also the 32 bit version will be installed to `Program Files (x86)` by default.
+- Install `gulp`: `npm install gulp -g -prefix="C:\Program Files\nodejs"`. You will need to set the prefix to a folder in the build server's `PATH`. I simply put it in the node install directory along side NPM. By default this folder is added to the `PATH` by the Node.js installer. Note that depending on your UAC settings you may need to run that command in an elevated command prompt as `Program Files` can be locked down. Also the 32 bit version will be installed to `Program Files (x86)` by default.
 - Restart the TeamCity build agent so it picks up the Node.js path.
 - Create a `Command Line` build step in TeamCity, set `Run` to `Custom script` and enter the following as the `Custom script`:
 
