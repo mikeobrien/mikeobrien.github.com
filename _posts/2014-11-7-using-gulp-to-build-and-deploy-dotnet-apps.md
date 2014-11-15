@@ -59,7 +59,7 @@ Above we have a special `default` task alias that gets run when you type `gulp` 
 ```
 ### Task Sequence ###
 
-Gulp will try to run every task in parallel. Obviously you will need to run certain tasks in a particular order in your build. The current version of gulp allows you to do this a couple of ways. First you will need to specify a dependency and then some way to indicate the dependency has completed. [According to the gulp docs](https://github.com/gulpjs/gulp/blob/master/docs/API.md#async-task-support), gulp can only know when a dependency has completed by either returning a stream, returning a promise or taking in a callback and calling it when done. The following demonstrates the stream and callback approaches:
+Gulp will try to run every task in parallel. Obviously you will need to run certain tasks in a particular order in your build. The current version of gulp allows you to do this a few ways. First you will need to specify a dependency and then some way to indicate the dependency has completed. [According to the gulp docs](https://github.com/gulpjs/gulp/blob/master/docs/API.md#async-task-support), gulp can only know when a dependency has completed by either returning a stream, returning a promise or taking in a callback and calling it when done. The following demonstrates the stream and callback approaches:
 
 ```js
 // Return a stream so gulp can determine completion
