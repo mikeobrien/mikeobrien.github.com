@@ -205,7 +205,7 @@ The Robocopy options above are pretty self explanatory. The `mirror` option allo
 
 ### Nuget ###
 
-If you are publishing a library instead of deploying an app there is a plugin for that too. We can use the [gulp-nuget](https://github.com/spatools/grunt-nuget) plugin (`npm install grunt-nuget --save`). You will need to create a [nuspec file](http://docs.nuget.org/docs/reference/nuspec-reference) as described [here](http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package#Creating_a_Package). Configure the plugin as follows:
+If you are publishing a library instead of deploying an app there is a plugin for that too. We can use the [gulp-nuget](https://github.com/mckn/gulp-nuget) plugin (`npm install gulp-nuget --save`). You will need to create a [nuspec file](http://docs.nuget.org/docs/reference/nuspec-reference) as described [here](http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package#Creating_a_Package). Configure the plugin as follows:
 
 ```js
 var nuget = require('gulp-nuget');
