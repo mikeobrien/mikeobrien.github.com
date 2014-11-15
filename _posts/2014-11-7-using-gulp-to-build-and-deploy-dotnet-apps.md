@@ -22,7 +22,7 @@ The project layout will be along the lines of this:
     ...
 ```
 
-At the root of your project will be a [`package.json`](https://npmjs.org/doc/json.html) that specifies your [NPM](https://npmjs.org/) dependencies. Also a [`gulpfile.js`](https://github.com/gulpjs/gulp/#sample-gulpfilejs) which is your build script.
+At the root of your project will be a [`package.json`](https://npmjs.org/doc/json.html) that specifies your [dependencies](https://www.npmjs.org/doc/files/package.json.html#dependencies). Also a [`gulpfile.js`](https://github.com/gulpjs/gulp/#sample-gulpfilejs) which is your build script.
 
 ### Initial Setup ###
 
