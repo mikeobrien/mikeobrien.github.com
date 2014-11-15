@@ -159,7 +159,7 @@ gulp.task('test', ['build'], function () {
 });
 ```
 
-The plugin looks for NUnit in the `PATH` and by default runs the `anycpu` version of NUnit (The x32 version can be specified with the `platform` option). You can also explicitly pass the nunit runner path if you like. You'll notice we're passing `read: false` into the source; this indicates that only filenames, and not content, are to be returned. Also, the `teamcity` option integrates the test results with TeamCity. The plugin supports many more options than shown here, see [here](https://github.com/keithmorris/gulp-nunit-runner) for more info.
+The plugin looks for NUnit in the `PATH` and by default runs the `anycpu` version of NUnit (The x32 version can be specified with the `platform` option). You can also explicitly pass the nunit runner path if you like. You'll notice we're passing `read: false` into the source; this indicates that only filenames, and not content, are to be included in the stream. Also, the `teamcity` option integrates the test results with TeamCity. The plugin supports many more options than shown here, see [here](https://github.com/keithmorris/gulp-nunit-runner) for more info.
 
 ### Deploying ###
 
