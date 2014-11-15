@@ -222,7 +222,7 @@ As demonstrated above you can set the version number and your nuget API key from
 
 ### Build Server ###
 
-The last step is to setup your build server to run gulp. I'm going to assume you're using [TeamCity](http://www.jetbrains.com/teamcity/) for your builds. Follow the steps below on your build server:
+The last step is to setup your build server to run gulp. I'm going to demonstrate how to configure gulp with [TeamCity](http://www.jetbrains.com/teamcity/) but this should loosely apply to any build server.
 
 - [Download](http://nodejs.org/download/) and install Node.js.
 - Install `gulp`: `npm install gulp -g -prefix="C:\Program Files\nodejs"`. You will need to set the prefix to be a path TeamCity can access in its `PATH`. I simply put it in the node install directory along side NPM. By default this folder is added to the PATH by the Node.js installer. Note that depending on your UAC settings you may need to run that command in an elevated command prompt as `Program Files` can be locked down. Also the 32 bit version will be installed to `Program Files (x86)` by default.
