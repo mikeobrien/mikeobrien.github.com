@@ -49,7 +49,7 @@ gulp.task('ci', []);
 Above we have a special `default` task alias that gets run when you type `gulp` with no arguments. You can decide what you want that to do; I have it setup to run [Karma](http://karma-runner.github.io/0.10/index.html) in watch mode. The second task alias, `ci`, will be what is run by the build server (And you can call this whatever you want so long as the build server knows about it, as we'll see later).
 
 - Install `gulp` *globally* (`-g`): `npm install gulp -g`
-- Install `gulp` *locally* (No `-g`) and save the dependency to your `package.json` (`--save`): `npm install gulp --save`
+- Install `gulp` *locally* (No `-g`) and save the dependency to your `package.json`: `npm install gulp --save`
 - Run `gulp` to make sure all is working, should display something along these lines:
 
 ```bash
