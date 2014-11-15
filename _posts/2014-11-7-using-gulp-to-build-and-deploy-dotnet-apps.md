@@ -210,44 +210,12 @@ If you are publishing a library instead of deploying an app there is a plugin fo
 ```js
 var nuget = require('gulp-nuget');
 
-gulp.task('publish', ['nunit'], function() {
-    gulp.src(['src/MyLibrary/bin/Release/MyLibrary.*'])
-        .pipe(nuget.pack({ 
-            nuspec: 'MyLibrary.nuspec', 
-            nuget: 'nuget.exe', 
-            version: process.env.BUILD_NUMBER }))
-        .pipe(gulp.dest('MyLibrary.nupkg'));
-});
-
-module.exports = function(grunt) {
-    grunt.loadNpmTasks('grunt-dotnet-assembly-info');
-    grunt.loadNpmTasks('grunt-msbuild');
-    grunt.loadNpmTasks('grunt-nunit-runner');
-    grunt.loadNpmTasks('grunt-nuget');
-    ...
-    grunt.registerTask('deploy', ['assemblyinfo', 'msbuild', 'nunit', 'nugetpack', 'nugetpush']);
-
-    grunt.initConfig({
-        ...,
-        nugetpack: {
-            myApp: {
-                src: 'MyLib.nuspec',
-                dest: './'
-            },
-            options: {
-                version: process.env.BUILD_NUMBER
-            }
-        },
-        nugetpush: {
-            myApp: {
-                src: '*.nupkg'
-            },
-            options: {
-                apiKey: process.env.NUGET_API_KEY
-            }
-        }
-    });
-}
+gulp.src(['./Wrapper/Reachmail/bin/Release/Reachmail.*'])
+    .pipe(nuget.pack({ 
+        nuspec: 'MyLibrary.nuspec', 
+        version: process.env.BUILD_NUMBER }))
+    .pipe(nuget.push({ 
+        apiKey: process.env.NUGET_API_KEY }));
 ```
 
 As demonstrated above you can dynamically set the version number and pass in your nuget API key. One thing to note is that even though you are passing in the version, the version element must exist in the nuspec file and have a value, otherwise `nuget pack` will fail. The options you specify are passed directly to nuget so all [nuget CLI parameters](http://docs.nuget.org/docs/reference/command-line-reference#wiki-Pack_Command) are supported.
