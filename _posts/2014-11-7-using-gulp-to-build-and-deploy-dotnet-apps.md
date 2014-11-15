@@ -163,7 +163,7 @@ The plugin looks for NUnit in the `PATH` and by default runs the `anycpu` versio
 
 ### Deploying ###
 
-There are a couple of ways to deploy files. Out of the box, gulp's innate ability to work with files will get you a long way:
+There are a couple of ways to deploy files. Out of the box, gulps innate ability to work with files will get you a long way:
 
 ```js
 gulp.task('deploy', ['nunit'], function() {
@@ -210,7 +210,7 @@ If you are publishing a library instead of deploying an app there is a plugin fo
 ```js
 var nuget = require('gulp-nuget');
 
-gulp.src(['./Wrapper/Reachmail/bin/Release/Reachmail.*'])
+gulp.src(['src/MyLibrary/bin/Release/MyLibrary.*'])
     .pipe(nuget.pack({ 
         nuspec: 'MyLibrary.nuspec', 
         version: process.env.BUILD_NUMBER }))
