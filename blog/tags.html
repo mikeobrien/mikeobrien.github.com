@@ -9,10 +9,7 @@ title: Blog tags
         <h2>Tags</h2>
     </div>
 
-    {% if post.draft == true %}<!-- {{ post.title }}: {{ post.url }} -->{% else %}
-
-
-    {% for tag in site.tags %}<div class="tag tag-{{forloop.index}}" style="display: none"><h3 class="name">{{tag | first}} <small id="tag-count">{{tag | last | size }} posts</small></h3><div><table class="table table-striped"><tbody>{% for post in tag[1] %}<tr><td>{% if post.draft == true %}{{ post.title }}{% else %}<a href="{{ post.url }}">{{ post.title }}</a>{% endif %}</td><td style="width:100px;text-align: center">{{ post.date | date: "%m-%d-%Y" }}</td><td style="width:250px">{% for tag in post.tags %}{% assign last = forloop.last %}{% for siteTag in site.tags %}{% if tag == siteTag[0] %}<a href="/blog/tags#tag-{{forloop.index}}">{{ tag }}</a>{% if last != true %}, {% endif %}{% endif %}{% endfor %}{% endfor %}</td></tr>{% endfor %}</tbody></table></div></div>{% endfor %}
+    {% for tag in site.tags %}<div class="tag tag-{{forloop.index}}" style="display: none"><h3 class="name">{{tag | first}} <small id="tag-count">{{tag | last | size }} posts</small></h3><div><table class="table table-striped"><tbody>{% for post in tag[1] %}<tr><td><a href="{{ post.url }}">{{ post.title }}</a></td><td style="width:100px;text-align: center">{{ post.date | date: "%m-%d-%Y" }}</td><td style="width:250px">{% for tag in post.tags %}{% assign last = forloop.last %}{% for siteTag in site.tags %}{% if tag == siteTag[0] %}<a href="/blog/tags#tag-{{forloop.index}}">{{ tag }}</a>{% if last != true %}, {% endif %}{% endif %}{% endfor %}{% endfor %}</td></tr>{% endfor %}</tbody></table></div></div>{% endfor %}
 
     <script>
     $('.tag').tsort('.name');
