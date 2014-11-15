@@ -189,7 +189,7 @@ gulp.task('deploy', ['nunit'], function(callback) {
         },
         file: {
             excludeFiles: ['packages.config'],
-            excludeDirs: ['obj', 'fubu-content', 'Properties'],
+            excludeDirs: ['obj', 'Properties'],
         },
         retry: {
             count: 2,
