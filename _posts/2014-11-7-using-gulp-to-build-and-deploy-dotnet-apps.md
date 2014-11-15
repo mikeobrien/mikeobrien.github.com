@@ -90,7 +90,7 @@ Seem awkward and/or confusing? [You're not alone](https://github.com/orchestrato
 
 ### Assembly Info ###
 
-First thing you will want to do is set the version number in the project assembly info files (And any other info you'd like). I personally let TeamCity manage the version and then grab it from an environment variable, but you can do whatever works best for you. To do this we'll use the [gulp-dotnet-assembly-info](https://github.com/mikeobrien/gulp-dotnet-assembly-info) gulp plugin (`npm install gulp-dotnet-assembly-info --save`). Configure the plugin as follows:
+First thing you will want to do is set the version number in the project assembly info files (And any other info you'd like). I personally let the build server manage the version and then grab it from an environment variable, but you can do whatever works best for you. To do this we'll use the [gulp-dotnet-assembly-info](https://github.com/mikeobrien/gulp-dotnet-assembly-info) gulp plugin (`npm install gulp-dotnet-assembly-info --save`). Configure the plugin as follows:
 
 ```js
 var assemblyInfo = require('gulp-dotnet-assembly-info');
