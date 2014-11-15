@@ -218,7 +218,7 @@ gulp.src(['src/MyLibrary/bin/Release/MyLibrary.*'])
         apiKey: process.env.NUGET_API_KEY }));
 ```
 
-As demonstrated above you can set the version number and your nuget API key from an environment variable set by the build server. One thing to note is that even though you are passing in the version, the version element must exist in the nuspec file and have a value, otherwise `nuget pack` will fail. The options you specify are passed directly to nuget so all [nuget CLI parameters](http://docs.nuget.org/docs/reference/command-line-reference#wiki-Pack_Command) are supported.
+As demonstrated above you can set the version number and your nuget API key from an environment variable set by the build server. One thing to note is that even though you are passing in the version, the version element must exist in the nuspec file and have a value, otherwise `nuget pack` will fail. The plugin supports more options than shown here, see [here](https://github.com/mckn/gulp-nuget) for more info.
 
 ### Build Server ###
 
