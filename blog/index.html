@@ -7,9 +7,7 @@ title: Blog
 
     {% for post in site.posts limit:10 %}
 
-    {% if post.draft == true %}
-        <!-- {{ post.title }}: {{ post.url }} -->
-    {% else %}
+    {% if post.draft == true %}{% else %}
 
         <div class="page-header">
             <h2><a href="{{ post.url }}">{{ post.title }}</a> <small>{{ post.date | date: "%B, %Y" }}</small></h2>
