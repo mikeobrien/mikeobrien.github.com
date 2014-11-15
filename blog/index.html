@@ -7,7 +7,7 @@ title: Blog
 
     {% for post in site.posts limit:10 %}
 
-    {% if user.draft == true %}
+    {% if post.draft == true %}
         <!-- {{ post.title }}: {{ post.url }} -->
     {% else %}
 
