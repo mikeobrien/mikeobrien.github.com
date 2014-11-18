@@ -1,5 +1,4 @@
 ---
-draft: true
 layout: post
 title: Using Gulp to Build and Deploy .NET Apps on Windows
 tags: [Gulp,.NET,Build/Deploy]
@@ -59,7 +58,7 @@ Above we have a special `default` task alias that gets run when you type `gulp` 
 ```
 ### Task Sequence ###
 
-Gulp will try to run every task in parallel. Obviously you will need to run certain tasks in a particular order in your build. The current version of gulp allows you to do this a few ways. First you will need to specify a dependency and then some way to indicate the dependency has completed. [According to the gulp docs](https://github.com/gulpjs/gulp/blob/master/docs/API.md#async-task-support), gulp can only know when a dependency has completed by either returning a stream, returning a promise or taking in a callback and calling it when done. The following demonstrates the stream and callback approaches:
+Gulp will try to run every task in parallel. Obviously you will need to run certain tasks in a particular order in your build. The current version of gulp allows you to do this a few ways. First you will need to specify a dependency and then some way to indicate the dependency has completed. [According to the gulp docs](https://github.com/gulpjs/gulp/blob/master/docs/API.md#async-task-support), you can indicate that a dependency has completed by either returning a stream, returning a promise or taking in a callback and calling it when done. The following demonstrates the stream and callback approaches:
 
 ```js
 // Return a stream so gulp can determine completion
@@ -84,13 +83,13 @@ gulp.task('build', ['clean'], function() {
 });
 ```
 
-So if you run the build task in this example, the clean task will run and complete first, then the build task will run. I will favor returning the stream throughout this post unless the callback approach is needed as is the case in async tasks.
+So if you run the build task in this example, the clean task will run and complete first, then the build task will run. I will favor returning the stream throughout this post unless the callback or promise method makes sense.
 
 Seem awkward and/or confusing? [You're not alone](https://github.com/orchestrator/orchestrator/issues/26). The upcoming gulp 4 release will [revamp how this is handled](https://github.com/gulpjs/gulp/issues/355). When that is released I will update this post to reflect those changes.
 
 ### Assembly Info ###
 
-First thing you will want to do is set the version number in the project assembly info files (And any other info you'd like). I personally let the build server manage the version and then grab it from an environment variable, but you can do whatever works best for you. To do this we'll use the [gulp-dotnet-assembly-info](https://github.com/mikeobrien/gulp-dotnet-assembly-info) gulp plugin (`npm install gulp-dotnet-assembly-info --save`). Configure the plugin as follows:
+First thing you will want to do is set the version number in the project assembly info files (And any other info you'd like). I personally let the build server manage the version and then grab it from an environment variable, but you can do whatever works best for you. To do this we'll use the [gulp-dotnet-assembly-info](https://github.com/mikeobrien/gulp-dotnet-assembly-info) plugin (`npm install gulp-dotnet-assembly-info --save`). Use the plugin as follows:
 
 ```js
 var assemblyInfo = require('gulp-dotnet-assembly-info');
@@ -115,7 +114,7 @@ So we pipe in all `AssemblyInfo.cs` files, modify them and then save them back o
 
 ### Building ###
 
-Now for building. To do that we will use the [gulp-msbuild](https://github.com/hoffi/gulp-msbuild) plugin (`npm install gulp-msbuild --save`). Configure the plugin as follows:
+Now for building. To do that we will use the [gulp-msbuild](https://github.com/hoffi/gulp-msbuild) plugin (`npm install gulp-msbuild --save`). Use the plugin as follows:
 
 ```js
 var msbuild = require('gulp-msbuild');
@@ -134,7 +133,7 @@ gulp.task('build', ['assemblyInfo'], function() {
 
 The plugin looks for msbuild in the `PATH`. You can also specify the version you want to target with the `toolsVersion` option. This plugin supports more options than shown here, see [here](https://github.com/hoffi/gulp-msbuild) for more info.
 
-On a side note, you may run into the following when building web applications on your build server:
+On a side note, you may run into the following error when building web applications on your build server:
 
 ```
 The imported project "C:\Program Files (x86)\MSBuild\Microsoft\VisualStudio\
@@ -145,7 +144,7 @@ A solution can be found [here](http://stackoverflow.com/a/19351747/126068).
 
 ### Running Tests ###
 
-Next you will want to run your tests. If you are using NUnit, you're in luck as there is a gulp plugin for that. We will use the [gulp-nunit-runner](https://github.com/keithmorris/gulp-nunit-runner) plugin (`npm install gulp-nunit-runner --save`). Configure the plugin as follows:
+Next you will want to run your tests. If you are using NUnit, you're in luck as there is a gulp plugin for that. We will use the [gulp-nunit-runner](https://github.com/keithmorris/gulp-nunit-runner) plugin (`npm install gulp-nunit-runner --save`). Use the plugin as follows:
 
 ```js
 var nunit = require('gulp-nunit-runner');
@@ -163,7 +162,7 @@ The plugin looks for NUnit in the `PATH` and by default runs the `anycpu` versio
 
 ### Deploying ###
 
-There are a couple of ways to deploy files. Out of the box, gulps innate ability to work with files will get you a long way:
+There are a couple of ways to deploy files. Out of the box, gulp's innate ability to work with files will get you a long way:
 
 ```js
 gulp.task('deploy', ['nunit'], function() {
@@ -173,13 +172,13 @@ gulp.task('deploy', ['nunit'], function() {
 });
 ```
 
-If for some reason you need more advanced file copy capabilities you can use [Robocopy](http://technet.microsoft.com/en-us/library/cc733145.aspx) (n&eacute;e xcopy). We can use the [robocopy](https://github.com/mikeobrien/node-robocopy) node module to run it (`npm install robocopy --save`). Configure the plugin as follows:
+If for some reason you need more advanced file copy capabilities you can use [Robocopy](http://technet.microsoft.com/en-us/library/cc733145.aspx) (n&eacute;e xcopy). We can use the [robocopy](https://github.com/mikeobrien/node-robocopy) node module to run it (`npm install robocopy --save`). Use the plugin as follows:
 
 ```js
 var robocopy = require('robocopy');
 
-gulp.task('deploy', ['nunit'], function(callback) {
-    robocopy({
+gulp.task('deploy', ['nunit'], function() {
+    return robocopy({
         source: 'src/MyApp.Web',
         destination: 'D:/Websites/www.myapp.com/wwwroot',
         files: ['*.config', '*.html', '*.htm', '*.js', '*.dll', '*.pdb',
@@ -195,30 +194,73 @@ gulp.task('deploy', ['nunit'], function(callback) {
             count: 2,
             wait: 3
         }
-    }, callback);
+    });
 });
 ```
 
-You'll notice that we're passing the task callback into the robocopy task. This will tell gulp when the copy is complete as it runs asynchronously (As well as pass errors in the first parameter of the callback). You'll also notice that robocopy is not a gulp plugin and this is ok. Unlike Grunt where everything is a plugin, gulp plugins are really only useful if they operate on a stream of files. Many times you will just invoke a module in a gulp task like we do above, no plugin involved at all. [@ozcinc](https://twitter.com/ozcinc) has a nice writeup on this [here](http://blog.overzealous.com/post/74121048393/why-you-shouldnt-create-a-gulp-plugin-or-how-to-stop).
+The robocopy function returns a promise so we can just return this to allow gulp to know when it has completed. You'll also notice that robocopy is not a gulp plugin and this is ok. Unlike Grunt where everything is a plugin, gulp plugins are really only useful if they operate on a stream of files. Many times you will just invoke a module in a gulp task like we do above, no plugin involved at all. [@ozcinc](https://twitter.com/ozcinc) has a nice writeup on this [here](http://blog.overzealous.com/post/74121048393/why-you-shouldnt-create-a-gulp-plugin-or-how-to-stop).
 
-The Robocopy options above are pretty self explanatory. The `mirror` option allows you to synchronize your destination with your source folder, removing any deleted files. The `retry` options allow you to retry the copy after so many seconds if it failed. Both these options in particular have been useful when deploying websites. The task fully supports all the robocopy options, see [here](https://github.com/mikeobrien/node-robocopy) for more info.
+The Robocopy options above are pretty self explanatory. The `mirror` option allows you to synchronize your destination with your source folder, removing any deleted files. The `retry` options allow you to retry the copy after so many seconds if it failed. Both these options can be useful when deploying websites. The task fully supports all the robocopy options, see [here](https://github.com/mikeobrien/node-robocopy) for more info.
 
 ### Nuget ###
 
-If you are publishing a library instead of deploying an app there is a plugin for that too. We can use the [gulp-nuget](https://github.com/mckn/gulp-nuget) plugin (`npm install gulp-nuget --save`). You will need to create a [nuspec file](http://docs.nuget.org/docs/reference/nuspec-reference) as described [here](http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package#Creating_a_Package). Configure the plugin as follows:
+If you are publishing a Nuget package instead of deploying an app there is a module for that too. We can use the [nuget-runner](https://github.com/mikeobrien/node-nuget-runner) module (`npm install nuget-runner --save`). You will need to create a [nuspec file](http://docs.nuget.org/docs/reference/nuspec-reference) as described [here](http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package#Creating_a_Package). Use the module as follows:
 
 ```js
-var nuget = require('gulp-nuget');
+var Nuget = require('nuget-runner');
 
-gulp.src(['src/MyLibrary/bin/Release/MyLibrary.*'])
-    .pipe(nuget.pack({ 
-        nuspec: 'MyLibrary.nuspec', 
-        version: process.env.BUILD_NUMBER }))
-    .pipe(nuget.push({ 
-        apiKey: process.env.NUGET_API_KEY }));
+gulp.task('deploy', ['nunit'], function() {
+
+    // Copy all package files into a staging folder
+    gulp.src('src/MyLibrary/bin/Release/MyLibrary.*')
+        .pipe(gulp.dest('package/lib'));
+
+    var nuget = Nuget({ apiKey: process.env.NUGET_API_KEY });
+
+    return nuget
+        .pack({
+            spec: 'MyLibrary.nuspec',
+            basePath: 'package', // Specify the staging folder as the base path
+            version: process.env.BUILD_NUMBER
+        })
+        .then(function() { return nuget.push('*.nupkg'); });
+});
 ```
 
-As demonstrated above you can set the version number and your nuget API key from an environment variable set by the build server. One thing to note is that even though you are passing in the version, the version element must exist in the nuspec file and have a value, otherwise `nuget pack` will fail. The plugin supports more options than shown here, see [here](https://github.com/mckn/gulp-nuget) for more info.
+As demonstrated above you can set the version number and your nuget API key from an environment variable set by the build server. One thing to note is that even though you are passing in the version, the version element must exist in the nuspec file and have a value, otherwise `pack` will fail. The `pack` method returns a promise so we can just return this to allow gulp to know when it has completed.
+
+You can also simplify the above code a bit more by specifying the the files in the `.nuspec`:
+
+```xml
+<package ...>
+   <metadata>
+      ...
+   </metadata>
+   <files>
+      <file src="src\MyLibrary\bin\Release\MyLibrary.*" target="lib" />
+   </files>
+</package>
+```
+
+Then you can forgo creating the staging folder and specifying a `basepath`:
+
+```js
+var Nuget = require('nuget-runner');
+
+gulp.task('deploy', ['nunit'], function() {
+
+    var nuget = Nuget({ apiKey: process.env.NUGET_API_KEY });
+
+    return nuget
+        .pack({
+            spec: 'MyLibrary.nuspec',
+            version: process.env.BUILD_NUMBER
+        })
+        .then(function() { return nuget.push('*.nupkg'); });
+});
+```
+
+The module supports more commands and options than shown here, see [here](https://github.com/mikeobrien/node-nuget-runner) for more info.
 
 ### Build Server ###
 
@@ -238,4 +280,4 @@ call gulp ci
 
 ### Final Thoughts ###
 
-Hopefully this demonstrates how easy it is to setup a .NET build/deploy on Windows with gulp. If you are doing client side development, this will be even more of a win as your tools (Like Karma, JSHint, etc) will be run by the same build tool.
+Hopefully this demonstrates how easy it is to setup a .NET build/deploy on Windows with gulp. If you are also doing client side development, this will be even more of a win as your tools (Like Karma, JSHint, etc) will be run by the same build tool.
