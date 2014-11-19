@@ -87,19 +87,54 @@ So if you run the build task in this example, the clean task will run and comple
 
 Seem awkward and/or confusing? [You're not alone](https://github.com/orchestrator/orchestrator/issues/26). The upcoming gulp 4 release will [revamp how this is handled](https://github.com/gulpjs/gulp/issues/355). When that is released I will update this post to reflect those changes.
 
+### Passing in parameters ###
+
+Undoubtedly you'll want to pass parameters into your build scripts. For example passing in the version or a nuget api key. One way to do this is with environment variables:
+
+```js
+gulp.task('default', function() {
+    var version = process.env.BUILD_NUMBER;
+    var nugetApiKey = process.env.NUGET_API_KEY;
+    ...
+});
+```
+
+Another way to do this is by passing them into gulp as parameters:
+
+```js
+var args = require('yargs').argv;
+
+gulp.task('default', function() {
+    console.log(args.buildVersion);
+    console.log(args.debug);
+});
+```
+
+```bash
+$ gulp --build-version 1.2.3.4 --debug
+[14:48:30] Using gulpfile /.../gulpfile.js
+[14:48:30] Starting 'default'...
+[14:48:30] 1.2.3.4
+[14:48:30] true
+[14:48:30] Finished 'default' after 32 μs
+```
+
+Here we are using the [yargs](https://github.com/chevex/yargs) module (Which is a fork of [optimist](https://github.com/substack/node-optimist)) to parse the gulp command line args (`npm install yargs --save`). You can pass in any arguments you like so long as they don't conflict with gulp options (Which is why I use `build-version` instead of `version` which is already used by gulp). One nice feature of yargs is that arguments that do not have a value are considered flags and represented as booleans (As demonstrated above with `--debug`). Another nice feature is the automatic conversion of spinal-case-args to camelCase. I will use this approach throughout this post.
+
 ### Assembly Info ###
 
 First thing you will want to do is set the version number in the project assembly info files (And any other info you'd like). I personally let the build server manage the version and then grab it from an environment variable, but you can do whatever works best for you. To do this we'll use the [gulp-dotnet-assembly-info](https://github.com/mikeobrien/gulp-dotnet-assembly-info) plugin (`npm install gulp-dotnet-assembly-info --save`). Use the plugin as follows:
 
 ```js
-var assemblyInfo = require('gulp-dotnet-assembly-info');
+var args = require('yargs').argv,
+    assemblyInfo = require('gulp-dotnet-assembly-info');
 
 gulp.task('assemblyInfo', function() {
     return gulp
         .src('**/AssemblyInfo.cs')
         .pipe(assemblyInfo({
-            version: process.env.BUILD_NUMBER,
-            fileVersion: process.env.BUILD_NUMBER,
+            version: args.buildVersion,
+            fileVersion: args.buildVersion,
             company: 'Planet Express',
             copyright: function(value) { 
                 return value + '-' + new Date().getFullYear(); 
@@ -207,7 +242,8 @@ The Robocopy options above are pretty self explanatory. The `mirror` option allo
 If you are publishing a Nuget package instead of deploying an app there is a module for that too. We can use the [nuget-runner](https://github.com/mikeobrien/node-nuget-runner) module (`npm install nuget-runner --save`). You will need to create a [nuspec file](http://docs.nuget.org/docs/reference/nuspec-reference) as described [here](http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package#Creating_a_Package). Use the module as follows:
 
 ```js
-var Nuget = require('nuget-runner');
+var args = require('yargs').argv,
+    Nuget = require('nuget-runner');
 
 gulp.task('deploy', ['nunit'], function() {
 
@@ -215,13 +251,13 @@ gulp.task('deploy', ['nunit'], function() {
     gulp.src('src/MyLibrary/bin/Release/MyLibrary.*')
         .pipe(gulp.dest('package/lib'));
 
-    var nuget = Nuget({ apiKey: process.env.NUGET_API_KEY });
+    var nuget = Nuget({ apiKey: args.nugetApiKey });
 
     return nuget
         .pack({
             spec: 'MyLibrary.nuspec',
             basePath: 'package', // Specify the staging folder as the base path
-            version: process.env.BUILD_NUMBER
+            version: args.buildVersion
         })
         .then(function() { return nuget.push('*.nupkg'); });
 });
@@ -276,7 +312,34 @@ call npm install
 call gulp ci
 ```
 
+Here we call gulp with the task we want to run.
+
 ![TeamCity gulp task](/blog/images/TeamCityGulp.png)
+
+As mentioned above you may want to pass parameters into your build script. There are a couple of ways to do this. First you can hard code them directly into the custom script above:
+
+```bash
+call npm install
+call gulp ci --build-version 1.0.0.0 --nuget-api-key 78a53314-c2c0-45c6-9d92-795b2096ae6c
+```
+
+There are a couple of problems with this however. First, you don't want to manually manage your version number when [TeamCity already does that for you automatically](https://confluence.jetbrains.com/display/TCD8/Configuring+General+Settings). So you can take advantage of TeamCity [predefined build parameters](https://confluence.jetbrains.com/display/TCD8/Predefined+Build+Parameters) and dynamically pass the version number as follows:
+
+```bash
+call npm install
+call gulp ci --build-version %build.number%
+```
+
+Now the Nuget API key could be hardcoded for some builds but what if you use the same API key for multiple builds? Again you can make use of build parameters as TeamCity [allows you to create custom parameters at different levels](https://confluence.jetbrains.com/display/TCD8/Defining+and+Using+Build+Parameters+in+Build+Configuration). This allows you set the parameter in one place where it can be referenced by multilple builds. You would specify the custom parameter as you would the predefined one:
+
+```bash
+call npm install
+call gulp ci --nuget-api-key %nuget.api.key%
+```
+
+Here you can see the custom build parameter set at the project level. All build configurations under it inherit this parameter.
+
+![TeamCity gulp task](/blog/images/TeamCityParameters.png)
 
 ### Final Thoughts ###
 
