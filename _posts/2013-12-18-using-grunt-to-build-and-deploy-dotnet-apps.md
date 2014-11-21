@@ -5,7 +5,7 @@ title: Using Grunt to Build and Deploy .NET Apps
 tags: [Grunt,.NET,Build/Deploy]
 ---
 
-*UPDATE: I've since moved to gulp as my build tool of choice and highly recommend using that over Grunt. I've rewritten this post for gulp [here](http://www.mikeobrien.net/blog/using-gulp-to-build-and-deploy-dotnet-apps-on-windows/).*
+#### UPDATE: I've since moved to gulp as my build tool of choice and highly recommend using that over Grunt. I've rewritten this post for gulp [here](http://www.mikeobrien.net/blog/using-gulp-to-build-and-deploy-dotnet-apps-on-windows/). ####
 
 I've been using [Rake](http://rake.rubyforge.org) and [Albacore](http://albacorebuild.net/) to build and deploy .NET apps for a while now. Its a huge improvement over the XML based build tools but the rise of Node.js got me interested in moving to [Grunt](http://gruntjs.com/). I was also shelling out to Grunt from Rake for all client side tasks (like testing, linting, ect) so it only made sense to consolidate these into the same build tool. Turns out its pretty easy to do.
 
