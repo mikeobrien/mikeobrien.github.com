@@ -147,6 +147,25 @@ gulp.task('assemblyInfo', function() {
 
 So we pipe in all `AssemblyInfo.cs` files, modify them and then save them back out. You can specify a value or a function that returns the value. See [here](https://github.com/mikeobrien/gulp-dotnet-assembly-info) for more info.
 
+### Setting Configuration Values ###
+
+You may need to set values in the `app.config` or `web.config`. To do this we'll use the [xmlpoke](https://github.com/mikeobrien/node-xmlpoke) module (`npm install xmlpoke --save`). Use the module as follows:
+
+```js
+var xmlpoke = require('xmlpoke');
+
+gulp.task('configuration', ['assemblyInfo'], function(cb) {
+    xmlpoke('**/{web,app}.config', function(xml) {
+        xml.withBasePath('configuration')
+           .set('appSettings/add[@key='connString']/@value', 
+                'Server=server;Database=database;Trusted_Connection=True;')
+           .set('system.net/mailSettings/smtp/network/@host', 'smtp.mycompany.com');
+    });
+    cb();
+});
+
+This module sports a lot more features than shown here. See [here](https://github.com/mikeobrien/node-xmlpoke) for more info.
+
 ### Building ###
 
 Now for building. To do that we will use the [gulp-msbuild](https://github.com/hoffi/gulp-msbuild) plugin (`npm install gulp-msbuild --save`). Use the plugin as follows:
@@ -154,7 +173,7 @@ Now for building. To do that we will use the [gulp-msbuild](https://github.com/h
 ```js
 var msbuild = require('gulp-msbuild');
 
-gulp.task('build', ['assemblyInfo'], function() {
+gulp.task('build', ['configuration'], function() {
     return gulp
         .src('**/*.sln')
         .pipe(msbuild({
