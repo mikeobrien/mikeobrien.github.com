@@ -163,6 +163,7 @@ gulp.task('configuration', ['assemblyInfo'], function(cb) {
     });
     cb();
 });
+```
 
 This module sports a lot more features than shown here. See [here](https://github.com/mikeobrien/node-xmlpoke) for more info.
 
