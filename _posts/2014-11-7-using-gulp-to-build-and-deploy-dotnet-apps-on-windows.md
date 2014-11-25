@@ -157,7 +157,7 @@ var xmlpoke = require('xmlpoke');
 gulp.task('configuration', ['assemblyInfo'], function(cb) {
     xmlpoke('**/{web,app}.config', function(xml) {
         xml.withBasePath('configuration')
-           .set('appSettings/add[@key='connString']/@value', 
+           .set("appSettings/add[@key='connString']/@value", 
                 'Server=server;Database=database;Trusted_Connection=True;')
            .set('system.net/mailSettings/smtp/network/@host', 'smtp.mycompany.com');
     });
