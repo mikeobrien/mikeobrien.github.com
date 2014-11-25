@@ -4,7 +4,7 @@ title: Using Gulp to Build and Deploy .NET Apps on Windows
 tags: [Gulp,.NET,Build/Deploy]
 ---
 
-I've been using [Grunt](http://gruntjs.com/) to build and deploy .NET apps for about a year now. Its a huge improvement over Rake and the crusty XML build tools but I've been hearing a lot of good things about [gulp](http://gulpjs.com/) so I thought it was time to check it out.
+I've been using [Grunt](http://gruntjs.com/) to build and deploy .NET apps for about a year now. Its a huge improvement over Rake and the crusty XML build tools but I'd been hearing a lot of good things about [gulp](http://gulpjs.com/) so I thought it was time to check it out. I was not disappointed and would highly recommend using gulp over Grunt. Gulp's code over configuration approach eliminates the friction I experienced with Grunt. It also reduces (Or eliminates entirely) the code required to wire up tasks. So lets see how we can use gulp to build .NET apps.
 
 ### Project Layout ###
 
