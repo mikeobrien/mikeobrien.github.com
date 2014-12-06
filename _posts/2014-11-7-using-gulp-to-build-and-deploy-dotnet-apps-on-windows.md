@@ -6,7 +6,20 @@ tags: [Gulp,.NET,Build/Deploy]
 
 I've been using [Grunt](http://gruntjs.com/) to build and deploy .NET apps for about a year now. Its a huge improvement over Rake and the crusty XML build tools but I'd been hearing a lot of good things about [gulp](http://gulpjs.com/) so I thought it was time to check it out. I was not disappointed and would highly recommend using gulp over Grunt. Gulp's code over configuration approach eliminates the friction I experienced with Grunt. It also reduces (Or eliminates entirely) the code required to wire up tasks. So lets see how we can use gulp to build .NET apps.
 
-### Project Layout ###
+- [Project Layout](#gulp-build-layout)
+- [Initial Setup](#gulp-build-setup)
+- [Task Sequence](#gulp-build-task-sequence)
+- [Passing in parameters](#gulp-build-parameters)
+- [Assembly Info](#gulp-build-assembly-info)
+- [Setting Configuration Values](#gulp-build-configuration)
+- [Building](#gulp-build-building)
+- [Running Tests](#gulp-build-tests)
+- [Controlling Windows Services](#gulp-build-services)
+- [Deploying](#gulp-build-deploying)
+- [Nuget](#gulp-build-nuget)
+- [Build Server](#gulp-build-server)
+
+### <a name="gulp-build-layout"></a>Project Layout ###
 
 The project layout will be along the lines of this:
 
@@ -23,7 +36,7 @@ The project layout will be along the lines of this:
 
 At the root of your project will be a [`package.json`](https://npmjs.org/doc/json.html) that specifies your [dependencies](https://www.npmjs.org/doc/files/package.json.html#dependencies). Also a [`gulpfile.js`](https://github.com/gulpjs/gulp/#sample-gulpfilejs) which is your build script.
 
-### Initial Setup ###
+### <a name="gulp-build-setup"></a>Initial Setup ###
 
 - [Download](http://nodejs.org/download/) and install Node.js.
 - Create a minimal `package.json` at the project root or use [`npm init`](https://npmjs.org/doc/init.html) to generate it for you:
@@ -56,7 +69,7 @@ Above we have a special `default` task alias that gets run when you type `gulp` 
 [14:48:30] Starting 'default'...
 [14:48:30] Finished 'default' after 32 μs
 ```
-### Task Sequence ###
+### <a name="gulp-build-task-sequence"></a>Task Sequence ###
 
 Gulp will try to run every task in parallel. Obviously you will need to run certain tasks in a particular order in your build. The current version of gulp allows you to do this a few ways. First you will need to specify a dependency and then some way to indicate the dependency has completed. [According to the gulp docs](https://github.com/gulpjs/gulp/blob/master/docs/API.md#async-task-support), you can indicate that a dependency has completed by either returning a stream, returning a promise or taking in a callback and calling it when done. The following demonstrates the stream and callback approaches:
 
@@ -87,7 +100,7 @@ So if you run the build task in this example, the clean task will run and comple
 
 Seem awkward and/or confusing? [You're not alone](https://github.com/orchestrator/orchestrator/issues/26). The upcoming gulp 4 release will [revamp how this is handled](https://github.com/gulpjs/gulp/issues/355). When that is released I will update this post to reflect those changes.
 
-### Passing in parameters ###
+### <a name="gulp-build-parameters"></a>Passing in parameters ###
 
 Undoubtedly you'll want to pass parameters into your build scripts. For example passing in the version or a nuget api key. One way to do this is with environment variables:
 
@@ -121,7 +134,7 @@ $ gulp --build-version 1.2.3.4 --debug
 
 Here we are using the [yargs](https://github.com/chevex/yargs) module (Which is a fork of [optimist](https://github.com/substack/node-optimist)) to parse the gulp command line args (`npm install yargs --save`). You can pass in any arguments you like so long as they don't conflict with gulp options (Which is why I use `build-version` instead of `version` which is already used by gulp). One nice feature of yargs is that arguments that do not have a value are considered flags and represented as booleans (As demonstrated above with `--debug`). Another nice feature is the automatic conversion of spinal-case-args to camelCase. I will use this approach throughout this post.
 
-### Assembly Info ###
+### <a name="gulp-build-assembly-info"></a>Assembly Info ###
 
 First thing you will want to do is set the version number in the project assembly info files (And any other info you'd like). I personally let the build server manage the version and then grab it from an environment variable, but you can do whatever works best for you. To do this we'll use the [gulp-dotnet-assembly-info](https://github.com/mikeobrien/gulp-dotnet-assembly-info) plugin (`npm install gulp-dotnet-assembly-info --save`). Use the plugin as follows:
 
@@ -147,7 +160,7 @@ gulp.task('assemblyInfo', function() {
 
 So we pipe in all `AssemblyInfo.cs` files, modify them and then save them back out. You can specify a value or a function that returns the value. See [here](https://github.com/mikeobrien/gulp-dotnet-assembly-info) for more info.
 
-### Setting Configuration Values ###
+### <a name="gulp-build-configuration"></a>Setting Configuration Values ###
 
 You may need to set values in the `app.config` or `web.config`. To do this we'll use the [xmlpoke](https://github.com/mikeobrien/node-xmlpoke) module (`npm install xmlpoke --save`). Use the module as follows:
 
@@ -167,7 +180,7 @@ gulp.task('configuration', ['assemblyInfo'], function(cb) {
 
 This module sports a lot more features than shown here. See [here](https://github.com/mikeobrien/node-xmlpoke) for more info.
 
-### Building ###
+### <a name="gulp-build-building"></a>Building ###
 
 Now for building. To do that we will use the [gulp-msbuild](https://github.com/hoffi/gulp-msbuild) plugin (`npm install gulp-msbuild --save`). Use the plugin as follows:
 
@@ -197,7 +210,7 @@ v11.0\WebApplications\Microsoft.WebApplication.targets" was not found.
 
 A solution can be found [here](http://stackoverflow.com/a/19351747/126068).
 
-### Running Tests ###
+### <a name="gulp-build-tests"></a>Running Tests ###
 
 Next you will want to run your tests. If you are using NUnit, you're in luck as there is a gulp plugin for that. We will use the [gulp-nunit-runner](https://github.com/keithmorris/gulp-nunit-runner) plugin (`npm install gulp-nunit-runner --save`). Use the plugin as follows:
 
@@ -215,7 +228,27 @@ gulp.task('test', ['build'], function () {
 
 The plugin looks for NUnit in the `PATH` and by default runs the `anycpu` version of NUnit (The x32 version can be specified with the `platform` option). You can also explicitly pass the nunit runner path if you like. You'll notice we're passing `read: false` into the source; this indicates that only filenames, and not content, are to be included in the stream. Also, the `teamcity` option integrates the test results with TeamCity. The plugin supports many more options than shown here, see [here](https://github.com/keithmorris/gulp-nunit-runner) for more info.
 
-### Deploying ###
+### <a name="gulp-build-services"></a>Controlling Windows Services ###
+
+Sometimes you will need to deploy Windows services. In order to do this you will need to stop these services before the delploy and start them after. To do this we can use the [windows-service-controller](https://github.com/mikeobrien/node-windows-service-controller) node module (`npm install windows-service-controller --save`). Use the module as follows:
+
+```js
+var sc = require('windows-service-controller');
+
+gulp.task('stop-services', ['nunit'], function() {
+    return sc.stop('MyServer', 'MyService');
+});
+
+...
+
+gulp.task('start-services', ['deploy'], function() {
+    return sc.start('MyServer', 'MyService');
+});
+```
+
+Here we are passing in a single service although you can pass in an array of service names if there are multiple. The module supports many more options than shown here, see [here](https://github.com/mikeobrien/node-windows-service-controller) for more info.
+
+### <a name="gulp-build-deploying"></a>Deploying ###
 
 There are a couple of ways to deploy files. Out of the box, gulp's innate ability to work with files will get you a long way:
 
@@ -257,7 +290,7 @@ The robocopy function returns a promise so we can just return this to allow gulp
 
 The Robocopy options above are pretty self explanatory. The `mirror` option allows you to synchronize your destination with your source folder, removing any deleted files. The `retry` options allow you to retry the copy after so many seconds if it failed. Both these options can be useful when deploying websites. The task fully supports all the robocopy options, see [here](https://github.com/mikeobrien/node-robocopy) for more info.
 
-### Nuget ###
+### <a name="gulp-build-nuget"></a>Nuget ###
 
 If you are publishing a Nuget package instead of deploying an app there is a module for that too. We can use the [nuget-runner](https://github.com/mikeobrien/node-nuget-runner) module (`npm install nuget-runner --save`). You will need to create a [nuspec file](http://docs.nuget.org/docs/reference/nuspec-reference) as described [here](http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package#Creating_a_Package). Use the module as follows:
 
@@ -318,7 +351,7 @@ gulp.task('deploy', ['nunit'], function() {
 
 The module supports more commands and options than shown here, see [here](https://github.com/mikeobrien/node-nuget-runner) for more info.
 
-### Build Server ###
+### <a name="gulp-build-server"></a>Build Server ###
 
 The last step is to setup your build server to run gulp. I'm going to demonstrate how to configure gulp with [TeamCity](http://www.jetbrains.com/teamcity/) but this should loosely apply to any build server.
 
