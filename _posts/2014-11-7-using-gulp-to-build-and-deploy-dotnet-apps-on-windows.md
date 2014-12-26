@@ -15,7 +15,8 @@ I've been using [Grunt](http://gruntjs.com/) to build and deploy .NET apps for a
 - [Building](#gulp-build-building)
 - [Running Tests](#gulp-build-tests)
 - [Controlling Windows Services](#gulp-build-services)
-- [Deploying](#gulp-build-deploying)
+- [Deploying Files](#gulp-build-deploying-files)
+- [Database Migration](#gulp-database-migration)
 - [Nuget](#gulp-build-nuget)
 - [Build Server](#gulp-build-server)
 
@@ -69,6 +70,9 @@ Above we have a special `default` task alias that gets run when you type `gulp` 
 [14:48:30] Starting 'default'...
 [14:48:30] Finished 'default' after 32 μs
 ```
+
+*NOTE*: Throughout this post I will be using the `--save` flag to save NPM dependencies to the `package.json` file. You may have also seen the `--save-dev` flag and might be confused as to when you should use one over the other. Check out [this SO question](http://stackoverflow.com/a/19578808) for an explanation. 
+
 ### <a name="gulp-build-task-sequence"></a>Task Sequence ###
 
 Gulp will try to run every task in parallel. Obviously you will need to run certain tasks in a particular order in your build. The current version of gulp allows you to do this a few ways. First you will need to specify a dependency and then some way to indicate the dependency has completed. [According to the gulp docs](https://github.com/gulpjs/gulp/blob/master/docs/API.md#async-task-support), you can indicate that a dependency has completed by either returning a stream, returning a promise or taking in a callback and calling it when done. The following demonstrates the stream and callback approaches:
@@ -248,7 +252,7 @@ gulp.task('start-services', ['deploy'], function() {
 
 Here we are passing in a single service although you can pass in an array of service names if there are multiple. The module supports many more options than shown here, see [here](https://github.com/mikeobrien/node-windows-service-controller) for more info.
 
-### <a name="gulp-build-deploying"></a>Deploying ###
+### <a name="gulp-build-deploying-files"></a>Deploying Files ###
 
 There are a couple of ways to deploy files. Out of the box, gulp's innate ability to work with files will get you a long way:
 
@@ -289,6 +293,67 @@ gulp.task('deploy', ['nunit'], function() {
 The robocopy function returns a promise so we can just return this to allow gulp to know when it has completed. You'll also notice that robocopy is not a gulp plugin and this is ok. Unlike Grunt where everything is a plugin, gulp plugins are really only useful if they operate on a stream of files. Many times you will just invoke a module in a gulp task like we do above, no plugin involved at all. [@ozcinc](https://twitter.com/ozcinc) has a nice writeup on this [here](http://blog.overzealous.com/post/74121048393/why-you-shouldnt-create-a-gulp-plugin-or-how-to-stop).
 
 The Robocopy options above are pretty self explanatory. The `mirror` option allows you to synchronize your destination with your source folder, removing any deleted files. The `retry` options allow you to retry the copy after so many seconds if it failed. Both these options can be useful when deploying websites. The task fully supports all the robocopy options, see [here](https://github.com/mikeobrien/node-robocopy) for more info.
+
+### <a name="gulp-database-migration"></a>Database Migration ###
+
+More than likely your app is data driven and you will need to deploy schema changes. The simplest approach is to apply a delta script. To do this we can use the [sqlcmd-runner](https://github.com/mikeobrien/node-sqlcmd-runner) module (`npm install sqlcmd-runner --save`).
+
+```js
+var sqlcmd = require('sqlcmd-runner');
+
+gulp.task('database', ['robocopy'], function() {
+    return sqlcmd({
+        server: 'sql.mycompany.int',
+        database: 'myapp',
+        inputFiles: [ 'delta.sql' ],
+        outputFile: 'delta.log',
+        failOnSqlErrors: true,
+        errorRedirection: true
+    });
+});
+```
+
+This module is a wrapper around the [sqlcmd](http://msdn.microsoft.com/en-us/library/ms162773.aspx) utility and supports all options; see [here](https://github.com/mikeobrien/node-sqlcmd-runner) for more info.
+
+If you're using [DB Ghost](http://www.dbghost.com/) to create your delta script, you can use the [dbghost](https://github.com/mikeobrien/node-dbghost) module (`npm install dbghost --save`). 
+
+```js
+var sqlcmd = require('sqlcmd-runner');
+
+gulp.task('database', ['robocopy'], function() {
+    return dbghost.buildCompareAndCreateDelta({
+        configSavePath: 'CreateDelta.dbgcm',
+        changeManager: {
+            reportFilename: 'CreateDelta.log',
+            buildDatabaseName: 'Source',
+            deltaScriptsFilename: 'delta.sql',
+            templateDatabase: {
+                name: targetSchema,
+                server: 'sql.mycompany.int'
+            },
+            targetDatabase: {
+                name: targetSchema,
+                server: 'sql.mycompany.int'
+            },
+            schemaScripts: {
+                rootDirectory: 'schema',
+            }
+        }
+    })
+    .then(function() {
+        return sqlcmd({
+            server: 'sql.mycompany.int',
+            database: 'myapp',
+            inputFiles: [ 'delta.sql' ],
+            outputFile: 'delta.log',
+            failOnSqlErrors: true,
+            errorRedirection: true
+        });
+    });
+});
+```
+
+This module is a wrapper around `ChangeManagerCmd.exe` and can either generate a config from scratch or from a template, overriding the template with the config passed in. See [here](https://github.com/mikeobrien/node-sqlcmd-runner) for more info.
 
 ### <a name="gulp-build-nuget"></a>Nuget ###
 
