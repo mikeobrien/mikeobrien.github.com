@@ -109,3 +109,8 @@
     margin-right: auto;
     padding: 20px 0;
 }
+
+img.inline {
+    display: inline;
+    padding: 0;
+}
