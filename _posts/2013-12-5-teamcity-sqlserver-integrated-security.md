@@ -18,17 +18,17 @@ Here is how to set it up:
 
 If you are running a 32 bit OS:
 
-3. Copy the `\auth\x32\sqljdbc_auth.dll` file (Note the `x32` in the path) to the `<TeamCityHomeDir>\bin` folder.
+1. Copy the `\auth\x32\sqljdbc_auth.dll` file (Note the `x32` in the path) to the `<TeamCityHomeDir>\bin` folder.
+2. Restart TeamCity server and agents.
 
 If you are running a 64 bit OS:
 
-4. Copy the `\auth\x64\sqljdbc_auth.dll` file (Note the `x64` in the path) to the `<TeamCityHomeDir>\bin` folder.
-5. Download the 64 bit Windows `tar.gz` version (*Not the installer*) of the JRE [here](http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html) and uncompress it. Depending on your compression tool you may have to then extract the files from the tar archive (Which may not have an extension) as a second step. [7-zip](http://www.7-zip.org/) will do this.
-6. Delete the contents of the `<TeamCityHomeDir>\jre` folder.
-7. Copy the JRE that you extracted in the previous step to the `<TeamCityHomeDir>\jre` folder. The JRE is one folder deep in the archive so don't just directly copy the folder that is extracted. Your `<TeamCityHomeDir>\jre` folder should contain a `bin` and `libs` folder.
-8. Make a backup of your `<TeamCityHomeDir>\jre` folder under `<TeamCityHomeDir>\jre\x64` (Or wherever you prefer). TeamCity upgrades overwrite the the JRE with the 32 bit version, so you'll want to have a copy handy so you can replace it after updates.
-
-Finally restart TeamCity and you should be golden.
+1. Copy the `\auth\x64\sqljdbc_auth.dll` file (Note the `x64` in the path) to the `<TeamCityHomeDir>\bin` folder.
+2. Download the 64 bit Windows `tar.gz` version (*Not the installer*) of the JRE [here](http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html) and uncompress it. Depending on your compression tool you may have to then extract the files from the tar archive (Which may not have an extension) as a second step. [7-zip](http://www.7-zip.org/) will do this.
+3. Delete the contents of the `<TeamCityHomeDir>\jre` folder.
+4. Copy the JRE that you extracted in the previous step to the `<TeamCityHomeDir>\jre` folder. The JRE is one folder deep in the archive so don't just directly copy the folder that is extracted. Your `<TeamCityHomeDir>\jre` folder should contain a `bin` and `libs` folder.
+5. Make a backup of your `<TeamCityHomeDir>\jre` folder under `<TeamCityHomeDir>\jre\x64` (Or wherever you prefer). TeamCity upgrades overwrite the the JRE with the 32 bit version, so you'll want to have a copy handy so you can replace it after updates.
+6. Restart TeamCity server and agents.
 
 As mentioned above when you upgrade TeamCity, the `jre` folder is overwritten with the 32 bit version of the JRE. So if you're using the 64 bit version this will lead to the following error:
 
