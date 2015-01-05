@@ -30,7 +30,7 @@ If you are running a 64 bit OS:
 5. Make a backup of your `<TeamCityHomeDir>\jre` folder under `<TeamCityHomeDir>\jre\x64` (Or wherever you prefer). TeamCity upgrades overwrite the the JRE with the 32 bit version, so you'll want to have a copy handy so you can replace it after updates.
 6. Restart TeamCity server and agents.
 
-As mentioned above when you upgrade TeamCity, the `jre` folder is overwritten with the 32 bit version of the JRE. So if you're using the 64 bit version this will lead to the following error:
+As mentioned above when you upgrade TeamCity, the `jre` folder is overwritten with the 32 bit version of the JRE. So if you're using the 64 bit version this will lead to the following error when you restart:
 
 ![TeamCity Upgrade Error](/blog/images/TeamCityUpgradeError.png)
 
