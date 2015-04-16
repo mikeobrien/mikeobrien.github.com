@@ -1,0 +1,248 @@
+item: Remark
+  Text=----------------------------------------------------------------------------------------------------------------------------------------------------------
+end
+item: Remark
+  Text=| The following steps determine versions of .NET installed                                                                |
+end
+item: Remark
+  Text=----------------------------------------------------------------------------------------------------------------------------------------------------------
+end
+item: Remark
+  Text=| Set these varibles                                                                                                                            |
+end
+item: Remark
+  Text=----------------------------------------------------------------------------------------------------------------------------------------------------------
+end
+item: Remark
+  Text=--> The .NET Framework version your application was designed to use:
+end
+item: Remark
+  Text=.NET Framework versions: 1.1.4322 or 2.0.50727
+end
+item: Set Variable
+  Variable=DOTNET_REQ_VER
+  Value=2.0.50727
+end
+item: Remark
+  Text=----------------------------------------------------------------------------------------------------------------------------------------------------------
+end
+item: Remark
+  Text=| These variables will be populated by the following script                                                                 |
+end
+item: Remark
+  Text=----------------------------------------------------------------------------------------------------------------------------------------------------------
+end
+item: Remark
+  Text=<-- The highest version of the .NET Framwork installed on the machine:
+end
+item: Set Variable
+  Variable=DOTNET_HIGH
+end
+item: Remark
+  Text=<-- The lowest version of the .NET Framwork installed on the machine:
+end
+item: Set Variable
+  Variable=DOTNET_LOW
+end
+item: Remark
+  Text=<-- Boolean indicating if the version of the .NET Framework your application was designed to work
+end
+item: Remark
+  Text=     with is installed:
+end
+item: Set Variable
+  Variable=DOTNET_REQ_INS
+  Value=false
+end
+item: Remark
+  Text=<-- Boolean indicating if any .NET Framework versions are installed:
+end
+item: Set Variable
+  Variable=DOTNET_EXISTS
+  Value=false
+end
+item: Remark
+  Text=----------------------------------------------------------------------------------------------------------------------------------------------------------
+end
+item: Set Variable
+  Variable=REG_RET
+  Value=0
+end
+item: Set Variable
+  Variable=REG_KEY_HANDLE
+  Value=0
+end
+item: Set Variable
+  Variable=DOTNET_REQ_VER
+  Value=v%DOTNET_REQ_VER%
+end
+item: Set Variable
+  Variable=DOTNET_VER_INS
+end
+item: Call DLL Function
+  Pathname=%SYS32%\advapi32.dll
+  Function Name=RegOpenKeyA
+  Argument List=212147483650
+  Argument List=41SOFTWARE\Microsoft\NET Framework Setup\NDP
+  Argument List=70REG_KEY_HANDLE
+  Return Variable=2REG_RET
+  Flags=00100000
+end
+item: Set Variable
+  Variable=REG_COUNTER
+  Value=0
+end
+item: If/While Statement
+  Variable=REG_RET
+  Value=0
+  Flags=00010000
+end
+item: Set Variable
+  Variable=REG_BUFFER
+end
+item: Call DLL Function
+  Pathname=%SYS32%\advapi32.dll
+  Function Name=RegEnumKeyA
+  Argument List=20REG_KEY_HANDLE
+  Argument List=30REG_COUNTER
+  Argument List=40REG_BUFFER
+  Argument List=31100
+  Return Variable=2REG_RET
+  Flags=00100000
+end
+item: If/While Statement
+  Variable=REG_RET
+  Value=259
+  Flags=00000001
+end
+item: Get Registry Key Value
+  Variable=DOTNET_VER_INS
+  Key=SOFTWARE\Microsoft\NET Framework Setup\NDP\%REG_BUFFER%
+  Default=0
+  Value Name=Install
+  Flags=00000100
+end
+item: If/While Statement
+  Variable=DOTNET_VER_INS
+  Value=1
+end
+item: Set Variable
+  Variable=DOTNET_EXISTS
+  Value=true
+end
+item: If/While Statement
+  Variable=DOTNET_REQ_VER
+  Value=%REG_BUFFER%
+end
+item: Set Variable
+  Variable=DOTNET_REQ_INS
+  Value=true
+end
+item: End Block
+end
+item: If/While Statement
+  Variable=REG_BUFFER
+  Value=%DOTNET_HIGH%
+  Flags=00000110
+end
+item: Set Variable
+  Variable=DOTNET_HIGH
+  Value=%REG_BUFFER%
+end
+item: End Block
+end
+item: If/While Statement
+  Variable=DOTNET_LOW
+end
+item: Set Variable
+  Variable=DOTNET_LOW
+  Value=%REG_BUFFER%
+end
+item: End Block
+end
+item: If/While Statement
+  Variable=REG_BUFFER
+  Value=%DOTNET_LOW%
+  Flags=00001000
+end
+item: Set Variable
+  Variable=DOTNET_LOW
+  Value=%REG_BUFFER%
+end
+item: End Block
+end
+item: End Block
+end
+item: End Block
+end
+item: Set Variable
+  Variable=REG_COUNTER
+  Value=%REG_COUNTER%
+  Flags=00000100
+end
+item: End Block
+end
+item: Call DLL Function
+  Pathname=%SYS32%\advapi32.dll
+  Function Name=RegCloseKey
+  Argument List=20REG_KEY_HANDLE
+  Return Variable=2RET
+  Flags=00100000
+end
+item: Remark
+  Text=----------------------------------------------------------------------------------------------------------------------------------------------------------
+end
+item: If/While Statement
+  Variable=DOTNET_EXISTS
+  Value=false
+end
+item: Remark
+  Text=--> The .NET Framework installer to run:
+end
+item: Install File
+  Source=D:\Dev\Library\Packages\Microsoft .NET Framework\dotnet_2.0.exe
+  Destination=%TEMP%\~DOTNetTemp\dotnetfx.exe
+  Flags=0000000000000010
+end
+item: Execute Program
+  Pathname=%TEMP%\~DOTNetTemp\dotnetfx.exe
+  Command Line=/q:a /c:"Install /q"
+  Flags=00000010
+end
+item: Else Statement
+end
+item: If/While Statement
+  Variable=DOTNET_REQ_INS
+  Value=false
+end
+item: If/While Statement
+  Variable=DOTNET_HIGH
+  Value=%DOTNET_REQ_VER%
+  Flags=00001000
+end
+item: Remark
+  Text=--> The .NET Framework installer to run:
+end
+item: Install File
+  Source=D:\Dev\Library\Packages\Microsoft .NET Framework\dotnet_2.0.exe
+  Destination=%TEMP%\~DOTNetTemp\dotnetfx.exe
+  Flags=0000000000000010
+end
+item: Execute Program
+  Pathname=%TEMP%\~DOTNetTemp\dotnetfx.exe
+  Command Line=/q:a /c:"Install /q"
+  Flags=00000010
+end
+item: End Block
+end
+item: End Block
+end
+item: End Block
+end
+item: Delete File
+  Pathname=%TEMP%\~DOTNetTemp\*.*
+  Flags=00001100
+end
+item: Remark
+  Text=----------------------------------------------------------------------------------------------------------------------------------------------------------
+end
