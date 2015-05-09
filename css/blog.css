@@ -52,10 +52,6 @@
     border-top: 1px solid #667279;
 }
 
-.tags li a {
-    padding: 2px 15px;
-}
-
 .posts .footer {
     height: 20px;
     margin: 15px, 0;
@@ -94,9 +90,25 @@
     margin: 0 0 5px 0;
 }
 
+.tags li a {
+    padding: 2px 15px;
+}
+
 .tag .name {
     margin: 0 0 10px 0;
     font-size: 14pt;
+}
+
+.repos li a {
+    padding: 2px 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 198px;
+}
+
+.repos img {
+    margin-top: -3px;
 }
 
 .markdown-body h3 {

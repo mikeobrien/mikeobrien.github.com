@@ -29,9 +29,19 @@ layout: chrome
             <iframe src="http://githubbadge.appspot.com/badge/mikeobrien" style="border: 0;height: 113px;width: 100%;overflow: hidden;" frameBorder="0" scrolling="no"></iframe>
 
             <div class="well" style="padding: 8px 0;">
+                <ul class="nav nav-list repos">
+                    {% for repository in site.github.public_repositories %}
+                        {% if repository.stargazers_count > 3 %}
+                            <li data-sort="{{ repository.stargazers_count }}"><a target="_blank" href="{{ repository.html_url }}" title="{{ repository.name }}"><img src="/img/github-glyph.png"/> {{ repository.name }} ({{ repository.stargazers_count }} <span class="glyphicon glyphicon-star"></span>)</a></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="well" style="padding: 8px 0;">
                 <ul class="nav nav-list tags">
                     {% for tag in site.tags %}
-                    <li><a href="/blog/tags#tag-{{forloop.index}}" title="{{tag | first }}"><span class="glyphicon glyphicon-tag"></span> {{tag | first}} ({{tag | last | size }})</a></li>
+                    <li data-sort="{{tag | first}}"><a href="/blog/tags#tag-{{forloop.index}}" title="{{tag | first }}"><span class="glyphicon glyphicon-tag"></span> {{tag | first}} ({{tag | last | size }})</a></li>
                     {% endfor %}
                 </ul>
             </div>
@@ -43,5 +53,6 @@ layout: chrome
 </div>
 
 <script>
-$('.tags>li').tsort();
+$('.repos>li').tsort({ attr:'data-sort', order: 'desc' });
+$('.tags>li').tsort({ attr:'data-sort' });
 </script>
