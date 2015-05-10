@@ -278,6 +278,9 @@
     overflow: auto;
     padding: 6px 10px;
     border-radius: 3px;
+    display: inline-block;
+    margin: 0;
+    min-width: 600px;
 }
 .markdown-body pre code,
 .markdown-body pre tt {
