@@ -8,7 +8,7 @@ I really love GitHub but unfortunately not every organization can host code outs
 
 ### Install
 
-The following installation instructions are taken from the [download page](https://about.gitlab.com/downloads/). Be sure to download the latest version of GitLab.
+The following installation instructions are taken from the [download page](https://about.gitlab.com/downloads/).
 
 ```bash
 sudo apt-get install openssh-server
@@ -16,8 +16,8 @@ sudo apt-get install openssh-server
 # Omit if using an existing SMTP server
 sudo apt-get install postfix
 
-wget https://downloads-packages.s3.amazonaws.com/ubuntu-14.04/gitlab_7.9.2-omnibus-1_amd64.deb
-sudo dpkg -i gitlab_7.9.2-omnibus-1_amd64.deb
+curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | sudo bash
+sudo apt-get install gitlab-ce
 
 # If this fails, reboot and try again
 sudo gitlab-ctl reconfigure
