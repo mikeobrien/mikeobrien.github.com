@@ -86,7 +86,7 @@ Configure the basic settings, see [here](https://gitlab.com/gitlab-org/gitlab-ce
 If you want to filter based on group membership you can use the following user filter:
 
 ```ruby
-user_filter: '(memberOf:1.2.840.113556.1.4.1941:=CN=GitLabUsers,CN=Users,DC=mydomain,DC=int)''
+user_filter: '(memberOf:1.2.840.113556.1.4.1941:=CN=GitLabUsers,CN=Users,DC=mydomain,DC=int)'
 ```
 
 Next, run the following to propagate the changes and ensure configuration is correct.
