@@ -5,9 +5,9 @@
 .blog {
     background-color: #fff;
     text-align: left;
-    margin: 20px 0;
+    margin: 20px auto;
     padding: 10px 10px 10px 30px;
-    width: 100%;
+    max-width: 1200px;
 }
 
 .blog .content {
@@ -16,19 +16,19 @@
 }
 
 .blog .sidebar {
-    width: 220px; 
+    width: 225px; 
     vertical-align: top; 
     padding: 10px;
+    border-left: 1px solid #667279;
 }
 
 .blog .social {
     text-align: center;
-    padding: 10px;
+    padding: 5px;
 }
 
 .blog .social-icon {
     padding: 0 3px;
-    height: 25px;
 }
 
 .blog .well {

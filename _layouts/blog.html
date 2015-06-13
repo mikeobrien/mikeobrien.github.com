@@ -21,14 +21,9 @@ layout: chrome
         
         <td class="sidebar">
         
-            <div class="well social">
-                <a id="email" href="#" title="Email"><img src="/img/email.png" class="social-icon" /></a>
-                <a href="/blog/rss.xml" title="Feed"><img src="/img/rss.png" class="social-icon" /></a>
-            </div>
-            
-            <iframe src="http://githubbadge.appspot.com/badge/mikeobrien" style="border: 0;height: 113px;width: 100%;overflow: hidden;" frameBorder="0" scrolling="no"></iframe>
 
-            <div class="well" style="padding: 8px 0;">
+            <div style="padding: 0 0 8px 0;">
+                <iframe src="http://githubbadge.appspot.com/badge/mikeobrien" style="border: 0;height: 113px;width: 100%;overflow: hidden;border-radius: 5px;" frameBorder="0" scrolling="no"></iframe>
                 <ul class="nav nav-list repos">
                     {% for repository in site.github.public_repositories %}
                         {% if repository.stargazers_count > 3 %}
@@ -38,7 +33,7 @@ layout: chrome
                 </ul>
             </div>
 
-            <div class="well" style="padding: 8px 0;">
+            <div style="padding: 8px 0;border-top: 1px solid #667279">
                 <ul class="nav nav-list tags">
                     {% for tag in site.tags %}
                     <li data-sort="{{tag | first}}"><a href="/blog/tags#tag-{{forloop.index}}" title="{{tag | first }}"><span class="glyphicon glyphicon-tag"></span> {{tag | first}} ({{tag | last | size }})</a></li>

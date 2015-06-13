@@ -58,8 +58,8 @@
 -->
 <html>
 	<head>
-		<title>Mike O'Brien{% if page.title %} - {{page.title}}{% endif %}</title>
-        
+		<title>MOB{% if page.title %} | {{page.title}}{% endif %}</title>
+        <link rel="shortcut icon" href="/img/favicon.png" />
         <meta name="description" content="{% if page.title %}{{page.title}}{% else %}Terrible Tinkerer.{% endif %}" />
         {% if page.tags %}<meta name="keywords" content="{{page.tags | join: ','}}" />{% endif %}
         {% if page.date %}<meta http-equiv="date" content="{{page.date |date: '%A, %d  %Y %H:%M:%S GMT'}}" />{% endif %}
