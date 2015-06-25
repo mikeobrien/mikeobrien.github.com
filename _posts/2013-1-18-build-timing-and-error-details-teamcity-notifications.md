@@ -75,7 +75,7 @@ createSpec     0:00  0%
 createPackage  0:01  7%
 ```
 
-NOTE: If you are using gulp the above approach will not work. The following template should do the trick though:
+*UPDATE*: If you are using gulp the above approach will not work. The following template should do the trick though:
 
 ```html
 ```html
@@ -92,16 +92,14 @@ NOTE: If you are using gulp the above approach will not work. The following temp
 </#list>
 </table>
 ```
-```
 
-When a build fails, TeamCity does not include the last chunk of the build log in the email like it does on the build summary page. This is ok for builds that fail because of tests since test failures are included. To include this information in build notifications, add the following anywhere in the `bodyHtml` section of `build_failed.ftl`. The code below breaks at the ruby runtime error because in general it doesn't give you any valuable info and the stack trace is huge. The error messages you want to see appear before that point (Unless of course there is a bug in the ruby code itself). Also everything after it is not important. So I omit it and everything after it. If you want to see everything just remove the line where it breaks.
+When a build fails, TeamCity does not include the last chunk of the build log in the email like it does on the build summary page. This is ok for builds that fail because of tests since test failures are included. To include this information in build notifications, add the following anywhere in the `bodyHtml` section of `build_failed.ftl`. The template below displays a window of messages that will likely contain the part of the log you'd be interested in. You can play with this window to get the best results.
 
 ```html
 <#if (var.failedTestsBean.failedTestCount == 0)>
 	<div style="color:red">
 		<code style="font-family:monospace;font-family:Menlo,Bitstream Vera Sans Mono,Courier New,Courier,monospace;font-size:12px">
-			<#list build.buildLog.messages[(build.buildLog.messages?size - 30)..] as message>
-				<#if message.text?trim?starts_with("RuntimeError:")><#break></#if>
+			<#list build.buildLog.messages[(build.buildLog.messages?size - 40)..(build.buildLog.messages?size - 20)] as message>
 				${message.text?replace("\n", "\lbr/\g")?replace(" ", "&nbsp;")}<br/>
 			</#list>
 		</code>
