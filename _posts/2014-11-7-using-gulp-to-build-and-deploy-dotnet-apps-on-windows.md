@@ -459,6 +459,39 @@ Here you can see the custom build parameter set at the project level. All build 
 
 ![TeamCity gulp task](/blog/images/TeamCityParameters.png)
 
+Usually you will want to keep an eye on how long tasks take to execute. [TeamCity allows you to customize notifications](https://confluence.jetbrains.com/display/TCD9/Customizing+Notifications) so you can include task timings in your notifications. To do this we'll need to edit the `build_successful.ftl` template of your preferred notification type and add the following template. You can add it anywhere you want.
+
+```html
+<b>Gulp Task Timings</b>
+<br/>
+
+<table border="0">
+<#list build.buildLog.messages[1..] as message>
+    <#assign tasks = message.toString()?matches(r".*\sFinished\s\'(.*)\'\safter\s(.*)")>
+    <#if tasks && !tasks?groups[2]?contains("μ") ><tr>
+        <td>${tasks?groups[1]}</td>
+        <td>${tasks?groups[2]}</td>
+    </tr></#if>
+</#list>
+</table>
+```
+
+Your notifications will then display task timings along the lines of this:
+
+```
+Gulp Task Timings
+
+init           6.51 ms
+assembly-info  1.9 s
+config         119 ms
+style-cop      71 ms
+build          2.88 s
+unit-tests     4.11 s
+...
+```
+
+Tasks are displayed in the order they finish.
+
 ### Final Thoughts ###
 
 Hopefully this demonstrates how easy it is to setup a .NET build/deploy on Windows with gulp. If you are also doing client side development, this will be even more of a win as your tools (Like Karma, JSHint, etc) will be run by the same build tool.

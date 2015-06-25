@@ -75,6 +75,25 @@ createSpec     0:00  0%
 createPackage  0:01  7%
 ```
 
+NOTE: If you are using gulp the above approach will not work. The following template should do the trick though:
+
+```html
+```html
+<b>Gulp Task Timings</b>
+<br/>
+
+<table border="0">
+<#list build.buildLog.messages[1..] as message>
+    <#assign tasks = message.toString()?matches(r".*\sFinished\s\'(.*)\'\safter\s(.*)")>
+    <#if tasks && !tasks?groups[2]?contains("μ") ><tr>
+        <td>${tasks?groups[1]}</td>
+        <td>${tasks?groups[2]}</td>
+    </tr></#if>
+</#list>
+</table>
+```
+```
+
 When a build fails, TeamCity does not include the last chunk of the build log in the email like it does on the build summary page. This is ok for builds that fail because of tests since test failures are included. To include this information in build notifications, add the following anywhere in the `bodyHtml` section of `build_failed.ftl`. The code below breaks at the ruby runtime error because in general it doesn't give you any valuable info and the stack trace is huge. The error messages you want to see appear before that point (Unless of course there is a bug in the ruby code itself). Also everything after it is not important. So I omit it and everything after it. If you want to see everything just remove the line where it breaks.
 
 ```html
