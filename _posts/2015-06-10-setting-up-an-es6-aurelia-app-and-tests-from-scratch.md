@@ -5,18 +5,18 @@ title: Setting Up An ES6 Aurelia App And Tests From Scratch
 tags: [Aurelia,ES6]
 ---
 
-The [getting started guide on the Aurelia site](http://aurelia.io/get-started.html) is a nice way to get up and running quickly. This post will step through setting up an ES6 Aurelia app with tests from scratch. The following post assumes that you are using gulp.
+The [getting started guide on the Aurelia site](http://aurelia.io/get-started.html) is a nice way to get up and running quickly. This post will dig a little deeper and set up an ES6 Aurelia app with tests from scratch. The following post assumes that you are using [gulp](http://gulpjs.com/). If not, start [here](https://travismaynard.com/writing/getting-started-with-gulp).
 
-### Setting up Transpiliation
+### Setting up Transpilation
 
-Next we need to set up [transpilation](http://en.wikipedia.org/wiki/Source-to-source_compiler) to convert our ES6 code into something current browsers can understand. There are [many transpilers out there](https://github.com/addyosmani/es6-tools#transpilers) but we will be using [Babel](https://github.com/babel/babel) (Formerly 6to5) in this example. Transpilation can be done dynamically in the browser or statically as part of a build. The former is not appropriate for production so we will do the latter and setup a watcher for dev. 
+First we need to set up [transpilation](http://en.wikipedia.org/wiki/Source-to-source_compiler) to convert our ES6 code into something current browsers can understand. There are [many transpilers out there](https://github.com/addyosmani/es6-tools#transpilers) but we will be using [Babel](https://github.com/babel/babel) (Formerly 6to5) in this example. Transpilation can be done dynamically in the browser or statically. The former is not appropriate for production so we will do the latter and setup a watcher for dev. 
 
 Install the following node modules:
 
 ```bash
- npm install gulp-babel --save
- npm install gulp-sourcemaps --save
- npm install gulp-rename --save
+npm install gulp-babel --save
+npm install gulp-sourcemaps --save
+npm install gulp-rename --save
 ```
 
 Then add the following task to your `gulpfile.js`:
@@ -27,7 +27,7 @@ var babel = require("gulp-babel");
 var rename = require('gulp-rename');
 
 gulp.task('babel', function () {
-    return gulp.src(['**/*.es6'])
+    return gulp.src('**/*.es6', { base: '.' })
         .pipe(sourcemaps.init())
         .pipe(babel())
         .pipe(rename({ extname: '.js' }))
@@ -36,7 +36,7 @@ gulp.task('babel', function () {
 });
 ```
 
-Here we are transpiling ES6 files (with a `.es6` extension) to ES5. The default module format is [CommonJS](http://www.commonjs.org/). We are transpiling to this module format as it can be understood on the browser by SystemJS and natively by Node.js for our tests. We are also generating [source map](http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/) files so that transpiled code can be mapped to the original ES6 code when debugging. Finally the output is renamed to `*.js`. Since we don't want to commit generated files to our repository we can selectively exclude with `.gitignore`'s:
+Here we are transpiling ES6 files (with a `.es6` extension) to ES5. The default module format is [CommonJS](http://www.commonjs.org/). We are transpiling to this module format as it can be understood on the browser by [SystemJS](https://github.com/systemjs/systemjs) (Which we'll cover in a bit) and natively by Node.js for our tests. We are also generating [source map](http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/) files so that transpiled code can be mapped to the original ES6 code when debugging. Finally the output is renamed to `*.js`. Since we don't want to commit generated `.js` files to our repository we can selectively exclude with `.gitignore`'s:
 
 ```
 *.js
@@ -45,16 +45,17 @@ Here we are transpiling ES6 files (with a `.es6` extension) to ES5. The default 
 ```
 We'll set up the watcher below when we setup the tests.
 
-### Configuring the Test Runner
+### Setting up the Test Runner
 
-We will use the [Mocha](http://mochajs.org/) test framework and [Chai](http://chaijs.com/) assertion library. There is not really anything special we have to do on the Node side except make our `test` task depend on the `babel` task to transpile *before* running the tests. We also need to reference core-js.
+We will use the [Mocha](http://mochajs.org/) test framework and [Chai](http://chaijs.com/) assertion library. We make our `test` task depend on the `babel` task to transpile *before* running the tests. And since [Node.js doesn't natively support source maps](https://github.com/joyent/node/issues/3712), we'll need to use the `source-map-support` module. We also need to reference the [core-js](https://github.com/zloirock/core-js) ES* pollyfill to get ES6 API support in Node.
 
 Install the following node modules:
 
 ```bash
- npm install gulp-mocha --save
- npm install chai --save
- npm install core-js --save
+npm install gulp-mocha --save
+npm install chai --save
+npm install source-map-support --save
+npm install core-js --save
 ```
 
 Then add the following task to your `gulpfile.js`:
@@ -62,13 +63,13 @@ Then add the following task to your `gulpfile.js`:
 ```js
 var mocha = require('gulp-mocha');
 var process = require('child_process');
+require('source-map-support').install();
 require('core-js');
 
-function spawnTests() {
-    process.spawn('gulp', ['test'], { stdio: 'inherit' });
-}
-
 gulp.task('watch', function () {
+    var spawnTests = function() {
+        process.spawn('gulp', ['test'], { stdio: 'inherit' });
+    }
     spawnTests();
     gulp.watch('**/*.es6', spawnTests);
 });
@@ -79,9 +80,9 @@ gulp.task('test', ['babel'], function () {
 });
 ```
 
-Spawning the test runner prevents certain failures from stopping the watch loop. Also, since the watch is fired only on changes, we run it right off the bat so we don't have to wait for changes.
+Here we add the watcher that transpiles our ES6 code then fires off the test runner. Spawning the test runner prevents certain failures from stopping the watch loop. Also, since the watch is fired only on changes, we run it right off the bat so we don't have to wait for changes to see results.
 
-Now we can write a dummy test to make sure everything is working:
+Now we'll create a fixture called `app.es6` with a dummy test to make sure everything is working:
 
 ```js
 import { expect } from 'chai';
@@ -101,7 +102,7 @@ gulp watch
 
 ### Setting up SystemJS & jspm
 
-Aurelia fully embraces ES6 and is made up of many composable modules. This allows you to pick and choose what pieces you want to use. As such, [there isn't one single file you can reference](https://github.com/aurelia/framework/issues/40) like you would with jQuery or Angular 1.x. This presents a number of challenges. First, how do we easily get a hold of all the modules we want? And second, in an ES5 world, how do we wire up and load all these modules? Both of these problems are solved by the [SystemJS](https://github.com/systemjs/systemjs) module loader and its corresponding package manager [jspm](http://jspm.io/). SystemJS supports many different module standards (ES6, AMD, CommonJS) and jspm enables us to easily get a hold of modules and their dependencies (Just like NPM). jspm also wires up SystemJS modules automatically so we don't have to. We will install SystemJS (And later Aurelia) with jspm. First lets install jspm:
+Aurelia fully embraces ES6 and is made up of many composable modules. This allows you to pick and choose what pieces you want to use. As such, [there isn't one single file you can reference](https://github.com/aurelia/framework/issues/40) like you would with jQuery or Angular 1.x. This presents a number of challenges. First, how do we easily get a hold of all the modules we want? And second, in an ES5 world, how do we wire up and load all these modules? Both of these problems are solved by the [SystemJS](https://github.com/systemjs/systemjs) module loader and its corresponding package manager [jspm](http://jspm.io/). SystemJS supports many different module standards (ES6, AMD, CommonJS) and jspm enables us to easily get a hold of modules and their dependencies (Just like NPM). jspm also automatically wires up modules in the SystemJS loader so we don't have to. We will install SystemJS (And later Aurelia) with jspm. First lets install jspm:
 
 ```bash
 # Install jspm globally
@@ -218,7 +219,7 @@ Once we have jspm installed we can then wire up SystemJS and its configuration i
 <script src="config.js"></script>
 ```
 
-### Installing Aurelia
+### Setting up Aurelia
 
 This is pretty simple:
 
@@ -244,7 +245,71 @@ In our main page we'll flag the `body` tag as the base element of the app with t
 </html>
 ```
 
-Next we need to setup the baseline app and view. 
+Next we need to setup the view and view-model pair. These are conventionally tied together by their name, a la `name.html` & `name.js`. Conventionally the default pair is called `app`, so `app.html` and `app.js`. This can be overridden by setting the `aurelia-app` attribute in the main page to your a name:
+
+```html
+<html>
+  ...
+  <body aurelia-app="my-custom-name">
+    ...
+  </body>
+</html>
+```
+
+By default these are loaded from the root. If they are located in a sub folder you will need to adjust the SystemJS path accordingly in the `config.js`. In the example below, our files are located in the `app` folder.
+
+```js
+System.config({
+  ...
+  "paths": {
+    "*": "app/*.js", // <-- Default path here
+    "github:*": "jspm_packages/github/*.js",
+    "npm:*": "jspm_packages/npm/*.js"
+  }
+});
+...
+```
+
+Next we'll create a simple ES6 view model called `app.es6`:
+
+```js
+export default class App {
+    constructor() {
+        this.message = 'Oh hai';
+    }
+
+    exclaim() {
+        this.message += '!';
+    }
+}
+```
+
+Then a simple view called `app.html`:
+
+```html
+<template>
+    <p>${message}</p>
+    <button click.delegate="exclaim()">Exclaim!</button>
+</template>
+```
+
+And of course a test. We've already stubbed out the test above so we can modify it to test our new view model:
+
+```js
+import { expect } from 'chai';
+import App from '../app'
+ 
+describe('App', () => {
+    it('should exclaim!', () => {
+        let app = new App();
+        app.exclaim();
+        app.exclaim();
+        expect(app.message).to.equal('Oh hai!!');
+    });
+});
+```
+
+The test fixture references the app view model (Assuming it's one level up). Because we specified that the view model was the default export we can use the simpler import syntax in the test. 
 
 ### Bundling
 
