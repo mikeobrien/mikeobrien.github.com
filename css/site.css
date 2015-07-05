@@ -1,6 +1,8 @@
 body {
     background-color: #2D4C6A;
     padding: 0;
+    color: #4D4D4D;
+    font-family: "Gotham SSm A","Gotham SSm B","lucida grande",Tahoma,Arial,sans-serif;
 }
 
 td {
@@ -8,7 +10,7 @@ td {
 }
 
 a {
-    color: #3C4246;
+    color: #4D4D4D;
 }
 
 .banner {
