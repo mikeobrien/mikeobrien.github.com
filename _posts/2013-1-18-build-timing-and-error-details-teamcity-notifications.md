@@ -98,9 +98,9 @@ When a build fails, TeamCity does not include the last chunk of the build log in
 ```html
 <#if (var.failedTestsBean.failedTestCount == 0)>
 	<div style="color:red">
-		<code style="font-family:monospace;font-family:Menlo,Bitstream Vera Sans Mono,Courier New,Courier,monospace;font-size:12px">
+		<code style="font-family:monospace;font-family:Menlo,Bitstream Vera Sans Mono,Courier New,Courier,monospace;font-size:12px; white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;">
 			<#list build.buildLog.messages[(build.buildLog.messages?size - 40)..(build.buildLog.messages?size - 20)] as message>
-				${message.text?replace("\n", "\lbr/\g")?replace(" ", "&nbsp;")}<br/>
+				${message.text}
 			</#list>
 		</code>
 	</div>
