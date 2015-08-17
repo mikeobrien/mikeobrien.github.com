@@ -7,6 +7,8 @@ title: Blog
 
     {% for post in site.posts limit:10 %}
 
+    <!-- post.draft: {{post.draft}} -->
+
     {% if post.draft == true %}{% else %}
 
         <div class="page-header">
