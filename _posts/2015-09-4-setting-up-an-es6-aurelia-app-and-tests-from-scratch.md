@@ -115,7 +115,9 @@ npm install jspm --save
 jspm init
 ```
 
-`jspm init` will prompt you for a few pieces of information. You can probably accept the defaults, see [here](https://github.com/jspm/jspm-cli/wiki/Getting-Started#2-create-a-project) for more info on them.
+NOTE: If you have one project, one `package.json` and multiple web apps, you can run `jspm init .` in the root of each web app. This will initialize it separately for each app.
+
+`jspm init` will prompt you for a few pieces of information. You can probably accept the defaults, see [here](https://github.com/jspm/jspm-cli/wiki/Getting-Started#2-create-a-project) for more info on them. You will want to respond `no` when prompted to use an ES6 transpiler (As we've already handled that).
 
 ```bash
 Would you like jspm to prefix the jspm package.json properties under jspm? [yes]:
@@ -124,35 +126,32 @@ Enter jspm packages folder [./jspm_packages]:
 Enter config file path [./config.js]:
 Configuration file config.js doesn't exist, create it? [yes]:
 Enter client baseURL (public folder URL) [/]:
-Which ES6 transpiler would you like to use, Traceur or Babel? [babel]:
+Do you wish to use an ES6 transpiler? [yes]:no
 ok   Verified package.json at package.json
      Verified config file at config.js
      Looking up loader files...
-       es6-module-loader.js
-       es6-module-loader.js.map
-       es6-module-loader.src.js
        system.js
-       system.src.js
        system.js.map
+       system-csp-production.js
+       system-polyfills.js
+       system.src.js
+       system-csp-production.src.js
+       system-polyfills.js.map
+       system-polyfills.src.js
+       system-csp-production.js.map
      
      Using loader versions:
-       es6-module-loader@0.16.6
-       systemjs@0.16.11
-     Looking up npm:babel-core
-     Looking up npm:babel-runtime
-     Looking up npm:core-js
-     Updating registry cache...
-ok   Installed babel as npm:babel-core@^5.1.13 (5.2.17)
-ok   Installed babel-runtime as npm:babel-runtime@^5.1.13 (5.2.17)
-     Looking up github:jspm/nodelibs-process
-ok   Installed github:jspm/nodelibs-process@^0.1.0 (0.1.1)
-     Looking up npm:process
-ok   Installed npm:process@^0.10.0 (0.10.1)
-ok   Installed core-js as npm:core-js@^0.9.4 (0.9.7)
+       systemjs@0.18.17
 ok   Loader files downloaded successfully
 ```
 
-This command does a few things. First it adds a section to your `package.json` for configuration and dependencies:
+Next we'll install the [core-js](https://github.com/zloirock/core-js) ES* pollyfill so we are ES6 ready:
+
+```bash
+jspm install core-js
+```
+
+The `jspm init` command does a few things. First it adds a section to your `package.json` for configuration and dependencies:
 
 ```js
 {
@@ -160,13 +159,9 @@ This command does a few things. First it adds a section to your `package.json` f
   "version": "0.0.0",
   ...
   "jspm": {
-    "directories": {
-      "baseURL": "src/Website"
-    },
-    "devDependencies": {
-      "babel": "npm:babel-core@^5.1.13",
-      "babel-runtime": "npm:babel-runtime@^5.1.13",
-      "core-js": "npm:core-js@^0.9.4"
+    "directories": {},
+    "dependencies": {
+      "core-js": "npm:core-js@^1.1.3"
     }
   }
 }
@@ -176,32 +171,20 @@ Next it creates a `config.js` where SystemJS modules are wired up:
 
 ```js
 System.config({
-  "baseURL": "/",
-  "transpiler": "babel",
-  "babelOptions": {
-    "optional": [
-      "runtime"
-    ]
+  baseURL: "/",
+  defaultJSExtensions: true,
+  transpiler: "none",
+  paths: {
+    "github:*": "jspm_packages/github/*",
+    "npm:*": "jspm_packages/npm/*"
   },
-  "paths": {
-    "*": "*.js",
-    "github:*": "jspm_packages/github/*.js",
-    "npm:*": "jspm_packages/npm/*.js"
-  }
-});
 
-System.config({
-  "map": {
-    "babel": "npm:babel-core@5.5.4",
-    "babel-runtime": "npm:babel-runtime@5.5.4",
-    "core-js": "npm:core-js@0.9.14",
+  map: {
+    "core-js": "npm:core-js@1.1.3",
     "github:jspm/nodelibs-process@0.1.1": {
       "process": "npm:process@0.10.1"
     },
-    "npm:babel-runtime@5.5.4": {
-      "process": "github:jspm/nodelibs-process@0.1.1"
-    },
-    "npm:core-js@0.9.14": {
+    "npm:core-js@1.1.3": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "process": "github:jspm/nodelibs-process@0.1.1",
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
@@ -210,7 +193,7 @@ System.config({
 });
 ```
 
-When you install packages, jspm automatically wires up all modules and their dependencies here so you don't have to do it manually. You can see above that the [core-js](https://github.com/zloirock/core-js) ES* pollyfill is automatically loaded, so we are ES6 ready. All dependencies are stored in the `jspm_packages` folder (Analogous to `node_modules`).
+When you install packages, jspm automatically wires up all modules and their dependencies here so you don't have to do it manually. All dependencies are stored in the `jspm_packages` folder (Analogous to `node_modules`).
 
 Once we have jspm installed we can then wire up SystemJS and its configuration in our main page:
 
