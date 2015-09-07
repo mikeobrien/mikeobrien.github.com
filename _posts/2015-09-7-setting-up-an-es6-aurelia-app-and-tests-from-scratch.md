@@ -1,11 +1,12 @@
 ---
-draft: true
 layout: post
 title: Setting Up An ES6 Aurelia App And Tests From Scratch
 tags: [Aurelia,ES6]
 ---
 
-The [getting started guide on the Aurelia site](http://aurelia.io/get-started.html) is a nice way to get up and running quickly. This post will dig a little deeper and set up an ES6 Aurelia app with tests from scratch. The following post assumes that you are using [gulp](http://gulpjs.com/). If not, start [here](https://travismaynard.com/writing/getting-started-with-gulp).
+The [getting started guide on the Aurelia site](http://aurelia.io/get-started.html) is a nice way to get up and running quickly. This post will dig a little deeper and set up an ES6 Aurelia app, with tests, from scratch. The following post assumes that you are using [gulp](http://gulpjs.com/). If not, start [here](https://travismaynard.com/writing/getting-started-with-gulp).
+
+NOTE: [ES6 and ES7 are now officially called ES 2015 and ES 2016 respectively](https://esdiscuss.org/topic/javascript-2015).
 
 ### Setting up Transpilation
 
@@ -36,15 +37,37 @@ gulp.task('babel', function () {
 });
 ```
 
-Here we are transpiling ES6 files (with a `.es6` extension) to ES5. The default module format is [CommonJS](http://www.commonjs.org/). We are transpiling to this module format as it can be understood on the browser by [SystemJS](https://github.com/systemjs/systemjs) (Which we'll cover in a bit) and natively by Node.js for our tests. We are also generating [source map](http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/) files so that transpiled code can be mapped to the original ES6 code when debugging. Finally the output is renamed to `*.js`. Since we don't want to commit generated `.js` files to our repository we can selectively exclude with `.gitignore`'s:
+Here we are transpiling ES6 files (with a `.es6` extension) to ES5. The default module format is [CommonJS](http://www.commonjs.org/). We are transpiling to this module format as it can be understood on the browser by [SystemJS](https://github.com/systemjs/systemjs) (Which we'll cover in a bit) and natively by Node.js for our tests. We are also generating [source map](http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/) files so that transpiled code can be mapped to the original ES6 code when debugging. Finally the output is renamed to `*.js`. Since we don't want to commit generated `.js` files to our repository we can selectively exclude with a `.gitignore`:
 
 ```
 *.js
 # Any exclusions
 !gulpfile.js
 ```
+
 We'll set up the watcher below when we setup the tests.
 
+NOTE: As of September 2015 Babel does not enable [ES7 decorators](https://github.com/wycats/javascript-decorators) by default as they are considered experimental. Aurelia makes use of these so you'll either have to enable [experimental features](https://babeljs.io/docs/usage/experimental/) in Babel a la:
+
+```js
+    .pipe(babel({ stage: 1 }))
+
+    // Or
+
+    .pipe(babel({ optional: ["es7.decorators"] }))
+```
+
+Or you can create a static property called `decorators` on your class and set it's value using the `Decorators` DSL a la:
+
+```js
+import { HttpClient } from 'aurelia-http-client';
+import { Decorators } from 'aurelia-framework';
+
+export class SomeNiftyClass {...}
+
+SomeNiftyClass.decorators = Decorators.transient().inject(HttpClient);
+```
+ 
 ### Setting up the Test Runner
 
 We will use the [Mocha](http://mochajs.org/) test framework and [Chai](http://chaijs.com/) assertion library. We make our `test` task depend on the `babel` task to transpile *before* running the tests. And since [Node.js doesn't natively support source maps](https://github.com/joyent/node/issues/3712), we'll need to use the `source-map-support` module. We also need to reference the [core-js](https://github.com/zloirock/core-js) ES* pollyfill to get ES6 API support in Node.
@@ -102,7 +125,7 @@ gulp watch
 
 ### Setting up SystemJS & jspm
 
-Aurelia fully embraces ES6 and is made up of many composable modules. This allows you to pick and choose what pieces you want to use. As such, [there isn't one single file you can reference](https://github.com/aurelia/framework/issues/40) like you would with jQuery or Angular 1.x. This presents a number of challenges. First, how do we easily get a hold of all the modules we want? And second, in an ES5 world, how do we wire up and load all these modules? Both of these problems are solved by the [SystemJS](https://github.com/systemjs/systemjs) module loader and its corresponding package manager [jspm](http://jspm.io/). SystemJS supports many different module standards (ES6, AMD, CommonJS) and jspm enables us to easily get a hold of modules and their dependencies (Just like NPM). jspm also automatically wires up modules in the SystemJS loader so we don't have to. We will install SystemJS (And later Aurelia) with jspm. First lets install jspm:
+Aurelia fully embraces ES6 and is made up of many composable modules. This allows you to pick and choose what pieces you want to use. As such, [there isn't one single file you can reference](https://github.com/aurelia/framework/issues/40) like you would with jQuery or Angular 1.x. This presents a number of challenges. First, how do we easily get a hold of all the modules we want? And second, how do we wire up and load all these modules? Both of these problems are solved by the [SystemJS](https://github.com/systemjs/systemjs) module loader and its corresponding package manager [jspm](http://jspm.io/). SystemJS supports many different module standards (ES6, AMD, CommonJS) and jspm enables us to easily get a hold of modules and their dependencies (Just like NPM). jspm also automatically wires up modules in the SystemJS loader so we don't have to. We will install SystemJS (And later Aurelia) with jspm. First lets install jspm:
 
 ```bash
 # Install jspm globally
@@ -111,7 +134,7 @@ npm install jspm -g
 # Lock down the local version
 npm install jspm --save
 
-# At the root of your web app.
+# At the root of your web app
 jspm init
 ```
 
@@ -253,10 +276,10 @@ System.config({
 ...
 ```
 
-Next we'll create a simple ES6 view model called `app.es6`:
+Next we'll create a simple view model called `app.es6`:
 
 ```js
-export default class App {
+export class App {
     constructor() {
         this.message = 'Oh hai';
     }
@@ -280,7 +303,7 @@ And of course a test. We've already stubbed out the test above so we can modify 
 
 ```js
 import { expect } from 'chai';
-import App from '../app'
+import { App } from '../app';
  
 describe('App', () => {
     it('should exclaim!', () => {
@@ -292,12 +315,8 @@ describe('App', () => {
 });
 ```
 
-The test fixture references the app view model (Assuming it's one level up). Because we specified that the view model was the default export we can use the simpler import syntax in the test. 
+The test fixture references the app view model (Assuming it's one level up). 
 
 ### Bundling
 
-As it stands, loading a bunch of little files can be a significant performance hit. [This will change with HTTP/2](http://en.wikipedia.org/wiki/HTTP/2#Differences_from_HTTP_1.1) but in the meantime we need to bundle these files. 
-
-
-
-
+The Aurelia team [wrote about bundling back in June](http://blog.durandal.io/2015/06/23/bundling-an-aurelia-application/) using the [Aurelia CLI](https://github.com/aurelia/cli) but the [early September release notes](http://blog.durandal.io/2015/09/05/aurelia-early-september-release-notes/) mentioned that bundling was getting more love, so it looks like thats in flux ATM. Another option is to use jspm directly to bundle as described [here](https://github.com/aurelia/cli).
