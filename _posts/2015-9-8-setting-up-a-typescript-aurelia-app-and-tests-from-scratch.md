@@ -1,5 +1,4 @@
 ---
-draft: true
 layout: post
 title: Setting Up A TypeScript Aurelia App And Tests From Scratch
 tags: [Aurelia,TypeScript]
@@ -9,7 +8,7 @@ The [getting started guide on the Aurelia site](http://aurelia.io/get-started.ht
 
 Before you continue, you may want to enable TypeScript support in your editor. A list of editors and plugins can be found [here](https://en.wikipedia.org/wiki/TypeScript#IDE_and_editor_support).
 
-NOTE: [ES6 and ES7 are now officially called ES 2015 and ES 2016 respectively](https://esdiscuss.org/topic/javascript-2015).
+NOTE: [ES6 and ES7 are now officially called ES 2015 and ES 2016 respectively](https://esdiscuss.org/topic/javascript-2015) but I just refer to them as the former here.
 
 ### Setting up Compilation
 
@@ -44,27 +43,6 @@ gulp.task('tsc', function () {
 });
 ```
 
-<div class="alert alert-danger" style="padding-top: 0;margin-top: 10px;">
-<p>NOTE: As of September 8th 2015 there is a type that has been removed from the Definitly Typed <code>core-js</code> type definition (We cover that next) that now ships with TypeScript beta 6. In the meantime you can install the beta 6 version of TypeScript:</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">npm install typescript@1.6.0-beta --save
-</code></pre></div>
-<p>And use that instead of the default 5.3 version that ships with <code>gulp-typescript</code>:</p>
-<div class="highlight"><pre><code class="language-js" data-lang="js"><span class="kd">var</span> <span class="nx">tsc</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"gulp-typescript"</span><span class="p">);</span>
-<span class="kd">var</span> <span class="nx">tsc6</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"typescript"</span><span class="p">);</span>
-<span class="p">...</span>
-
-<span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">'tsc'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">'**/*.ts'</span><span class="p">,</span> <span class="p">{</span> <span class="nx">base</span><span class="o">:</span> <span class="s1">'.'</span> <span class="p">})</span>
-        <span class="p">...</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">tsc</span><span class="p">({</span>
-            <span class="nx">typescript</span><span class="o">:</span> <span class="nx">tsc6</span><span class="p">,</span>
-            <span class="p">...</span>
-        <span class="p">}))</span>
-        <span class="p">...;</span>
-<span class="p">});</span>
-</code></pre></div>
-</div>
-
 Here we are compiling TypeScript files (with a `.ts` extension) to ES5. We are compiling to [CommonJS](http://www.commonjs.org/) modules as they can be understood on the browser by [SystemJS](https://github.com/systemjs/systemjs) (Which we'll cover in a bit) and natively by Node.js for our tests. Next we are saying that we don't want to generate and files when there are errors and we [don't want to allow implicit use of `any`](http://blogs.msdn.com/b/typescript/archive/2013/08/06/announcing-0-9-1.aspx). For a full list of options see [here](https://github.com/ivogabe/gulp-typescript#options). We are also generating [source map](http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/) files so that compiled code can be mapped to the original TypeScript code when debugging. Since we don't want to commit generated `.js` files to our repository we can selectively exclude with a `.gitignore`:
 
 
@@ -76,11 +54,9 @@ Here we are compiling TypeScript files (with a `.ts` extension) to ES5. We are c
 
 We'll set up the watcher below when we setup the tests.
 
-NOTE: Aurelia makes use of ES7 decorators. As of September 2015 they are [considered a proposal](https://babeljs.io/docs/usage/experimental/) so we have to explicitly opt into them above with the `experimentalDecorators` option.
-
 ### Setting up Type Definitions
 
-In order for the TypeScript compiler to understand vanilla JavaScript libraries it needs some sort of meta data that describes them. This meta data is the TypeScript definition file, with an extension of `.d.ts`, as described [here](http://www.typescriptlang.org/Handbook#writing-dts-files). Fortunately a growing number of definition files for popular libraries have been contributed to the [definitelytyped.org](http://definitelytyped.org/) repository (~1,200 as of 9/2015). These definitions can easily be downloaded with the (TypeScript Definition Manager](http://definitelytyped.org/tsd/).
+In order for the TypeScript compiler to understand vanilla JavaScript libraries it needs some sort of meta data that describes them. This meta data is the TypeScript definition file, with an extension of `.d.ts`, as described [here](http://www.typescriptlang.org/Handbook#writing-dts-files). Fortunately a growing number of definition files for popular libraries have been contributed to the [definitelytyped.org](http://definitelytyped.org/) repository (~1,200 as of 9/2015). These definitions can easily be downloaded with the [TypeScript Definition Manager](http://definitelytyped.org/tsd/).
 
 So first, lets setup the TypeScript Definition Manager:
 
@@ -366,4 +342,4 @@ The test fixture references the app view model (Assuming it's one level up).
 
 ### Bundling
 
-The Aurelia team [wrote about bundling back in June](http://blog.durandal.io/2015/06/23/bundling-an-aurelia-application/) using the [Aurelia CLI](https://github.com/aurelia/cli) but the [early September release notes](http://blog.durandal.io/2015/09/05/aurelia-early-september-release-notes/) mentioned that bundling was getting more love, so it looks like thats in flux ATM. Another option is to use jspm directly to bundle as described [here](https://github.com/aurelia/cli).
+As it stands, loading a bunch of little files can be a significant performance hit. [This will change with HTTP/2](http://en.wikipedia.org/wiki/HTTP/2#Differences_from_HTTP_1.1) but in the meantime we need to bundle these files. Aurelia apps can be bundled with the [Aurelia Bundler](https://github.com/aurelia/bundler) as described [here](http://blog.durandal.io/2015/09/11/bundling-aurelia-apps/).

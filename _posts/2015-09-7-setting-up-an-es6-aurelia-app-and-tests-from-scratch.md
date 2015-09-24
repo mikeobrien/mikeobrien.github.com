@@ -319,4 +319,4 @@ The test fixture references the app view model (Assuming it's one level up).
 
 ### Bundling
 
-The Aurelia team [wrote about bundling back in June](http://blog.durandal.io/2015/06/23/bundling-an-aurelia-application/) using the [Aurelia CLI](https://github.com/aurelia/cli) but the [early September release notes](http://blog.durandal.io/2015/09/05/aurelia-early-september-release-notes/) mentioned that bundling was getting more love, so it looks like thats in flux ATM. Another option is to use jspm directly to bundle as described [here](https://github.com/aurelia/cli).
+As it stands, loading a bunch of little files can be a significant performance hit. [This will change with HTTP/2](http://en.wikipedia.org/wiki/HTTP/2#Differences_from_HTTP_1.1) but in the meantime we need to bundle these files. Aurelia apps can be bundled with the [Aurelia Bundler](https://github.com/aurelia/bundler) as described [here](http://blog.durandal.io/2015/09/11/bundling-aurelia-apps/).
