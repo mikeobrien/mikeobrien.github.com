@@ -85,13 +85,13 @@ Then add the following task to your `gulpfile.js`:
 
 ```js
 var mocha = require('gulp-mocha');
-var process = require('child_process');
+var childProcess = require('child_process');
 require('source-map-support').install();
 require('core-js');
 
 gulp.task('watch', function () {
     var spawnTests = function() {
-        process.spawn('gulp', ['test'], { stdio: 'inherit' });
+        childProcess.spawn('gulp', ['test'], { stdio: 'inherit' });
     }
     spawnTests();
     gulp.watch('**/*.es6', spawnTests);
