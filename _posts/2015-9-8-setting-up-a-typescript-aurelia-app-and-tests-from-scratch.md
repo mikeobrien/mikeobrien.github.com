@@ -460,3 +460,5 @@ System.config({
   ...
 });
 ```
+
+Now reload the page and verify that the bundle is being downloaded instead of all the individual modules.
