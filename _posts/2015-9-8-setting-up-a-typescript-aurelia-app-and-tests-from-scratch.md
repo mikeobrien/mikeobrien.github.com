@@ -319,7 +319,7 @@ System.config({
 Although it may look like it at first glance, the above paths are not globs but simple path mappings. The above configuration would map modules as follows:
 
 | Module | Path |
-| ----------- | ----------- |
+| ------------- | ------------- |
 | `somemodule` | `app/somemodule` |
 | `github:somemodule` | `jspm_packages/github/somemodule` |
 | `npm:somemodule` | `jspm_packages/npm/somemodule` |
