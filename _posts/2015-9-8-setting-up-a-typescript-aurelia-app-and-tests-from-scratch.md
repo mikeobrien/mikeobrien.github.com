@@ -318,11 +318,6 @@ System.config({
 ```
 Although it may look like it at first glance, the above paths are not globs but simple path mappings. The above configuration would map modules as follows:
 
-First Header  | Second Header
-------------- | -------------
-Content Cell  | Content Cell
-Content Cell  | Content Cell
-
 | Module | Path |
 | ------------- | ------------- |
 | `somemodule` | `app/somemodule` |
