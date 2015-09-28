@@ -369,6 +369,7 @@ describe('App', () => {
 The test fixture references the app view model (Assuming it's one level up). 
 
 <div class="alert alert-danger" style="padding-top: 0;">
+<br/>
 NOTE: The <code>aurelia-bootstrapper</code> type definition is affected by <a href="https://github.com/aurelia/framework/issues/202">an unresolved issue</a> that will hopefully be fixed in a future release. In the meantime you can just manually change the <code>core-js</code> import to <code>import * as core from 'core-js'</code> in <code>jspm_packages/github/aurelia/bootstrapper@0.17.0/aurelia-bootstrapper.d.ts</code>.
 </div>
 
