@@ -428,3 +428,23 @@ Few things to note:
 				- Modules that you install via jspm. In the config above these would be the first 3 `aurelia-*` modules.
 				- Any dynamically loaded dependencies that cannot be determined by static analysis. These will show up in the network traffic on page load and look like `some-module@0.0.0.js`. Look at the response and you'll see the module name along the lines of `github:organization/repository`. In the config above these would be the last 6 `github:aurelia/*` modules.
 	- The `inject` flags tells the bundler to update the `config.js` with the bundle information. Once this is set, the bundle will be downloaded instead of the individual modules.
+
+Now run `gulp bundle` and two bundles will be created relative to your `package.json`: `app/app-bundle.js` and `app/aurelia-bundle.js`. The bundler will also update your `config.js` with the bundle information so the SystemJS module loader knows about them:
+
+```js
+System.config({
+  ...
+  bundles: {
+    "app-bundle": [
+      "app.html!github:systemjs/plugin-text@0.0.2",
+      "app",
+      ...
+    ],
+    "aurelia-bundle": [
+      "github:aurelia/bootstrapper@0.17.0",
+	  ...
+    ]
+  },
+  ...
+});
+```
