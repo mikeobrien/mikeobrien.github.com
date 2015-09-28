@@ -168,12 +168,6 @@ ok   Verified package.json at package.json
 ok   Loader files downloaded successfully
 ```
 
-Next we'll install the [core-js](https://github.com/zloirock/core-js) ES* pollyfill so we are ES6 ready:
-
-```bash
-jspm install core-js
-```
-
 The `jspm init` command does a few things. First it adds a section to your `package.json` for configuration and dependencies:
 
 ```js
@@ -218,6 +212,45 @@ System.config({
 
 When you install packages, jspm automatically wires up all modules and their dependencies here so you don't have to do it manually. All dependencies are stored in the `jspm_packages` folder (Analogous to `node_modules`).
 
+One thing to note about installing jspm modules is that an alias mapping is created for modules you install directly but not for their dependencies. So for example if you install a module `some-module` with a dependency of `some-dependency` the `config.js` will look something along the lines of this:
+
+```js
+System.config({
+  ...
+  map: {
+    "some-module": "github:some-repo/some-module@0.1.2",
+    "github:some-repo/some-module@0.1.2": {
+      "some-dependency": "github:some-repo/some-dependency@0.2.2"
+    },
+    "github:some-repo/some-dependency@0.2.2": {
+      ...
+    },
+    ...
+  }
+});
+```
+
+The very first mapping maps an alias to the actual module, in this case on GitHub. Even though `some-dependency` has been downloaded and referenced, there is no alias mapping. So you can reference `some-module` in your code but not `some-dependency`. If you try to reference `some-dependency` you will get a file not found error. If you jspm install `some-dependency` it will create the alias mapping for you and you can then reference this in your modules:
+
+```js
+System.config({
+  ...
+  map: {
+    "some-module": "github:some-repo/some-module@0.1.2",
+    "some-dependency": "github:some-repo/some-module@0.2.2",
+    "github:some-repo/some-module@0.1.2": {
+      "some-dependency": "github:some-repo/some-dependency@0.2.2"
+    },
+    "github:some-repo/some-dependency@0.2.2": {
+      ...
+    },
+    ...
+  }
+});
+```
+
+You can see there is now an alias mapping for `some-dependency`.
+
 Once we have jspm installed we can then wire up SystemJS and its configuration in our main page:
 
 ```html
@@ -230,10 +263,10 @@ Once we have jspm installed we can then wire up SystemJS and its configuration i
 This is pretty simple:
 
 ```bash
-jspm install aurelia-bootstrapper aurelia-http-client
+jspm install aurelia-bootstrapper aurelia-router aurelia-http-client
 ```
 
-The bootstrapper is a top level module that fires up Aurelia. The [http client](http://aurelia.io/docs.html#http-client) is a an optional module that provides http functionality (Although you can omit this and choose your own adventure).
+The bootstrapper is a top level module that fires up Aurelia. The [router](https://github.com/aurelia/router) and [http client](http://aurelia.io/docs.html#http-client) are optional, so you can omit these and choose your own adventure if you want.
 
 In our main page we'll flag the `body` tag as the base element of the app with the `aurelia-app` attribute. Then we make the call to fire up Aurelia by importing the bootstrapper module:
 
@@ -262,19 +295,30 @@ Next we need to setup the view and view-model pair. These are conventionally tie
 </html>
 ```
 
-By default these are loaded from the root. If they are located in a sub folder you will need to adjust the SystemJS path accordingly in the `config.js`. In the example below, our files are located in the `app` folder.
+By default these are loaded from the root. If they are located in a sub folder you will need to adjust the default module path accordingly in the `config.js`. In the example below, our files are located in the `app` folder.
 
 ```js
 System.config({
   ...
   "paths": {
-    "*": "app/*.js", // <-- Default path here
-    "github:*": "jspm_packages/github/*.js",
-    "npm:*": "jspm_packages/npm/*.js"
+    "*": "app/*", // <-- Default path here
+    "github:*": "jspm_packages/github/*",
+    "npm:*": "jspm_packages/npm/*"
   }
 });
 ...
 ```
+
+Although it may look like it at first glance, the above paths are not globs but simple path mappings. The above configuration would map modules as follows:
+
+| Module | Path |
+| ----------- | ----------- |
+| `somemodule` | `app/somemodule` |
+| `github:somemodule` | `jspm_packages/github/somemodule` |
+| `npm:somemodule` | `jspm_packages/npm/somemodule` |
+
+
+NOTE: Previously the paths included the `.js` extension (a la `"app/*.js"`) but this has changed and adding the extension will now cause errors when bundling.
 
 Next we'll create a simple view model called `app.es6`:
 
@@ -319,4 +363,68 @@ The test fixture references the app view model (Assuming it's one level up).
 
 ### Bundling
 
-As it stands, loading a bunch of little files can be a significant performance hit. [This will change with HTTP/2](http://en.wikipedia.org/wiki/HTTP/2#Differences_from_HTTP_1.1) but in the meantime we need to bundle these files. Aurelia apps can be bundled with the [Aurelia Bundler](https://github.com/aurelia/bundler) as described [here](http://blog.durandal.io/2015/09/11/bundling-aurelia-apps/).
+As it stands, loading a bunch of little files can be a significant performance hit. [This will change with HTTP/2](http://en.wikipedia.org/wiki/HTTP/2#Differences_from_HTTP_1.1) but in the meantime we need to bundle these files. First install the Aurelia bundler and the text plugin (For bundling html and css files):
+
+```bash
+npm install aurelia-bundler --save
+jspm install text
+```
+
+Next, setup the bundle configuration in your `gulpfile`. In the example below we are creating two bundles, one for the app and one for Aurelia:
+
+```js
+var bundler = require('aurelia-bundler');
+
+...
+
+gulp.task('bundle', function() {
+    return bundler.bundle({
+        force: true,
+        packagePath: '.',
+        bundles: {
+            "app/app-bundle": {
+                includes: [
+                    '**/*',
+                    '*.html!text'
+                ],
+                options: {
+                    inject: true,
+                    minify: true
+                }
+            },
+            "app/aurelia-bundle": {
+                includes: [
+                    'aurelia-bootstrapper',
+                    'aurelia-http-client',
+                    'aurelia-router',
+                    'github:aurelia/templating-binding',
+                    'github:aurelia/templating-resources',
+                    'github:aurelia/templating-router',
+                    'github:aurelia/loader-default',
+                    'github:aurelia/history-browser',
+                    'github:aurelia/logging-console'
+                ],
+                options: {
+                    inject: true,
+                    minify: true
+                }
+            }
+        }
+    });
+});
+```
+
+Few things to note:
+
+- The `force` flag will overwrite existing bundles.
+- The `packagePath` points to the folder that contains the `package.json` at the root of the app.
+- The `bundles` object, as the name implies, contains configuration for all your bundles. The field names indicate the path of the resulting bundle file (sans the `.js` extension) and the value contains the bundle configuration. 
+	- The `includes` array contains all the resources you want bundled.
+		- App bundle:
+			- The first include specifies the files we want to include. In this case we want to recursively include every file. The `.js` file extension can be omitted as this is assumed. This path is relative to the default path we setup in the `config.js`. So if we specified `"*": "app/*"` in the `config.js` and `**/*` for the bundle path, the bundle would include `app/**/*`. You can get pretty crazy with these paths using the SystemJS bundler "arithmetic expressions". These expressions support advanced filtering, see [here](https://github.com/systemjs/builder#bundle-arithmetic) for more info. 
+			- The second include indicates that we want to include text files. The syntax is the glob followed by an `!` and the plugin name, in this case `text`. You can also include css files. 
+		- Aurelia bundle:
+			- The includes here point to the top level Aurelia modules you want to bundle. The ones listed above should be sufficient at first but as you make use of more Aurelia features you will need to include those modules in the bundle otherwise they will be loaded individually. You will want to include the following modules:
+				- Modules that you install via jspm. In the config above these would be the first 3 `aurelia-*` modules.
+				- Any dynamically loaded dependencies that cannot be determined by static analysis. These will show up in the network traffic on page load and look like `some-module@0.0.0.js`. Look at the response and you'll see the module name along the lines of `github:organization/repository`. In the config above these would be the last 6 `github:aurelia/*` modules.
+	- The `inject` flags tells the bundler to update the `config.js` with the bundle information. Once this is set, the bundle will be downloaded instead of the individual modules.
