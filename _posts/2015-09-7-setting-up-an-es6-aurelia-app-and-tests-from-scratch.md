@@ -450,3 +450,5 @@ System.config({
 ```
 
 Now reload the page and verify that the bundle is being downloaded instead of all the individual modules.
+
+NOTE: Currently the SystemJS bundler [does not support sourcemap comments](https://github.com/systemjs/builder/issues/297). Hopefully this will be supported in future releases.
