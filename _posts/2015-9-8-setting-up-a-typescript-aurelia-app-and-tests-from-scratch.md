@@ -270,11 +270,13 @@ Once we have jspm installed we can then wire up SystemJS and its configuration i
 This is pretty simple:
 
 ```bash
-jspm install aurelia-bootstrapper aurelia-router aurelia-http-client
+jspm install core-js aurelia-bootstrapper aurelia-router aurelia-http-client
 tsd install core-js --save
 ```
 
-The bootstrapper is a top level module that fires up Aurelia. The [router](https://github.com/aurelia/router) and [http client](http://aurelia.io/docs.html#http-client) are optional, so you can omit these and choose your own adventure if you want.
+The bootstrapper is a top level module that fires up Aurelia. The [router](https://github.com/aurelia/router) and [http client](http://aurelia.io/docs.html#http-client) are optional, so you can omit these and choose your own adventure if you want. You can use `jspm update` to update these modules.
+
+NOTE: `jspm update` will only update packages within the version range specified in the `packages.json`. If you want to update to the latest version, outside of this range, you will need to specify the version after the package name, a la `jspm install package-name@0.5.0`. So in order to update Aurelia modules to the latest version you will have to update each top level module and include the version you want to update to. There is [a proposal to add an `upgrade` flag to jspm](https://github.com/jspm/jspm-cli/issues/706) so this may be a better option in the future.
 
 In our main page we'll flag the `body` tag as the base element of the app with the `aurelia-app` attribute. Then we make the call to fire up Aurelia by importing the bootstrapper module:
 

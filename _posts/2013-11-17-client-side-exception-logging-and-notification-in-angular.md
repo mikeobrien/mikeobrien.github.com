@@ -56,7 +56,7 @@ This hander is placed before all script tags. It is also *very* lo-fi so it shou
 
 ### In Angular ###
 
-Now that we are logging unhandled exception outside of Angular we want to handle ones that happen *inside* of Angular. There are two places where we will see errors, first with http calls and second in our code. 
+Now that we are logging unhandled exceptions outside of Angular we want to handle ones that happen *inside* of Angular. There are two places where we will see errors, first with http calls and second in our code. 
 
 #### Http Errors ####
 
