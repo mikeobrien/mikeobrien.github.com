@@ -80,6 +80,7 @@ export class LogAppender {
             message: rest.join('\r\n'),
             stackTrace: error ? error.stack || '' : ''
         }).then();
+        // Display a friendly message to the user.
     }
 }
 ```
