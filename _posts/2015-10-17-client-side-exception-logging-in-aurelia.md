@@ -51,7 +51,12 @@ This hander is placed in the main page (Not in a separate file) and before all s
 
 ### In Aurelia ###
 
-Now that we are logging unhandled exceptions outside of Aurelia we want to handle ones that happen *inside* of Aurelia. We can do this by creating a log appender that sends errors back to the server. 
+Now that we are logging unhandled exceptions outside of Aurelia we want to handle ones that happen *inside* of Aurelia. We can do this by creating a log appender that sends errors back to the server. First, lets install the necessary modules (You can omit the `tsd` call if not using TypeScript):
+
+```bash
+jspm install aurelia-http-client lodash
+tsd install lodash --save
+```
 
 NOTE: The following code is TypeScript but you can easily adapt it to ES5/ES6.
 
