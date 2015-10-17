@@ -12,26 +12,32 @@ Logging exceptions on the client side is just as important as logging them on th
 Exceptions can occur both inside and outside of Angular. In order to catch all unhandled errors that occur outside of Angular, you can setup a [global error handler](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers.onerror):
 
 ```js
-window.onerror = function(message, source, line, column) {
-    try {
-        var escape = function(x) { return x.replace('\\', '\\\\').replace('\"', '\\"'); };
-        var XHR = window.XMLHttpRequest || function() {
-            try { return new ActiveXObject("Msxml3.XMLHTTP"); } catch (e0) {}
-            try { return new ActiveXObject("Msxml2.XMLHTTP.6.0"); } catch (e1) {}
-            try { return new ActiveXObject("Msxml2.XMLHTTP.3.0"); } catch (e2) {}
-            try { return new ActiveXObject("Msxml2.XMLHTTP"); } catch (e3) {}
-            try { return new ActiveXObject("Microsoft.XMLHTTP"); } catch (e4) {}
-        };
-        var xhr = new XHR();
-        xhr.open('POST', '/errors/javascript', true);
-        xhr.setRequestHeader('Content-type', 'application/json');
-        xhr.send('{ ' + 
-            '"message": "' + escape(message || '') + '",' + 
-            '"source": "' + escape(source || '') + '",' + 
-            '"url": "' + escape(window.location.href) + '",' + 
-            '"line": "' + (line || 0) + '",' + 
-            '"column": "' + (column || 0) + '"' + 
-        '}');
+var escape = function(x) {
+    return x.replace('\\', '\\\\').replace('\"', '\\"')
+        .replace('\/', '\/\/').replace('\b', '\\b')
+        .replace('\f', '\\f').replace('\n', '\\n')
+        .replace('\r', '\\r').replace('\t', '\\t');
+};
+var XHR = window.XMLHttpRequest || function() {
+    try { return new ActiveXObject("Msxml3.XMLHTTP"); } catch (e0) {}
+    try { return new ActiveXObject("Msxml2.XMLHTTP.6.0"); } catch (e1) {}
+    try { return new ActiveXObject("Msxml2.XMLHTTP.3.0"); } catch (e2) {}
+    try { return new ActiveXObject("Msxml2.XMLHTTP"); } catch (e3) {}
+    try { return new ActiveXObject("Microsoft.XMLHTTP"); } catch (e4) {}
+};
+window.onerror = function(message, source, line, column, error) {
+	try {
+	    var xhr = new XHR();
+	    xhr.open('POST', '/errors', true);
+	    xhr.setRequestHeader('Content-type', 'application/json');
+	    xhr.send('{ ' +
+	        '"message": "' + escape(message || '') + '",' +
+	        '"stackTrace": "' + escape(error ? error.stack || '' : '') + '",' +
+	        '"source": "' + escape(source || '') + '",' +
+	        '"url": "' + escape(window.location.href) + '",' +
+	        '"line": "' + (line || 0) + '",' +
+	        '"column": "' + (column || 0) + '"' +
+	    '}');
     }
     finally {
         window.onload = function() {
