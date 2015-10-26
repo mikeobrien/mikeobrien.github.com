@@ -110,7 +110,9 @@ export function configure(aurelia: Aurelia) {
 ```
 In the example above we import our appender, create it and pass in an `HttpClient`. You can have multiple appnders and also set the logging level for all appenders.
 
-NOTE: At this time, view errors are not handled by the Aurelia logging infrastructure. Also ATM [you can't reliably catch promise rejection errors with the global error handler](http://stackoverflow.com/questions/31472439/catch-all-unhandled-javascript-promise-rejections). If a view fails to load you will get something along the lines of this:
+NOTE: ~~At this time, view errors are not handled by the Aurelia logging infrastructure. Also ATM [you can't reliably catch promise rejection errors with the global error handler](http://stackoverflow.com/questions/31472439/catch-all-unhandled-javascript-promise-rejections). If a view fails to load you will get something along the lines of this:~~
+
+[This has been fixed as of 10/25/2015](https://github.com/aurelia/templating-router/commit/ac8dc0fb9ff03978f6dbe63b39b379505bd7050c) and should be released soon.
 
 ```bash
 Unhandled promise rejection Error: A route with name 'add' could not be found. Check that `name: 'add'` was specified in the route's config.
