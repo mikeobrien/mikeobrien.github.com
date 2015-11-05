@@ -14,10 +14,10 @@ Exceptions can occur both inside and outside of Aurelia. In order to catch all u
 ```js
 <script>
 	var escape = function(x) {
-	    return x.replace('\\', '\\\\').replace('\"', '\\"')
-	        .replace('\/', '\/\/').replace('\b', '\\b')
-	        .replace('\f', '\\f').replace('\n', '\\n')
-	        .replace('\r', '\\r').replace('\t', '\\t');
+	    return x.replace(/\\/g, '\\\\').replace(/\"/g, '\\"')
+	        .replace(/\//g, '\/\/').replace(/[\b]/g, '\\b')
+	        .replace(/\f/g, '\\f').replace(/\n/g, '\\n')
+	        .replace(/\r/g, '\\r').replace(/\t/g, '\\t');
 	};
 	var XHR = window.XMLHttpRequest || function() {
 	    try { return new ActiveXObject("Msxml3.XMLHTTP"); } catch (e0) {}
