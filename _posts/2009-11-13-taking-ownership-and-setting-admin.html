@@ -201,7 +201,7 @@ redirect_from:
 [<span style="color: #2b91af">DllImportAttribute</span>(<span style="color: #a31515">"advapi32.dll"</span>, EntryPoint = <span style="color: #a31515">"OpenProcessToken"</span>)]
 [<span style="color: blue">return</span>: <span style="color: #2b91af">MarshalAsAttribute</span>(<span style="color: #2b91af">UnmanagedType</span>.Bool)]
 <span style="color: blue">private static extern bool </span>OpenProcessToken(
-    [<span style="color: #2b91af">InAttribute</span>] 
+    [<span style="color: #2b91af">InAttribute</span>]
     <span style="color: #2b91af">IntPtr </span>ProcessHandle,
     <span style="color: blue">uint </span>DesiredAccess,
     <span style="color: blue">out </span><span style="color: #2b91af">IntPtr </span>TokenHandle);
@@ -237,23 +237,23 @@ redirect_from:
 [<span style="color: #2b91af">DllImportAttribute</span>(<span style="color: #a31515">"advapi32.dll"</span>, EntryPoint = <span style="color: #a31515">"LookupPrivilegeValueA"</span>)]
 [<span style="color: blue">return</span>: <span style="color: #2b91af">MarshalAsAttribute</span>(<span style="color: #2b91af">UnmanagedType</span>.Bool)]
 <span style="color: blue">private static extern bool </span>LookupPrivilegeValueA(
-    [<span style="color: #2b91af">InAttribute</span>] 
-    [<span style="color: #2b91af">MarshalAsAttribute</span>(<span style="color: #2b91af">UnmanagedType</span>.LPStr)] 
+    [<span style="color: #2b91af">InAttribute</span>]
+    [<span style="color: #2b91af">MarshalAsAttribute</span>(<span style="color: #2b91af">UnmanagedType</span>.LPStr)]
     <span style="color: blue">string </span>lpSystemName,
-    [<span style="color: #2b91af">InAttribute</span>] 
-    [<span style="color: #2b91af">MarshalAsAttribute</span>(<span style="color: #2b91af">UnmanagedType</span>.LPStr)] 
+    [<span style="color: #2b91af">InAttribute</span>]
+    [<span style="color: #2b91af">MarshalAsAttribute</span>(<span style="color: #2b91af">UnmanagedType</span>.LPStr)]
     <span style="color: blue">string </span>lpName,
-    [<span style="color: #2b91af">OutAttribute</span>] 
+    [<span style="color: #2b91af">OutAttribute</span>]
     <span style="color: blue">out </span><span style="color: #2b91af">LUID </span>lpLuid);
 
 [<span style="color: #2b91af">DllImportAttribute</span>(<span style="color: #a31515">"advapi32.dll"</span>, EntryPoint = <span style="color: #a31515">"AdjustTokenPrivileges"</span>)]
 [<span style="color: blue">return</span>: <span style="color: #2b91af">MarshalAsAttribute</span>(<span style="color: #2b91af">UnmanagedType</span>.Bool)]
 <span style="color: blue">private static extern bool </span>AdjustTokenPrivileges(
-    [<span style="color: #2b91af">InAttribute</span>()] 
+    [<span style="color: #2b91af">InAttribute</span>()]
     <span style="color: #2b91af">IntPtr </span>TokenHandle,
-    [<span style="color: #2b91af">MarshalAsAttribute</span>(<span style="color: #2b91af">UnmanagedType</span>.Bool)] 
+    [<span style="color: #2b91af">MarshalAsAttribute</span>(<span style="color: #2b91af">UnmanagedType</span>.Bool)]
     <span style="color: blue">bool </span>DisableAllPrivileges,
-    [<span style="color: #2b91af">InAttribute</span>()] 
+    [<span style="color: #2b91af">InAttribute</span>()]
     <span style="color: blue">ref </span><span style="color: #2b91af">TOKEN_PRIVILEGES </span>NewState,
     <span style="color: blue">uint </span>BufferLength,
     <span style="color: #2b91af">IntPtr </span>PreviousState,
@@ -272,9 +272,9 @@ redirect_from:
 [<span style="color: #2b91af">DllImport</span>(<span style="color: #a31515">"Advapi32.dll"</span>, EntryPoint = <span style="color: #a31515">"SetEntriesInAclA"</span>,
  CallingConvention = <span style="color: #2b91af">CallingConvention</span>.Winapi,
  SetLastError = <span style="color: blue">true</span>, CharSet = <span style="color: #2b91af">CharSet</span>.Ansi)]
-<span style="color: blue">private static extern uint </span>SetEntriesInAcl(
+<span style="color: blue">private static extern int </span>SetEntriesInAcl(
     <span style="color: blue">int </span>CountofExplicitEntries,
     <span style="color: blue">ref </span><span style="color: #2b91af">EXPLICIT_ACCESS </span>ea,
-    <span style="color: blue">uint </span>OldAcl,
+    <span style="color: blue">IntPtr </span>OldAcl,
     <span style="color: blue">ref </span><span style="color: #2b91af">IntPtr </span>NewAcl);</pre>
 <a href="http://11011.net/software/vspaste"></a>
