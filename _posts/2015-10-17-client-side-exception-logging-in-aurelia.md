@@ -13,8 +13,9 @@ Exceptions can occur both inside and outside of Aurelia. In order to catch all u
 
 ```js
 <script>
-	var escape = function(x) {
-	    return x.replace(/\\/g, '\\\\').replace(/\"/g, '\\"')
+	var escape = function(value) {
+	    return !value ? '' : value
+			.replace(/\\/g, '\\\\').replace(/\"/g, '\\"')
 	        .replace(/\//g, '\/\/').replace(/[\b]/g, '\\b')
 	        .replace(/\f/g, '\\f').replace(/\n/g, '\\n')
 	        .replace(/\r/g, '\\r').replace(/\t/g, '\\t');
@@ -89,7 +90,7 @@ export class LogAppender {
     }
 }
 ```
-We are only implementing the `error` method above as that's all we're interested in logging but you could obviously log much more information by implementing the other levels. We are also looking for an `Error` object. If it was passed in, we can potentially extract the stack trace ([if it has it of course](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/stack)). 
+We are only implementing the `error` method above as that's all we're interested in logging but you could obviously log much more information by implementing the other levels. We are also looking for an `Error` object. If it was passed in, we can potentially extract the stack trace ([if it has it of course](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/stack)).
 
 Now that we've created the appender, we need to register it. This is done in your `main.js`. If you haven't already created one, see [here](http://aurelia.io/docs.html#startup-and-configuration) for more info.
 

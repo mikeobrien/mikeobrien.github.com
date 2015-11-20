@@ -12,8 +12,9 @@ Logging exceptions on the client side is just as important as logging them on th
 Exceptions can occur both inside and outside of Angular. In order to catch all unhandled errors that occur outside of Angular, you can setup a [global error handler](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers.onerror):
 
 ```js
-var escape = function(x) {
-    return x.replace(/\\/g, '\\\\').replace(/\"/g, '\\"')
+var escape = function(value) {
+    return !value ? '' : value
+        .replace(/\\/g, '\\\\').replace(/\"/g, '\\"')
         .replace(/\//g, '\/\/').replace(/[\b]/g, '\\b')
         .replace(/\f/g, '\\f').replace(/\n/g, '\\n')
         .replace(/\r/g, '\\r').replace(/\t/g, '\\t');
@@ -56,19 +57,19 @@ This hander is placed before all script tags. It is also *very* lo-fi so it shou
 
 ### In Angular ###
 
-Now that we are logging unhandled exceptions outside of Angular we want to handle ones that happen *inside* of Angular. There are two places where we will see errors, first with http calls and second in our code. 
+Now that we are logging unhandled exceptions outside of Angular we want to handle ones that happen *inside* of Angular. There are two places where we will see errors, first with http calls and second in our code.
 
 #### Http Errors ####
 
 Communication with the server can fail in a number of ways. Connectivity could be broken, server errors and server side validation could return error statuses. In all these situations you'll want to notify the user that something went wrong and why. I've found that Angular events are a nice way to signal that there was an error. This keeps the error handling and display of the error loosely coupled and easier to test. Below is an example of an [http interceptor](http://docs.angularjs.org/api/ng.$http#description_interceptors) that broadcasts http errors. It [broadcasts](http://docs.angularjs.org/api/ng.$rootScope.Scope#methods_$broadcast) the error from the [`$rootScope`](http://docs.angularjs.org/api/ng.$rootScope.Scope) so that all child scopes can subscribe to the event.
 
 ```js
-angular.module('errorHandling', []). 
+angular.module('errorHandling', []).
     constant('HTTP_DEFAULT_ERROR_MSG', 'An error has occured. Please contact customer support for assistance.').
     constant('HTTP_NETWORK_ERROR_MSG', 'Unable to communicate with the server. Make sure you are connected to the internet and try again.').
     config(function($httpProvider) {
         $httpProvider.interceptors.push(function($q, $rootScope, HTTP_DEFAULT_ERROR_MSG, HTTP_NETWORK_ERROR_MSG) {
-            return { 
+            return {
                 responseError: function(response) {
                     var message = response.headers('status-text') || HTTP_DEFAULT_ERROR_MSG;
                     if (response.status == 0) message = HTTP_NETWORK_ERROR_MSG;
@@ -119,14 +120,14 @@ describe('Http error notification', function() {
         expect(errors[0]).to.eql(statusText);
     });
 });
-``` 
+```
 
 #### Unhandled Exceptions ####
 
 Angular ships with a service called [`$exceptionHandler`](http://docs.angularjs.org/api/ng.$exceptionHandler). The stock version simply logs the exception to the `$log` service. [Decorating](http://docs.angularjs.org/api/AUTO.$provide#methods_decorator) the `$exceptionHandler` service allows us to shoehorn in logging and notification as shown here:
 
 ```js
-angular.module('errorHandling', []). 
+angular.module('errorHandling', []).
     constant('SCRIPT_ERROR_MSG', 'An error has occured and the details have been logged. Please contact customer support for assistance.').
     constant('LOGGING_URL', '/errors/javascript').
     config(function($provide) {
@@ -171,8 +172,8 @@ describe('Script error logging', function() {
     }));
 
     it('should broadcast script errors and log them to the server', inject(function($exceptionHandler, $httpBackend, $window, LOGGING_URL, SCRIPT_ERROR_MSG) {
-        $httpBackend.expectPOST(LOGGING_URL, 
-            { message: 'oh hai', source: '', url: $window.location.href }, 
+        $httpBackend.expectPOST(LOGGING_URL,
+            { message: 'oh hai', source: '', url: $window.location.href },
             { 'content-type': 'application/json'}).respond(200);
         $exceptionHandler('oh hai');
         $httpBackend.flush();
