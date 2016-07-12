@@ -19,6 +19,8 @@ title: Lab
 
 - [Richard Feynman: Fun to Imagine](https://www.youtube.com/watch?v=GqvggMpJgL0) - And of course some Feynman for inspiration!
 
+- [Silicon Thermal Oxide Thickness Calculator](http://www.mikeobrien.net/lab/oxidethickness) - Tool for determining oxide thickness on an Si substrate.
+
 ### <a id="supplies"></a> Materials & Supplies
 
 Finding and purchasing materials & supplies can be challenging. The most cost effective approach is to buy surplus and [eBay](http://www.ebay.com/) has been the best place I've found for it. The following are a few tips for shopping for surplus on eBay:
