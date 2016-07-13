@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/img/favicon.png" />
+
+    <title>Silicon Thermal Oxide Thickness Calculator</title>
+
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <link href="bootstrap-slider.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style type="text/css">
+      html, body {
+        width: 100%;
+        height: 100%;
+      }
+      .model td {
+        padding: 5px 15px;
+        white-space:nowrap;
+        font-weight: bold;
+      }
+
+      #thicknessLabel {
+        font-weight: bold;
+        font-size: 40pt;
+      }
+    </style>
+
+  </head>
+
+  <body style="padding: 5px;">
+    <div id="content"style="outline: 0px solid transparent;" contenteditable spellcheck="false">
+
+      <h2 style="margin: 5px 15px 20px 15px" class="pull-left">Silicon Thermal Oxide Thickness Calculator</h2>
+
+      <h4 style="margin: 15px 15px 20px 15px;color: #888585" class="pull-right"><i>DRAG & DROP OR PASTE SPECTRUM DATA ANYWHERE</i></h4>
+
+      <p style="padding: 60px 15px 10px 15px;color: #888585">Supports text spectrum data with a wavelength and reflectance percentage (in that order) on each line. These fields can be delimited with whitespace (spaces or tabs) or commas. Will automatically ignore lines that do not match this format. Will automatically normalize percentage (i.e. .75 vs 75). Supports <a href="http://oceanoptics.com/product/oceanview/" contenteditable="false" target="_blank">Ocean View</a> spectrum data. Typical SiO<sub>2</sub> refractive index data provided by <a href="http://www.filmetrics.com/refractive-index-database/SiO2/Fused-Silica-Silicon-Dioxide-Thermal-Oxide-ThermalOxide" contenteditable="false" target="_blank">Filmetrics</a>. Reflectance calculated by <code>reflectance(λ) = offset + amplitude * cos(4 * π * 
+        n(λ) * thickness / λ)</code> where <code>λ</code> is the wavelength and </code><code>n</code> is the index of refraction as a function of wavelength. For more information on measuring thin films check out <a href="Reflectrometry.pdf" contenteditable="false" target="_blank">this guide from Filmetrics</a> and <a href="https://www.youtube.com/watch?v=7zWqU4QSJg4&spfreload=1" contenteditable="false" target="_blank">this lecture</a> by <a href="https://www.youtube.com/channel/UCiGxYawhEp4QyFcX0R60YdQ" contenteditable="false" target="_blank">Michel van Biezen</a>.</p>
+
+      <table style="width: 100%" class="model">
+        <tr>
+          <td>
+          Model Thickness
+          </td>
+          <td style="width: 100%;">
+            <input style="width: 100%;" id="thickness" data-slider-id='thickness' type="text" data-slider-min="1" data-slider-max="2500" data-slider-step="1" data-slider-value="1000" data-slider-tooltip="hide" />
+          </td>
+          <td rowspan="3">
+            <span id="thicknessLabel"></span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+          Model Offset
+          </td>
+          <td class="slider" style="width: 100%;">
+            <input style="width: 100%;"id="offset" data-slider-id='offset' type="text" data-slider-min="1" data-slider-max="100" data-slider-step="1" data-slider-value="50" data-slider-tooltip="hide" />
+          </td>
+        </tr>
+        <tr>
+          <td>
+          Model Amplitude
+          </td>
+          <td style="width: 100%;">
+            <input style="width: 100%;" id="amplitude" data-slider-id='amplitude' type="text" data-slider-min="1" data-slider-max="100" data-slider-step="1" data-slider-value="50" data-slider-tooltip="hide" />
+          </td>
+        </tr>
+      </table>
+
+      <div id="reflectance"/>
+
+    </div>
+
+    <script src="jquery.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="bootstrap-slider.min.js"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="lodash.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
