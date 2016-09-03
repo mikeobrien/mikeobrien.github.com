@@ -1,9 +1,0 @@
----
-layout: post
-title: Repository specific access under svnserve
-tags: [Subversion, Infrastructure]
----
-<P>I am <A href="/2006/11/running-subversion-server-as-windows_07.html">running svnserve as a windows service</A> on our build server. I thought it was pretty cool that you could point repositories to central security configuration files. This is really nice if you have multiple repositories, only two files to maintain for each relm. Problem is though that when you set a repository specific folder permission ([repository:/yada])&#160;in the authz file it is totally ignored. For example:</P>
-<P><FONT face="Courier New" color=#006400>[repository:/reporoot/repo1]<BR>@group1=rw</FONT></P>
-<P><FONT face="Courier New" color=#006400>[repository:/reporoot/repo2]<BR>@group2=rw</FONT></P>
-<P>This does nothing! I did a little searching on <A href="http://en.wikipedia.org/wiki/Bushism">"the google"</A> and evidently the repository specific prefix only works with httpd access. For svnserve access you have to specify an authz file for each repository to specify repository specific permissions. Posts <A href="http://svn.haxx.se/users/archive-2006-03/0057.shtml">here</A> and <A href="http://svn.haxx.se/users/archive-2006-10/1175.shtml">here</A> discuss this issue.<BR></P>

@@ -1,8 +1,0 @@
----
-layout: post
-title: Wcf Xml Schema Metadata Files Not Generated with HTTP GET
-tags: [IIS 6, WCF]
-redirect_from:
-  - /blog/2009/03/wcf-xml-schema-metadata-files-not.html
----
-<p>I had a weird problem on our CI box (IIS6) where the WSDL was generated via HTTP GET but the associated XML schema files were not (IE: <a href="https://ci.yada.net/System.svc?xsd=xsd0"><font color="#0066cc">https://ci.yada.net/System.svc?xsd=xsd0</font></a>). When you browsed to the link the browser would return a "general" HTTP error. Erwyn Van Der Meer saved the day with <a href="http://bloggingabout.net/blogs/erwyn/archive/2007/09/19/solved-problem-with-missing-xsd-metadata-for-wcf-service.aspx">his blog post on how to solve this</a>. Basically the app pool identity needs to have "list folder/read data" permissions on the %SYSTEM%\Temp folder.</p> <p><a href="https://ci.yada.net/System.svc?xsd=xsd0"><font color="#0066cc"></font></a></p>
