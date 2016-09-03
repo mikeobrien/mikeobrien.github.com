@@ -1,9 +1,9 @@
-.markdown-body .highlight pre { 
+.markdown-body pre.highlight { 
     background-color: #212d30;
     border-radius: 5px;
 }
 
-.markdown-body .highlight code {
+.markdown-body pre.highlight code {
     color: #fff; 
 }
 

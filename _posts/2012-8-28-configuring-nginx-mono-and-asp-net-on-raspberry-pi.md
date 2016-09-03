@@ -57,13 +57,13 @@ sudo vi /etc/network/interfaces
     
 Change this:
 
-```apache
+```apacheconf
 iface eth0 inet dhcp
 ```
     
 To this (with your settings):
 
-```apache
+```apacheconf
 iface eth0 inet static
 address 192.168.1.100
 netmask 255.255.255.0
@@ -80,6 +80,51 @@ sudo reboot
 
 You can now unplug your display and keyboard and ssh into the pi. You may want to setup a hosts record on your machine so you don't have to remember the ip address.
 
+### Installing nginx ###
+-------
+
+To install nginx you'll need to to first update apt-get. Next install the nginx package, make the web root dir and add the group account:
+
+```bash
+apt-get update
+apt-get install nginx
+sudo mkdir /var/www
+sudo groupadd www-data
+```
+
+Edit the default site configuration:
+
+```bash
+sudo vi /etc/nginx/sites-enabled/default
+```
+
+Next disable ipv6 (By commenting out the line), also set the site domain name:
+
+```nginx
+...
+server {
+    ...
+    #listen   [::]:80 default ipv6only=on; ## listen for ipv6
+    
+    server_name www.mysite.com;
+    ...
+}
+...
+```
+    
+Start the web server:
+    
+```bash
+sudo service nginx start
+```
+    
+Create a test page:
+
+```bash
+sudo vi /var/www/index.html
+```
+    
+If all is well you should see your test page.
 
 ### Installing mono ###
 -------
