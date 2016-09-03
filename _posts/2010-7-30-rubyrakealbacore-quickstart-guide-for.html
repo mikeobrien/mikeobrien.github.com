@@ -1,0 +1,1220 @@
+---
+layout: post
+title: Ruby/Rake/Albacore Quickstart Guide for .NET Developers
+tags: [Albacore, .NET, Ruby, Rake]
+redirect_from:
+  - /blog/2010/07/rubyrakealbacore-quickstart-guide-for.html
+---
+<p align="justify">As one who is tired of all the xml in our NAnt based build process I've been pleased to see all the options out there sans xml. One that caught my attention is <a href="http://rake.rubyforge.org/">Rake</a>. I've been interested in learning Ruby so I figured I could learn an xml-less build tool and at the same time get my feet wet with the Ruby language. With <a href="http://albacorebuild.net/">Albacore</a>, a set of .NET focused Rake tasks (by <a href="http://www.lostechies.com/blogs/derickbailey">Derick Bailey</a>), Rake is even more of an attractive option for .NET developers. Another plus is that Rake can be run by both Ruby and IronRuby. We need to interact with some custom .NET code in our build process, so IronRuby allows us to easily leverage that code natively from the build scripts. </p>  <p><strong><font size="4">Ruby Quickstart</font></strong></p>  <p align="justify">I wanted to immediately dive into creating Rake scripts but I could only seem to find very basic Ruby tutorials (Explaining what loops and conditionals are) or entire books. While I'd love to really dig into Ruby, I just don't have the time at the moment. So what I really wanted was a terse overview of Ruby and the syntax to quickly get me started writing Rake scripts. Hopefully the following quickstart will accomplish this. I'm by no means a Ruby expert, just a novice, so I'm sure that there is a lot I'm missing, but hopefully this will at least get you going.</p>  <p><strong><font size="3">Install</font></strong></p>  <p>You will need to install either Ruby or IronRuby. After running the installers you should be good to go. I will be using IronRuby below. </p>  <p><a href="http://www.ironruby.net">http://www.ironruby.net</a></p>  <p><a href="http://rubyforge.org">http://rubyforge.org</a></p>  <p><strong><font size="3">Hello World</font></strong></p>  <p>Well start with the obligatory hello world script and sending some output to the console with the puts (<font color="#ff0000">Put s</font>tring) method. </p>  <p>HelloWorld.rb:</p>  <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #008000"># My first Ruby script </span>
+<span style="color: #00008b">puts</span> &quot;<span style="color: #8b0000">Hello World!</span>&quot;</pre>
+
+<p></p>
+
+<p></p>
+
+<p>Now save this and run this using the Ruby interpreter with the script path specified:</p>
+
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/edcee9616d314a408a95815957a60a1c.png" width="405" height="101" /> </p>
+
+<p><strong><font size="3">Including Files</font></strong></p>
+
+<p>You can also include other files by using the "require" keyword. You specify the filename without the extension.</p>
+
+<p>HelloWorld.rb:</p>
+
+<pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #00008b">require</span> &quot;<span style="color: #8b0000">Common</span>&quot; 
+<span style="color: #00008b">puts</span> &quot;<span style="color: #8b0000">Hello World!</span>&quot;</pre>
+
+<p></p>
+
+<p></p>
+
+<p>Common.rb:</p>
+
+<pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #00008b">puts</span> &quot;<span style="color: #8b0000">This is from another file.</span>&quot;</pre>
+
+<p></p>
+
+<p></p>
+
+<p>Now run HelloWorld.rb again:</p>
+
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/848818870d6f48aaa81db6036b832a8e.png" width="405" height="115" /> </p>
+
+<p align="justify">If you want to include a file that is in a subfolder you can specify that with a relative path. You will need to use the forward slash as the folder delimiter, not the backslash as the backslash is the escape character:</p>
+
+<p>HelloWorld.rb:</p>
+
+<pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #00008b">require</span> &quot;<span style="color: #8b0000">Libraries/Common</span>&quot; 
+<span style="color: #00008b">puts</span> &quot;<span style="color: #8b0000">Hello World!</span>&quot; </pre>
+
+<p></p>
+
+<p></p>
+
+<p align="justify">In the above example the Common.rb file is in a subdirectory called "Libraries". Also, note that this is assuming that the current directory is the directory where HelloWorld.rb resides. </p>
+
+<p><strong><font size="3">Working with .NET Assemblies</font></strong></p>
+
+<p align="justify">Working with .NET assemblies is simple with IronRuby. The "include" keyword also allows you to reference .NET namespaces of assemblies that are loaded (Just like the "using" directive in C#). Namespaces are separated by a double colon unlike C# which uses the period:</p>
+
+<pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">include System 
+include System::IO 
+<span style="color: #00008b">puts</span> &quot;<span style="color: #8b0000">Hello World! It's #{DateTime.Now.ToString}</span><span style="color: #8b0000">.</span>&quot; </pre>
+
+<p></p>
+
+<p></p>
+
+<p align="justify">You can reference .NET assemblies in the same way you would another Ruby file, with the "require" keyword. Below I have copied the <a href="http://zipcodecoords.codeplex.com">Zip Code Coords</a> assembly (ZipCodes.dll) into the same directory as the Ruby script.</p>
+
+<pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #00008b">require</span> &quot;<span style="color: #8b0000">ZipCodes</span>&quot; 
+include ZipCodes 
+coords = Spatial.Search(&quot;<span style="color: #8b0000">81504</span>&quot;) 
+<span style="color: #00008b">puts</span> &quot;<span style="color: #8b0000">Coords: #{coords.Latitude.ToString}</span><span style="color: #8b0000">, #{coords.Longitude.toString}</span>&quot; </pre>
+
+<p></p>
+
+<p></p>
+
+<p>The require keyword can accept just an assembly name or a fully qualified assembly name if required. The assembly extension is omitted. </p>
+
+<p><strong><font size="3">Operators</font></strong></p>
+
+<p>The operators are defined below. this information was taken from <a href="http://phrogz.net/programmingruby/language.html#table_18.4">here</a>.</p>
+
+<table style="border-bottom: #000000 1px solid; border-left: #000000 1px solid; border-collapse: collapse; border-top: #000000 1px solid; border-right: #000000 1px solid" border="1" cellspacing="0" cellpadding="2" width="100%"><tbody>
+    <tr>
+      <td valign="top"><strong>Operator</strong></td>
+
+      <td valign="top"><strong>Description</strong></td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">[ ] [ ]=</font></td>
+
+      <td valign="top">Element reference, element set</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">**</font></td>
+
+      <td valign="top">Exponentiation</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">! ~ + -</font></td>
+
+      <td valign="top">Not, complement, unary plus and minus (method names for the last two are +@ and -@)</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">* / %</font></td>
+
+      <td valign="top">Multiply, divide, and modulo</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">+ -</font></td>
+
+      <td valign="top">Plus and minus</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">&gt;&gt; &lt;&lt;</font></td>
+
+      <td valign="top">Right and left shift</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">&amp;</font></td>
+
+      <td valign="top">Bitwise 'and'</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">^ |</font></td>
+
+      <td valign="top">Bitwise exclusive 'or' and regular 'or'</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">&lt;= &lt; &gt; &gt;=</font></td>
+
+      <td valign="top">Comparison operators</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">&lt;=&gt; == === != =~ !~</font></td>
+
+      <td valign="top">Equality and pattern match operators (!= and !~ may not be defined as methods)</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">&amp;&amp;</font></td>
+
+      <td valign="top">Logical 'and'</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">||</font></td>
+
+      <td valign="top">Logical 'or'</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">.. ...</font></td>
+
+      <td valign="top">Range (inclusive and exclusive)</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">? :</font></td>
+
+      <td valign="top">Ternary if-then-else</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">= %= { /= -= += |= &amp;= &gt;&gt;= &lt;&lt;= *= &amp;&amp;= ||= **=</font></td>
+
+      <td valign="top">Assignment</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">defined?</font></td>
+
+      <td valign="top">Check if symbol defined</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">not</font></td>
+
+      <td valign="top">Logical negation</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">or and</font></td>
+
+      <td valign="top">Logical composition</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">if unless while until</font></td>
+
+      <td valign="top">Expression modifiers</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><font face="Courier New">begin/end</font></td>
+
+      <td valign="top">Block expression</td>
+    </tr>
+  </tbody></table>
+
+<p><strong><font size="3"></font></strong></p>
+
+<p><strong><font size="3">Syntax Overview</font></strong></p>
+
+<p align="justify">The following is a quick overview of the Ruby syntax. BTW, I realize that you can use Linq in a lot of these C# examples, but that's not the point of the examples. Spontaneous Derivation also has a nice overview <a href="http://sites.google.com/site/spontaneousderivation/ruby-quick-reference">here</a>. The <a href="http://en.wikibooks.org/wiki/Ruby_Programming/Syntax">Ruby Programming wikibook has nice coverage</a> as well.</p>
+
+<table style="border-bottom: #000000 1px solid; border-left: #000000 1px solid; border-collapse: collapse; border-top: #000000 1px solid; border-right: #000000 1px solid" border="1" cellspacing="0" cellpadding="2" width="100%"><tbody>
+    <tr>
+      <th valign="top">Name</th>
+
+      <th valign="top">Ruby</th>
+
+      <th valign="top">C#</th>
+
+      <th valign="top">Notes</th>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>Comments</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #008000"># This is a comment</span></pre>
+      </td>
+
+      <td valign="top"><font face="Courier New">
+          <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #008000">// This is a comment</span></pre>
+        </font></td>
+
+      <td valign="top"></td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>Variables</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">name = &quot;Paul Dirac&quot;</pre>
+      </td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">var name = &quot;<span style="color: #8b0000">Paul Dirac</span>&quot;; </pre>
+or 
+
+        <br />
+
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">string</span> name = &quot;<span style="color: #8b0000">Paul Dirac</span>&quot;;</pre>
+      </td>
+
+      <td valign="top">Variable names must start with a lowercase letter.</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>Constants</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">ElementaryCharge = 1.602</pre>
+      </td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">const</span> <span style="color: #0000ff">double</span> ElementaryCharge = 1.602;</pre>
+      </td>
+
+      <td valign="top">Constant names must start with a capital letter.</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>Line continuation</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">story = &quot;Once upon &quot; \  
+        &quot;a time...&quot;</pre>
+      </td>
+
+      <td valign="top"></td>
+
+      <td valign="top">The backslash character. Concatenating strings doesn't require the plus symbol with line continuations.</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>String formatting</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #00008b">puts</span> &quot;<span style="color: #8b0000">It's #{DateTime.Now.ToString}</span><span style="color: #8b0000">.</span>&quot; </pre>
+      </td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">Console.WriteLine(<span style="color: #0000ff">string</span>.Format(&quot;<span style="color: #8b0000">It's {0}.</span>&quot;,<br />                            DateTime.Now));</pre>
+      </td>
+
+      <td valign="top">Code surrounded by #{...}. </td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>Some string functions</strong></td>
+
+      <td valign="top" colspan="2">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">.capitalize    
+.center(integer,padstr)      <span style="color: #008000"># Centers test with padding </span>
+.<span style="color: #00008b">chomp</span>                       <span style="color: #008000"># Removes carriage returns </span>
+.<span style="color: #00008b">chop</span>                        <span style="color: #008000"># Removes the last character </span>
+.count([other_str]+)         <span style="color: #008000"># Number of times a search string(s) exists </span>
+.delete([other_str]+)        <span style="color: #008000"># Deleted the search strings </span>
+.downcase                    <span style="color: #008000"># Lower cases the string </span>
+.empty?                      <span style="color: #008000"># Determines if the string is empty </span>
+.<span style="color: #00008b">gsub</span>(pattern,replacement)   <span style="color: #008000"># Replaces the regex pattern in the string </span>
+.include? other_str          <span style="color: #008000"># Contains the search string </span>
+.index(substring[,offset])   <span style="color: #008000"># Returns the index of the search string </span>
+.length 
+.ljust(integer,padstr='')    <span style="color: #008000"># Left justify </span>
+.lstrip                      <span style="color: #008000"># Removes whitespace to the left </span>
+.reverse 
+.rindex(substring[,offset])  <span style="color: #008000"># Returns the index of the search string from the right </span>
+.rjust(integer,padstr='')    <span style="color: #008000"># Right justify </span>
+.rstrip                      <span style="color: #008000"># Removes whitespace to the right </span>
+.<span style="color: #00008b">split</span>(pattern=' ', [limit]) <span style="color: #008000"># Splits a string </span>
+.string                      <span style="color: #008000"># Removes whitespace to the left and right </span>
+.swapcase                    <span style="color: #008000"># Inverts the casing </span>
+.upcase                      <span style="color: #008000"># Upper cases the string</span></pre>
+      </td>
+
+      <td valign="top"></td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>Conversion functions</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">.to_s 
+.to_i 
+.to_f</pre>
+      </td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">.ToString() 
+.Parse(&quot;<span style="color: #8b0000">44</span>&quot;) 
+.Parse(&quot;<span style="color: #8b0000">44.5</span>&quot;)</pre>
+      </td>
+
+      <td valign="top"></td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>If/then/else</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">if</span> length &lt; 100 
+    <span style="color: #00008b">puts</span> &quot;<span style="color: #8b0000">Short</span>&quot;  
+<span style="color: #0000ff">elsif</span> length &gt;= 100 &amp;&amp; \ 
+      length &lt; 500 
+    <span style="color: #00008b">puts</span> &quot;<span style="color: #8b0000">Medium</span>&quot; 
+<span style="color: #0000ff">else</span> 
+    <span style="color: #00008b">puts</span> &quot;<span style="color: #8b0000">Long</span>&quot; 
+<br /><span style="color: #0000ff">end</span></pre>
+      </td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">var length = 100; 
+<span style="color: #0000ff">if</span> (length &lt; 100) { 
+    Console.WriteLine(&quot;<span style="color: #8b0000">Short</span>&quot;); 
+} <span style="color: #0000ff">else</span> <span style="color: #0000ff">if</span> (length &gt;= 100 &amp;&amp; 
+           length &lt; 500) { 
+    Console.WriteLine(&quot;<span style="color: #8b0000">Medium</span>&quot;); 
+} <span style="color: #0000ff">else</span> { 
+    Console.WriteLine(&quot;<span style="color: #8b0000">Long</span>&quot;); 
+}</pre>
+      </td>
+
+      <td valign="top"></td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>Array declaration</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">names = [&quot;<span style="color: #8b0000">Pablo Honey</span>&quot;, \ 
+         &quot;<span style="color: #8b0000">OK Computer</span>&quot;, \ 
+         &quot;<span style="color: #8b0000">Kid A</span>&quot;, \ 
+         &quot;<span style="color: #8b0000">In Rainbows</span>&quot;, \ 
+         &quot;<span style="color: #8b0000">The Bends</span>&quot;] </pre>
+
+        <br />or 
+
+        <br />
+
+        <br />
+
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">names = <span style="color: #00008b">Array</span>.new 
+names &lt;&lt; &quot;<span style="color: #8b0000">Pablo Honey</span>&quot; 
+names &lt;&lt; &quot;<span style="color: #8b0000">OK Computer</span>&quot; 
+...</pre>
+      </td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">var names = <span style="color: #0000ff">new</span> <span style="color: #0000ff">string</span>[] {&quot;<span style="color: #8b0000">Pablo Honey</span>&quot;, 
+                          &quot;<span style="color: #8b0000">OK Computer</span>&quot;, 
+                          &quot;<span style="color: #8b0000">Kid A</span>&quot;, 
+                          &quot;<span style="color: #8b0000">In Rainbows</span>&quot;, 
+                          &quot;<span style="color: #8b0000">The Bends</span>&quot;};</pre>
+      </td>
+
+      <td valign="top">Arrays are zero based. Arrays can contain mixed type elements.</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>Hash declaration</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">settings = { &quot;<span style="color: #8b0000">length</span>&quot; =&gt; 25, \ 
+             &quot;<span style="color: #8b0000">color</span>&quot; =&gt; &quot;<span style="color: #8b0000">red</span>&quot; }</pre>
+      </td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">Dictionary&lt;<span style="color: #0000ff">string</span>, <span style="color: #0000ff">object</span>&gt; settings = 
+    <span style="color: #0000ff">new</span> Dictionary&lt;<span style="color: #0000ff">string</span>, <span style="color: #0000ff">object</span>&gt;() 
+    { { &quot;<span style="color: #8b0000">length</span>&quot;, 25 }, 
+      { &quot;<span style="color: #8b0000">color</span>&quot;, &quot;<span style="color: #8b0000">red</span>&quot; } }; </pre>
+      </td>
+
+      <td valign="top"></td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>Setting array elements</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">names[5] = &quot;COM Lag&quot; </pre>
+      </td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">names[5] = &quot;<span style="color: #8b0000">COM Lag</span>&quot;; </pre>
+      </td>
+
+      <td valign="top"></td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>Adding array elements</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">names &lt;&lt; &quot;COM Lag&quot;</pre>
+      </td>
+
+      <td valign="top"></td>
+
+      <td valign="top"></td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>Function</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">def</span> printHello 
+    <span style="color: #00008b">puts</span> &quot;<span style="color: #8b0000">Hello</span>&quot; 
+<span style="color: #0000ff">end</span> </pre>
+
+        <br />or 
+
+        <br />
+
+        <br />
+
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">def</span> printMessage(message, maxLen) 
+    <span style="color: #00008b">puts</span> message[0..maxLen - 1] 
+<span style="color: #0000ff">end</span> </pre>
+
+        <br />or 
+
+        <br />
+
+        <br />
+
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">def</span> ToUpper(text)
+    <span style="color: #0000ff">return</span> text.upcase 
+<span style="color: #0000ff">end</span></pre>
+
+        <br />or 
+
+        <br />
+
+        <br />
+
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">def</span> printArgs(*args)
+    <font color="#0000ff">puts</font> args.join(&quot;, &quot;)  <br /><span style="color: #0000ff">end</span></pre>
+      </td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">void</span> PrintHello() { 
+    Console.WriteLine(&quot;<span style="color: #8b0000">Hello</span>&quot;); 
+}</pre>
+
+        <br />or 
+
+        <br />
+
+        <br />
+
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">void</span> PrintMessage(<span style="color: #0000ff">string</span> message, <span style="color: #0000ff">int</span> maxLen) { 
+    Console.WriteLine(message.Substring(0, maxLen)); 
+}</pre>
+
+        <br />or 
+
+        <br />
+
+        <br />
+
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">string</span> ToUpper(<span style="color: #0000ff">string</span> text) { 
+    <span style="color: #0000ff">return</span> text.ToUpper(); 
+}</pre>
+
+        <br />or 
+
+        <br />
+
+        <br />
+
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">void PrintArgs(<font color="#0000ff">object</font>[] args) { 
+    Console.WriteLine(string.Join(&quot;<font color="#8b0000">, </font>&quot;, args));  
+}</pre>
+      </td>
+
+      <td valign="top">Functions must begin with a lower case letter.</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>Do loop</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">10.times <span style="color: #0000ff">do</span> 
+    <span style="color: #00008b">puts</span> &quot;hello&quot; 
+<span style="color: #0000ff">end</span></pre>
+      </td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">for</span> (<span style="color: #0000ff">int</span> index = 0; index &lt; 10; index++ ) { 
+    Console.WriteLine(&quot;<span style="color: #8b0000">hello</span>&quot;); 
+}</pre>
+      </td>
+
+      <td valign="top"></td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>While loop</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">while</span> index &lt; 5 
+    <span style="color: #00008b">puts</span> index.to_s 
+    index += 1 
+<span style="color: #0000ff">end</span></pre>
+      </td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">int</span> index = 0; 
+<span style="color: #0000ff">do</span> { 
+    Console.WriteLine(index); 
+    index += 1; 
+} <span style="color: #0000ff">while</span> (index &lt; 5);</pre>
+      </td>
+
+      <td valign="top"></td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>For loop</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">10.times <span style="color: #0000ff">do</span> |index| 
+    <span style="color: #00008b">puts</span> index.to_s 
+<span style="color: #0000ff">end</span></pre>
+      </td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">for</span> (<span style="color: #0000ff">int</span> index = 0; index &lt; 10; index++ ) { 
+    Console.WriteLine(index); 
+}</pre>
+      </td>
+
+      <td valign="top"></td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>For each array</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">names = [...] 
+names.each <span style="color: #0000ff">do</span> |name| 
+    <span style="color: #00008b">puts</span> name 
+<span style="color: #0000ff">end</span>        </pre>
+      </td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">var names = <span style="color: #0000ff">new</span> <span style="color: #0000ff">string</span>[] {...}; 
+<span style="color: #0000ff">foreach</span> (<span style="color: #0000ff">string</span> name <span style="color: #0000ff">in</span> names) { 
+    Console.WriteLine(name); 
+}</pre>
+      </td>
+
+      <td valign="top"></td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>For each hash</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">settings = {...}
+settings.each <span style="color: #0000ff">do</span> |key, value| 
+    <span style="color: #00008b">puts</span> key + &quot;<span style="color: #8b0000">: </span>&quot; + value.to_s 
+<span style="color: #0000ff">end</span></pre>
+      </td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">Dictionary&lt;<span style="color: #0000ff">string</span>, <span style="color: #0000ff">object</span>&gt; settings = 
+    <span style="color: #0000ff">new</span> Dictionary&lt;<span style="color: #0000ff">string</span>, <span style="color: #0000ff">object</span>&gt;() {...}; 
+<span style="color: #0000ff">foreach</span> (var setting <span style="color: #0000ff">in</span> settings) { 
+    Console.WriteLine(setting.Key + &quot;<span style="color: #8b0000">: </span>&quot; +  
+                      setting.Value); 
+}</pre>
+      </td>
+
+      <td valign="top"></td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>Iterators</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">def</span> getHours 
+    time = <a style="color: #ff0000" href="http://www.ruby-doc.org/docs/rdoc/1.9/classes/Time.html">Time</a>.new 
+  
+    time.hour.times <span style="color: #0000ff">do</span> |hour| 
+        <span style="color: #0000ff">yield</span>(hour) 
+    <span style="color: #0000ff">end</span> 
+<span style="color: #0000ff">end</span></pre>
+      </td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">IEnumerable&lt;<span style="color: #0000ff">int</span>&gt; GetHours() { 
+    <span style="color: #0000ff">for</span> (<span style="color: #0000ff">int</span> hour = 0;  
+         hour &lt; DateTime.Now.Hour;  
+         hour++) yield <span style="color: #0000ff">return</span> hour; 
+}</pre>
+      </td>
+
+      <td valign="top"></td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>Class</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">class</span> Employee 
+    <span style="color: #0000ff">def</span> initialize(name)  
+        @name = name 
+    <span style="color: #0000ff">end</span> 
+<span style="color: #0000ff">end</span></pre>
+      </td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">class</span> Employee { 
+    <span style="color: #0000ff">string</span> name; 
+    <span style="color: #0000ff">public</span> Employee(<span style="color: #0000ff">string</span> name) { 
+        <span style="color: #0000ff">this</span>.name = name; 
+    } 
+}</pre>
+      </td>
+
+      <td valign="top">Class names must be capitalized. </td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>Accessors</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">class</span> Employee 
+     attr_reader :name 
+     attr_accessor :firstName, :lastName 
+     <span style="color: #0000ff">def</span> PrintName 
+         <span style="color: #00008b">puts</span> @name 
+     <span style="color: #0000ff">end</span> 
+<span style="color: #0000ff">end</span></pre>
+      </td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">class</span> Employee { 
+    <span style="color: #0000ff">public</span> <span style="color: #0000ff">void</span> PrintName() { 
+        Console.WriteLine(<span style="color: #0000ff">this</span>.Name); 
+    } 
+    <span style="color: #0000ff">public</span> <span style="color: #0000ff">string</span> Name{<span style="color: #0000ff">get</span>; private <span style="color: #0000ff">set</span>;} 
+    <span style="color: #0000ff">public</span> <span style="color: #0000ff">string</span> FirstName{<span style="color: #0000ff">get</span>;<span style="color: #0000ff">set</span>;}  
+    <span style="color: #0000ff">public</span> <span style="color: #0000ff">string</span> LastName{<span style="color: #0000ff">get</span>;<span style="color: #0000ff">set</span>;} 
+}</pre>
+      </td>
+
+      <td valign="top">The @ symbol represents a class scoped variable. </td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>Modules</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">module</span> Domain 
+    <span style="color: #0000ff">module</span> HR 
+        <span style="color: #0000ff">class</span> Employee 
+        <span style="color: #0000ff">end</span> 
+    <span style="color: #0000ff">end</span> 
+<span style="color: #0000ff">end</span>
+employee = Domain::HR::Employee.new</pre>
+      </td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">namespace</span> Domain { 
+    <span style="color: #0000ff">namespace</span> HR { 
+        <span style="color: #0000ff">class</span> Employee { 
+        } 
+    } 
+}
+Domain.HR.Employee employee = 
+            <span style="color: #0000ff">new</span> Domain.HR.Employee();</pre>
+      </td>
+
+      <td valign="top">The double colon is used as the module separator.</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>Symbols</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">:yada</pre>
+      </td>
+
+      <td valign="top"></td>
+
+      <td valign="top">Colon followed by a token. More on Ruby symbols <a href="http://ruby-doc.org/core/classes/Symbol.html">here</a>.</td>
+    </tr>
+
+    <tr>
+      <td valign="top"><strong>Closures</strong></td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">closure = lambda { <span style="color: #00008b">puts</span> &quot;<span style="color: #8b0000">Hi, I'm a closure!</span>&quot; }
+closure.call<br />
+closure = lambda { |name| <span style="color: #00008b">puts</span> &quot;<span style="color: #8b0000">Hi, #{name}</span>&quot; \ <br />                               &quot;<span style="color: #8b0000"> I'm a closure!</span>&quot; }
+closure.call &quot;<span style="color: #8b0000">Johnny</span>&quot;<br />
+closure = lambda <span style="color: #0000ff">do</span>
+    <span style="color: #00008b">puts</span> &quot;<span style="color: #8b0000">Hi I'm a closure!</span>&quot;
+<span style="color: #0000ff">end</span>
+closure.call<br />
+closure = lambda <span style="color: #0000ff">do</span> |name|
+    <span style="color: #00008b">puts</span> &quot;<span style="color: #8b0000">Hi, #{name}</span><span style="color: #8b0000"> I'm a closure!</span>&quot;
+<span style="color: #0000ff">end</span>
+closure.call &quot;<span style="color: #8b0000">Johnny</span>&quot;<br />
+<span style="color: #0000ff">def</span> callLambda(&amp;closure)
+    closure.call &quot;<span style="color: #8b0000">Timmy</span>&quot;
+<span style="color: #0000ff">end</span><br />
+callLambda <span style="color: #0000ff">do</span> |name|
+    <span style="color: #00008b">puts</span> &quot;<span style="color: #8b0000">Hi, #{name}</span><span style="color: #8b0000"> I'm a closure!</span>&quot;
+<span style="color: #0000ff">end</span></pre>
+      </td>
+
+      <td valign="top">
+        <pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">Action closure = () =&gt; 
+       Console.WriteLine(&quot;<span style="color: #8b0000">Hi, I'm a closure!</span>&quot;);
+closure();
+Action&lt;<span style="color: #0000ff">string</span>&gt; closure2 = (name) =&gt; <br />           Console.WriteLine(&quot;<span style="color: #8b0000">Hi, </span>&quot; + name + 
+                             &quot;<span style="color: #8b0000"> I'm a closure!</span>&quot;);
+closure2(&quot;<span style="color: #8b0000">Johnny</span>&quot;);<br />
+closure = () =&gt; {
+    Console.WriteLine(&quot;<span style="color: #8b0000">Hi, I'm a closure!</span>&quot;);
+};
+closure();
+
+closure2 = (name) =&gt; {
+    Console.WriteLine(&quot;<span style="color: #8b0000">Hi, </span>&quot; + name + 
+                      &quot;<span style="color: #8b0000"> I'm a closure!</span>&quot;);
+};
+closure2(&quot;<span style="color: #8b0000">Johnny</span>&quot;);<br />
+<span style="color: #0000ff">void</span> CallLambda(Action&lt;<span style="color: #0000ff">string</span>&gt; closure) {
+    closure(&quot;<span style="color: #8b0000">Timmy</span>&quot;);
+}<br />
+CallLambda((name) =&gt; {
+             Console.WriteLine(&quot;<span style="color: #8b0000">Hi, </span>&quot; + name + 
+                               &quot;<span style="color: #8b0000"> I'm a closure!</span>&quot;);
+         });</pre>
+      </td>
+
+      <td valign="top"></td>
+    </tr>
+  </tbody></table>
+
+<br />
+
+<p>This is an extremely simple introduction but hopefully this will give you enough information to dive right into writing Ruby for Rake scripts. </p>
+
+<p><strong><font size="4">Rake Quickstart</font></strong></p>
+
+<p align="justify">Derick Bailey has written a <a href="http://www.code-magazine.com/article.aspx?quickid=1006101&amp;page=1">great article</a> for Code Magazine about setting up and using Rake &amp; Albacore. The rest of this post will overlap somewhat with the information that Derick presents in his fine article (In fact that's where I got most of the following info from). He is the author of Albacore so he's a bit more qualified to talk about Rake &amp; Albacore than myself. :) So I'd suggest reading that as well. Also Martin Fowler has a <a href="http://martinfowler.com/articles/rake.html">nice in-depth write up about Rake</a> where I've gotten some information on the mechanics of the Rake DSL. </p>
+
+<p><strong><font size="3">Installing Rake</font></strong></p>
+
+<p>Installing Rake is a matter of running <font color="#0000ff" face="Courier New">(i)gem install rake</font>:</p>
+
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/7e2a390e8a154fa2a1fcc8c2a9cd1aa8.png" width="437" height="143" /> </p>
+
+<p></p>
+
+<p><strong><font size="3">Rake Hello World</font></strong></p>
+
+<p>Save the following script to a file:</p>
+
+<pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">desc &quot;<span style="color: #8b0000">Rake hello world task</span>&quot;
+task :default <span style="color: #0000ff">do</span>
+    <span style="color: #00008b">puts</span> &quot;<span style="color: #8b0000">Hello world</span>&quot;
+<span style="color: #0000ff">end</span></pre>
+
+<p></p>
+
+<p></p>
+
+<p>and run it using "rake &#8211;f [path]":</p>
+
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/ecf7114f4984439c8c4dd84949ba9034.png" width="437" height="115" /> </p>
+
+<p><strong><font size="3">Understanding the Rake DSL</font></strong></p>
+
+<p>Below is a Rake task that depends on another task (test depends on compile):</p>
+
+<pre><pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">task :compile <span style="color: #0000ff">do</span>
+    <span style="color: #00008b">puts</span> &quot;<span style="color: #8b0000">Compiling...</span>&quot;
+<span style="color: #0000ff">end</span><br />
+task :<span style="color: #00008b">test</span> =&gt; :compile <span style="color: #0000ff">do</span>
+<span style="color: #00008b"><font color="#000000">    </font>puts</span> &quot;<span style="color: #8b0000">Testing...</span>&quot;
+<span style="color: #0000ff">end</span></pre></pre>
+
+<p>"task" is no more than a function being called with 2 parameters passed. </p>
+
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/64fbed785a0c4815b3edccfe4c54c5d1.png" width="313" height="131" /> </p>
+
+<p align="justify">The first parameter you pass into the "task" function can be a few things. If there are no prerequisite tasks then only the task name is passed, which is a lone symbol (IE: <font face="Courier New">task <font color="#ff0000">:build</font> do...end</font>). The task names are <a href="http://ruby-doc.org/core/classes/Symbol.html">Ruby symbols</a>. A Ruby symbol is a colon followed by a token; IE ":compile", ":test", etc. Now if there is one prerequisite task then a 1 element hash (Or dictionary in .NET) with the task as the key and the prerequisite as the value is passed in (IE: <font face="Courier New">task <font color="#ff0000">:build =&gt; :test</font> do...end</font>). The "<em>key</em> =&gt; <em>value</em>" syntax is shorthand for defining a hash with one key/value pair. If multiple prerequisites are passed then its the same as the last scenario except the value is now an array of prerequisite tasks instead of just one (IE: <font face="Courier New">task <font color="#ff0000">:build =&gt; [:test, :compile]</font> do...end</font>). The "[<em>value1</em>, <em>value2</em>, ...]" syntax is shorthand for creating an array.</p>
+
+<p>The second parameter is a closure. It is a code block is surrounded by the "do" and "end" keywords. This closure is stored for later execution by Rake. </p>
+
+<p>So the signature of this "task" function in Ruby could be as follows:</p>
+
+<pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">def</span> task(nameAndDepends, &amp;closure)</span></pre>
+
+<p></p>
+
+<p></p>
+
+<p>Or in C#, perhaps the following signatures:</p>
+
+<pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">void</span> Task(Symbol name, Action closure) { }
+<span style="color: #0000ff">void</span> Task(Dictionary&lt;Symbol, Symbol&gt; nameAndDepends, Action closure) { }
+<span style="color: #0000ff">void</span> Task(Dictionary&lt;Symbol, List&lt;Symbol&gt;&gt; nameAndDepends, Action closure) { }</pre>
+
+<p></p>
+
+<p></p>
+
+<p>Lets take a look at a contrived example without Rake to further demonstrate:</p>
+
+<pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">def</span> task(nameAndDepends, &amp;closure)
+<span style="color: #008000">    # Print the task name and dependencies</span>
+<span style="color: #0000ff"><font color="#000000">    </font>if</span> nameAndDepends.kind_of? Symbol <span style="color: #0000ff">then</span>
+        name = nameAndDepends.to_s
+        depends = &quot;<span style="color: #8b0000">nothing</span>&quot;
+<span style="color: #0000ff"><font color="#000000">    </font>else</span>
+        name = nameAndDepends.keys[0].to_s
+<span style="color: #0000ff"><font color="#000000">        </font>if</span> nameAndDepends.values[0].kind_of? Symbol <span style="color: #0000ff">then</span>
+            depends = nameAndDepends.values[0].to_s
+<span style="color: #0000ff"><font color="#000000">        </font>else</span>
+            depends = nameAndDepends.values[0].join(&quot;<span style="color: #8b0000">, </span>&quot;)
+<span style="color: #0000ff"><font color="#000000">        </font>end</span>
+<span style="color: #0000ff"><font color="#000000">    </font>end</span>
+	
+<span style="color: #00008b"><font color="#000000">    </font>puts</span> &quot;<span style="color: #8b0000">The task name is '#{name}</span>&quot; \
+         &quot;<span style="color: #8b0000">' and it depends on </span>&quot; \
+         &quot;<span style="color: #8b0000">#{depends}.</span>&quot;
+	
+<span style="color: #008000"><font color="#000000">    </font># Execute the closure</span>
+    closure.call
+	
+<span style="color: #00008b"><font color="#000000">    </font>puts</span>
+<span style="color: #0000ff">end</span>
+
+task :compile <span style="color: #0000ff">do</span>
+    <span style="color: #00008b">puts</span> &quot;<span style="color: #8b0000">Compiling...</span>&quot;
+<span style="color: #0000ff">end</span>
+
+task :<span style="color: #00008b">test</span> =&gt; :compile <span style="color: #0000ff">do</span>
+<span style="color: #00008b"><font color="#000000">    </font>puts</span> &quot;<span style="color: #8b0000">Testing...</span>&quot;
+<span style="color: #0000ff">end</span>
+
+task :build =&gt; [:compile, :<span style="color: #00008b">test</span>] <span style="color: #0000ff">do</span>
+<span style="color: #00008b"><font color="#000000">    </font>puts</span> &quot;<span style="color: #8b0000">Building...</span>&quot;
+<span style="color: #0000ff">end</span></pre>
+
+<p></p>
+
+<p></p>
+
+<p>Running this script produces the following output:</p>
+
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/2442c125322840e095fedcccaa7bbacc.png" width="525" height="199" /> </p>
+
+<p>So the syntax of the Rake DSL may look a bit esoteric, especially to a .NET developer, but its actually pretty simple and much terser than C#.</p>
+
+<p><strong><font size="3">Built-in Rake Tasks</font></strong></p>
+
+<p>Rake ships with a few primitive tasks; we will now look at a few. </p>
+
+<p>Here we see the directory, file and file list tasks in action:</p>
+
+<pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">task :default =&gt; :deploy
+	
+<span style="color: #008000"># Create the directory &quot;docs&quot;</span>
+directory &quot;<span style="color: #8b0000">docs</span>&quot;
+
+<span style="color: #008000"># Creates the Readme.txt file by combining </span>
+<span style="color: #008000"># the intro.txt and license.txt files.</span>
+file &quot;<span style="color: #8b0000">docs\\Readme.txt</span>&quot; =&gt; [&quot;<span style="color: #8b0000">Intro.txt</span>&quot;, &quot;<span style="color: #8b0000">License.txt</span>&quot;] <span style="color: #0000ff">do</span> |f|
+    <span style="color: #00008b">open</span>(f.name, &quot;<span style="color: #8b0000">w</span>&quot;) <span style="color: #0000ff">do</span> |outs|
+        f.prerequisites.each <span style="color: #0000ff">do</span> |filename|
+            contents = <span style="color: #00008b">open</span>(filename) <span style="color: #0000ff">do</span> |ins| ins.collect \
+                                      { |line| line.<span style="color: #00008b">chomp</span> } <span style="color: #0000ff">end</span>
+            contents.each <span style="color: #0000ff">do</span> |line|
+                outs.<span style="color: #00008b">puts</span> line
+            <span style="color: #0000ff">end</span>
+        <span style="color: #0000ff">end</span>
+    <span style="color: #0000ff">end</span>
+<span style="color: #0000ff">end</span>
+
+<span style="color: #008000"># Creates the Files.lst file</span>
+file &quot;<span style="color: #8b0000">docs\\Files.lst</span>&quot; =&gt; FileList['src<span style="color: #008000">/**/</span>*.*'] <span style="color: #0000ff">do</span> |f|
+    <span style="color: #00008b">open</span>(f.name, &quot;<span style="color: #8b0000">w</span>&quot;) <span style="color: #0000ff">do</span> |outs|
+        f.prerequisites.each <span style="color: #0000ff">do</span> |filename|
+            outs.<span style="color: #00008b">puts</span> filename
+        <span style="color: #0000ff">end</span>
+    <span style="color: #0000ff">end</span>
+<span style="color: #0000ff">end</span>
+
+desc &quot;<span style="color: #8b0000">Deploys the application.</span>&quot;
+task :deploy =&gt; [&quot;<span style="color: #8b0000">docs</span>&quot;, &quot;<span style="color: #8b0000">docs\\Readme.txt</span>&quot;, &quot;<span style="color: #8b0000">docs\\Files.lst</span>&quot;] <span style="color: #0000ff">do</span>
+    <span style="color: #008000"># Now we can deploy...</span>
+<span style="color: #0000ff">end</span></pre>
+
+<p></p>
+
+<p></p>
+
+<p align="justify">"directory" is just a task (Don't let the terse syntax fool you) as are the "file" tasks. A deploy depends on the existence of a "docs" folder and the "readme.txt" and "files.lst" files being in that folder. So those are specified as prerequisites of the deploy task (Where it says <font color="#0000ff" face="Courier New">=&gt; [&quot;docs&quot;, &quot;docs\\Readme.txt&quot;, &quot;docs\\Files.lst&quot;]</font>). </p>
+
+<p align="justify">If your an OSS developer you may want to publish a Gem to distribute your library or application. Rake has built in functionality to generate a Gem. The Rake documentation has more info about this <a href="http://rake.rubyforge.org/classes/Rake/GemPackageTask.html">here</a>. Below you can see how easy it is to generate the Gem:</p>
+
+<pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #00008b">require</span> 'rubygems'
+<span style="color: #00008b">require</span> 'rake/gempackagetask'
+
+task :default =&gt; [:package]
+
+spec = Gem::Specification.new <span style="color: #0000ff">do</span> |spec|
+    spec.platform = Gem::Platform::RUBY
+    spec.summary = &quot;<span style="color: #8b0000">xUnit.net - A Unit Testing Framework, Duh</span>&quot;
+    spec.name = &quot;<span style="color: #8b0000">xunitnet</span>&quot;
+    spec.version = &quot;<span style="color: #8b0000">1.6.1</span>&quot;
+    spec.requirements &lt;&lt; &quot;<span style="color: #8b0000">none</span>&quot;
+    spec.files = <a style="color: #ff0000" href="http://www.ruby-doc.org/docs/rdoc/1.9/classes/Dir.html">Dir</a>[&quot;<span style="color: #8b0000">lib/**/*</span>&quot;]
+    spec.authors = [&quot;<span style="color: #8b0000">Brad Wilson</span>&quot;,&quot;<span style="color: #8b0000">James Newkirk</span>&quot;]
+    spec.homepage = &quot;<span style="color: #8b0000">http://xunit.codeplex.com</span>&quot;
+    spec.description = &lt;&lt;EOF
+xUnit.net is a developer testing framework, built to support 
+Test Driven Development, with a design goal of extreme simplicity 
+<span style="color: #0000ff">and</span> alignment with framework features.
+EOF
+<span style="color: #0000ff">end</span>
+
+Rake::GemPackageTask.new(spec) <span style="color: #0000ff">do</span> |package|
+<span style="color: #0000ff">end</span></pre>
+
+<p></p>
+
+<p></p>
+
+<p align="justify">This will produce a Gem file that can be published to rubygems.org. <a href="http://devlicious.com/blogs/rob_reynolds">Rob Reynolds</a> digs into the gory details <a href="http://devlicious.com/blogs/rob_reynolds/archive/2010/07/16/how-to-gems-and-net.aspx">here</a> (Actually it's amazing simple). The <a href="http://github.com/drusellers/nu">Nu project</a>, which brings Gems to .NET, makes this very compelling for .NET developers as well, definitely worth <a href="http://devlicio.us/blogs/rob_reynolds/archive/2010/07/26/the-future-of-net-open-source-software-delivery.aspx">checking out</a>. </p>
+
+<p>Other primitive tasks include CLOBBER, CLEAN, RDoc, and Test. Spontaneous Derivation has a nice overview of these <a href="http://sites.google.com/site/spontaneousderivation/rake-quick-reference">here</a>.</p>
+
+<p><strong><font size="3">User Defined Rake Tasks</font></strong></p>
+
+<p align="justify">Now we will look at defining our own Rake tasks. As an exercise, lets create a task to deploy files. We'll use the ever so popular <a href="http://technet.microsoft.com/en-us/library/cc733145(WS.10).aspx">robocopy</a> (Formally known as <a href="http://en.wikipedia.org/wiki/XCOPY#Deprecation">xcopy</a>):</p>
+
+<pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">task :default =&gt; :deploy
+
+desc &quot;<span style="color: #8b0000">Deploys the application.</span>&quot;
+task :deploy <span style="color: #0000ff">do</span>
+
+<span style="color: #008000"><font color="#000000">    </font># Options</span>
+    source = &quot;<span style="color: #8b0000">D:/Development/ProjectEulerNet/src/ProjectEuler.UI</span>&quot;
+    target = &quot;<span style="color: #8b0000">D:/Websites/ProjecEulerNet/wwwroot</span>&quot;
+    excludedDirectories = &quot;<span style="color: #8b0000">obj</span>&quot;
+    includeFiles = &quot;<span style="color: #8b0000">*.dll *.pdb *.config *.asax *.ascx *.ashx </span>&quot; \
+                   &quot;<span style="color: #8b0000">*.aspx *.master *.htm *.html *.txt *.css </span>&quot; \
+                   &quot;<span style="color: #8b0000">*.gif *.jpg *.jpeg *.png *.xml *.js</span>&quot;
+    logPath = &quot;<span style="color: #8b0000">Robocopy.log</span>&quot;
+	
+<span style="color: #008000"><font color="#000000">    </font># Command</span>
+    robocopy = &quot;<span style="color: #8b0000">robocopy </span>&quot; \
+               &quot;<span style="color: #8b0000">\&quot;#{source}\&quot; </span>&quot; \
+               &quot;<span style="color: #8b0000">\&quot;#{target}\&quot; </span>&quot; \
+               &quot;<span style="color: #8b0000">/MIR </span>&quot; \
+               &quot;<span style="color: #8b0000">/XD #{excludedDirectories} </span>&quot; \
+               &quot;<span style="color: #8b0000">/IF #{includeFiles} </span>&quot; \
+               &quot;<span style="color: #8b0000">/LOG+:\&quot;#{logPath}\&quot; </span>&quot; \
+               &quot;<span style="color: #8b0000">/TEE</span>&quot;
+
+<span style="color: #008000">    # Execute</span>
+    sh robocopy <span style="color: #0000ff">do</span> |ok,res|
+                     <span style="color: #00008b">raise</span> &quot;<span style="color: #8b0000">Robocopy failed with exit </span>&quot; \
+                           &quot;<span style="color: #8b0000">code #{res.exitstatus}.</span>&quot; \
+                     <span style="color: #0000ff"><span style="color: #0000ff">if</span> res.exitstatus &gt; 8</span>
+                <span style="color: #0000ff">end</span>
+<span style="color: #0000ff">end</span></pre>
+
+<p></p>
+
+<p></p>
+
+<p align="justify">A few things to note above. First the sh function. This function allows you to shell out and execute another program. Second, the sh command also takes an optional closure where you can explicitly handle the results of the command. Robocopy will return exit codes higher than zero for success, so the default Rake error handling will not work in this case. To compensate for this we add a closure that checks the exit code and only throws an exception if the status greater than eight (As 0-8 are success codes for robocopy). If the program returned zero for success and non zero for failure we could omit the custom error handling. </p>
+
+<p align="justify">Now robocopy is really something that we could easily reuse in other places. So we could create a custom reusable task instead of the proprietary one above. Derick Bailey has a <a href="http://www.lostechies.com/blogs/derickbailey/archive/2010/07/26/how-to-build-custom-rake-tasks-the-right-way.aspx?utm_source=feedburner&amp;utm_medium=feed&amp;utm_campaign=Feed:+LosTechies+(LosTechies)">nice post which covers that</a> in detail. Below we refactor a bit to create a reusable robocopy task.</p>
+
+<p align="justify"><strong>robocopy.rb</strong>:</p>
+
+<pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #0000ff">class</span> Robocopy
+    attr_accessor :source, :target, :excludeDirs, :includeFiles, :logPath
+    
+    <span style="color: #0000ff">def</span> run()
+        robocopy = &quot;<span style="color: #8b0000">robocopy </span>&quot; \
+                   &quot;<span style="color: #8b0000">\&quot;#{@source}\&quot; </span>&quot; \
+                   &quot;<span style="color: #8b0000">\&quot;#{@target}\&quot; </span>&quot; \
+                   &quot;<span style="color: #8b0000">/MIR </span>&quot; \
+                   &quot;<span style="color: #8b0000">/XD #{@excludeDirs} </span>&quot; \
+                   &quot;<span style="color: #8b0000">/IF #{@includeFiles} </span>&quot; \
+                   &quot;<span style="color: #8b0000">/LOG+:\&quot;#{@logPath}\&quot; </span>&quot; \
+                   &quot;<span style="color: #8b0000">/TEE</span>&quot;
+            
+        errorHandler = \
+            lambda <span style="color: #0000ff">do</span> |ok, res|
+                       <span style="color: #00008b">raise</span> &quot;<span style="color: #8b0000">Robocopy failed with exit </span>&quot; \
+                             &quot;<span style="color: #8b0000">code #{res.exitstatus}.</span>&quot; \
+                       <span style="color: #0000ff">if</span> res.exitstatus &gt; 8
+                   <span style="color: #0000ff">end</span>
+
+        sh robocopy, &amp;errorHandler 
+    <span style="color: #0000ff">end</span>
+<span style="color: #0000ff">end</span>
+
+<span style="color: #0000ff">def</span> robocopy(*args, &amp;block)
+    body = lambda { |*args|
+        rc = Robocopy.new
+        block.call(rc)
+        rc.run
+    }
+    Rake::Task.define_task(*args, &amp;body)
+<span style="color: #0000ff">end</span></pre>
+
+<p></p>
+
+<p></p>
+
+<p align="justify"><strong>rakefile.rb</strong></p>
+
+<p></p>
+
+<p></p>
+
+<pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #00008b">require</span> &quot;<span style="color: #8b0000">robocopy</span>&quot;
+
+task :default =&gt; :deploy
+
+robocopy :deploy <span style="color: #0000ff">do</span> |rc|
+    rc.source = &quot;<span style="color: #8b0000">D:/Development/ProjectEuler.Net/src/ProjectEuler.UI</span>&quot;
+    rc.target = &quot;<span style="color: #8b0000">D:/Websites/ProjecEulerNet/wwwroot</span>&quot;
+    rc.excludeDirs = &quot;<span style="color: #8b0000">obj</span>&quot;
+    rc.includeFiles = &quot;<span style="color: #8b0000">*.dll *.pdb *.config *.asax *.ascx *.ashx </span>&quot; \
+                      &quot;<span style="color: #8b0000">*.aspx *.master *.htm *.html *.txt *.css </span>&quot; \
+                      &quot;<span style="color: #8b0000">*.gif *.jpg *.jpeg *.png *.xml *.js</span>&quot;
+    rc.logPath = &quot;<span style="color: #8b0000">Robocopy.log</span>&quot;
+<span style="color: #0000ff">end</span></pre>
+
+<p></p>
+
+<p></p>
+
+<p align="justify">Much better! Now we can reuse the robocopy task ad nauseum. As an aside, when we pass the args variable to the define_task function, we prefix it with the asterisk. This is an array and if we omit the asterisk it will passed into the function as an array parameter. Prefixing it with the asterisk tells Ruby to actually break the array elements out into separate function parameters. Neat, eh? Now when a <em>function parameter</em> is prefixed with an asterisk (In the function signature), that just means it can accept any number of parameters that will be passed into the function as an array (The same as the params keyword in C#). </p>
+
+<p align="justify">In the examples above we statically specified some information. Rake scripts can obtain information from environment variables; a common way build servers will pass information to scripts. The following demonstrates getting information from the <a href="http://www.thoughtworks-studios.com/go-agile-release-management">ThoughtWorks GO release management server</a>:</p>
+
+<pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px">buildServerUrl = ENV[&quot;<span style="color: #8b0000">CRUISE_SERVER_URL</span>&quot;] 
+buildPipelineName = ENV[&quot;<span style="color: #8b0000">CRUISE_PIPELINE_NAME</span>&quot;]
+buildPipelineLabel = ENV[&quot;<span style="color: #8b0000">CRUISE_PIPELINE_LABEL</span>&quot;]
+buildStagename = ENV[&quot;<span style="color: #8b0000">CRUISE_STAGE_NAME</span>&quot;]
+buildStageCounter = ENV[&quot;<span style="color: #8b0000">CRUISE_STAGE_COUNTER</span>&quot;]
+buldJobName = ENV[&quot;<span style="color: #8b0000">CRUISE_JOB_NAME</span>&quot;]</pre>
+
+<p></p>
+
+<p></p>
+
+<p><strong><font size="4">Albacore Quickstart</font></strong></p>
+
+<p align="justify">As you can see, the number of primitive tasks that ship with Rake are very limited. <a href="http://www.lostechies.com/blogs/derickbailey/">Derick Bailey</a> in his <a href="http://albacorebuild.net/">Albacore project</a> has created a set Rake tasks that are geared towards .NET builds. These make it much easier to author Rake scripts by giving you precanned tasks (Much like NAnt and NAntContrib). At the time of writing the following tasks are available:</p>
+
+<p><a href="http://wiki.github.com/derickbailey/Albacore/assemblyinfotask">AssemblyInfoTask</a> 
+
+  <br /><a href="http://wiki.github.com/derickbailey/Albacore/exec-task">ExecTask</a> 
+
+  <br /><a href="http://wiki.github.com/derickbailey/Albacore/expandtemplatestask">ExpandTemplatesTask</a> 
+
+  <br /><a href="http://wiki.github.com/derickbailey/Albacore/msbuildtask">MSBuildTask</a> 
+
+  <br /><a href="http://wiki.github.com/derickbailey/Albacore/mspectask">MSpecTask</a> 
+
+  <br /><a href="http://wiki.github.com/derickbailey/Albacore/nanttask">NantTask</a> 
+
+  <br /><a href="http://wiki.github.com/derickbailey/Albacore/ncoverconsoletask">NCoverConsoleTask</a> 
+
+  <br /><a href="http://wiki.github.com/derickbailey/Albacore/ncoverreporttask">NCoverReportTask</a> 
+
+  <br /><a href="http://wiki.github.com/derickbailey/Albacore/ndependtask">NDependTask</a> 
+
+  <br /><a href="http://wiki.github.com/derickbailey/Albacore/nunittask">NUnitTask</a> 
+
+  <br /><a href="http://wiki.github.com/derickbailey/Albacore/renametask">RenameTask</a> 
+
+  <br /><a href="http://wiki.github.com/derickbailey/Albacore/sftptask">SftpTask</a> 
+
+  <br /><a href="http://wiki.github.com/derickbailey/Albacore/sqlcmdtask">SQLCmdTask</a> 
+
+  <br /><a href="http://wiki.github.com/derickbailey/Albacore/sshtask">SshTask</a> 
+
+  <br /><a href="http://wiki.github.com/derickbailey/Albacore/unziptask">UnZipTask</a> 
+
+  <br /><a href="http://wiki.github.com/derickbailey/Albacore/xunittask">XUnitTask</a> 
+
+  <br /><a href="http://wiki.github.com/derickbailey/Albacore/ziptask">ZipTask</a></p>
+
+<p>To use the Albacore tasks you will need to install the Gem as follows:</p>
+
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/544d743b02d8424cb543be7d93139e49.png" width="477" height="269" /></p>
+
+<p>In the example below we will us the MSBuild and assembly info tasks to build our application. Note, you will have to add the require statement at the top of the file for Albacore. </p>
+
+<pre style="background-color: #ffffff; margin: 0em; width: 100%; font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px"><span style="color: #00008b">require</span> &quot;<span style="color: #8b0000">albacore</span>&quot;
+task :default =&gt; :build
+
+desc &quot;<span style="color: #8b0000">Generate assembly info.</span>&quot;
+assemblyinfo :assemblyinfo <span style="color: #0000ff">do</span> |asm|
+  asm.version = ENV[&quot;<span style="color: #8b0000">CRUISE_PIPELINE_LABEL</span>&quot;]
+  asm.company_name = &quot;<span style="color: #8b0000">Ultraviolet Catastrophe</span>&quot;
+  asm.product_name = &quot;<span style="color: #8b0000">ProjectEuler.NET</span>&quot;
+  asm.title = &quot;<span style="color: #8b0000">ProjectEuler.NET</span>&quot;
+  asm.description = &quot;<span style="color: #8b0000">A .NET implementation of the Project Euler site.</span>&quot;
+  asm.copyright = &quot;<span style="color: #8b0000">Copyright (c) 2010 Ultraviolet Catastrophe</span>&quot;
+  asm.output_file = &quot;<span style="color: #8b0000">src/Properties/AssemblyInfo.cs</span>&quot;
+<span style="color: #0000ff">end</span>
+
+desc &quot;<span style="color: #8b0000">Builds the application.</span>&quot;
+msbuild :build =&gt; :assemblyinfo <span style="color: #0000ff">do</span> |msb|
+  msb.path_to_command = File.join(ENV[&quot;<span style="color: #8b0000">windir</span>&quot;], &quot;<span style="color: #8b0000">Microsoft.NET</span>&quot;, &quot;<span style="color: #8b0000">Framework</span>&quot;, &quot;<span style="color: #8b0000">v4.0.30319</span>&quot;, &quot;<span style="color: #8b0000">MSBuild.exe</span>&quot;)
+  msb.properties :configuration =&gt; :Debug
+  msb.targets :Clean, :Build
+  msb.solution = &quot;<span style="color: #8b0000">src/ProjectEuler.UI.csproj</span>&quot;
+<span style="color: #0000ff">end</span></pre>
+
+<p></p>
+
+<p></p>
+
+<p>Doesn't get any simpler than that. One thing to note is that the &quot;path_to_command&quot; setting is temporary. .NET 4.0 support <a href="http://github.com/derickbailey/Albacore/issues/closed#issue/76">should be added soon to Albacore</a>, as well as the ability to specify the framework version you want to use. Now compare this to some similar NAnt markup:</p>
+
+<pre style="font-family: consolas,&#39;Courier New&#39;,courier,monospace; font-size: 12px" class="code"><span style="color: blue">&lt;</span><span style="color: #a31515">asminfo </span><span style="color: red">output</span><span style="color: blue">=</span>&quot;<span style="color: blue">${Project.AssemblyInfoFilePath}</span>&quot; <span style="color: blue">&gt;
+  &lt;</span><span style="color: #a31515">attributes</span><span style="color: blue">&gt;
+    &lt;</span><span style="color: #a31515">attribute </span><span style="color: red">type</span><span style="color: blue">=</span>&quot;<span style="color: blue">ComVisibleAttribute</span>&quot; <span style="color: red">value</span><span style="color: blue">=</span>&quot;<span style="color: blue">false</span>&quot; <span style="color: blue">/&gt;
+    &lt;</span><span style="color: #a31515">attribute </span><span style="color: red">type</span><span style="color: blue">=</span>&quot;<span style="color: blue">AssemblyTitleAttribute</span>&quot; <span style="color: red">value</span><span style="color: blue">=</span>&quot;<span style="color: blue">${Build.Component}</span>&quot; <span style="color: blue">/&gt;
+    &lt;</span><span style="color: #a31515">attribute </span><span style="color: red">type</span><span style="color: blue">=</span>&quot;<span style="color: blue">AssemblyDescriptionAttribute</span>&quot; <span style="color: red">value</span><span style="color: blue">=</span>&quot;<span style="color: blue">${Build.Component}</span>&quot; <span style="color: blue">/&gt;
+    &lt;</span><span style="color: #a31515">attribute </span><span style="color: red">type</span><span style="color: blue">=</span>&quot;<span style="color: blue">AssemblyCompanyAttribute</span>&quot; <span style="color: red">value</span><span style="color: blue">=</span>&quot;<span style="color: blue">Yada, Inc</span>&quot; <span style="color: blue">/&gt;
+    &lt;</span><span style="color: #a31515">attribute </span><span style="color: red">type</span><span style="color: blue">=</span>&quot;<span style="color: blue">AssemblyProductAttribute</span>&quot; <span style="color: red">value</span><span style="color: blue">=</span>&quot;<span style="color: blue">${Build.Component}</span>&quot; <span style="color: blue">/&gt;
+    &lt;</span><span style="color: #a31515">attribute </span><span style="color: red">type</span><span style="color: blue">=</span>&quot;<span style="color: blue">AssemblyCopyrightAttribute</span>&quot; <span style="color: red">value</span><span style="color: blue">=</span>&quot;<span style="color: blue">Copyright (c) 2010 Yada, Inc.</span>&quot; <span style="color: blue">/&gt;
+</span><span style="color: blue">    &lt;</span><span style="color: #a31515">attribute </span><span style="color: red">type</span><span style="color: blue">=</span>&quot;<span style="color: blue">AssemblyVersionAttribute</span>&quot; <span style="color: red">value</span><span style="color: blue">=</span>&quot;<span style="color: blue">${Build.Version}</span>&quot; <span style="color: blue">/&gt;
+    &lt;</span><span style="color: #a31515">attribute </span><span style="color: red">type</span><span style="color: blue">=</span>&quot;<span style="color: blue">AssemblyFileVersionAttribute</span>&quot; <span style="color: red">value</span><span style="color: blue">=</span>&quot;<span style="color: blue">${Build.Version}</span>&quot; <span style="color: blue">/&gt;
+  &lt;/</span><span style="color: #a31515">attributes</span><span style="color: blue">&gt;
+&lt;/</span><span style="color: #a31515">asminfo</span><span style="color: blue">&gt;
+
+&lt;</span><span style="color: #a31515">exec </span><span style="color: red">program</span><span style="color: blue">=</span>&quot;<span style="color: blue">${App.MSBuild}</span>&quot; <span style="color: blue">&gt;
+  &lt;</span><span style="color: #a31515">arg </span><span style="color: red">line</span><span style="color: blue">=</span>&quot;<span style="color: red">&amp;quot;</span><span style="color: blue">${Project.Folder}\${Project.ProjectFile}</span><span style="color: red">&amp;quot;</span>&quot; <span style="color: blue">/&gt;
+  &lt;</span><span style="color: #a31515">arg </span><span style="color: red">line</span><span style="color: blue">=</span>&quot;<span style="color: blue">/property:Configuration=Release</span>&quot; <span style="color: blue">/&gt;
+  &lt;</span><span style="color: #a31515">arg </span><span style="color: red">value</span><span style="color: blue">=</span>&quot;<span style="color: blue">/target:Rebuild</span>&quot; <span style="color: blue">/&gt;
+  &lt;</span><span style="color: #a31515">arg </span><span style="color: red">value</span><span style="color: blue">=</span>&quot;<span style="color: blue">/verbosity:normal</span>&quot; <span style="color: blue">/&gt;
+  &lt;</span><span style="color: #a31515">arg </span><span style="color: red">value</span><span style="color: blue">=</span>&quot;<span style="color: blue">/nologo</span>&quot; <span style="color: blue">/&gt;
+&lt;/</span><span style="color: #a31515">exec</span><span style="color: blue">&gt;</span></pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>I don't know about you but the former is much cleaner and much more understandable. Plus with the former you get the power of Ruby right at your fingertips. </p>
+
+<p><strong><font size="4">Conclusion</font></strong></p>
+
+<p align="justify">Hopefully this post gets you up and running quickly with Ruby/Rake/Albacore. Feedback is definitely welcome.</p>  

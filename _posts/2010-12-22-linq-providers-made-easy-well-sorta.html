@@ -1,0 +1,101 @@
+---
+layout: post
+title: Linq Providers Made Easy (Well, sorta)
+tags: [.NET, C#, Linq]
+redirect_from:
+  - /blog/2010/12/linq-providers-made-easy-well-sorta.html
+---
+<p>Currently I'm implementing a simple Linq enabled ORM to handle an edge case in our system (For everything else we use NHibernate). I've found that the hard part about writing a Linq provider is parsing expression trees; the provider is actually the easy part. In the course of writing it I've created a simple base class that makes it even easier to create the provider:</p>  <pre class="code"><span style="color: blue">public abstract class </span><span style="color: #2b91af">QueryableBase</span>&lt;T&gt; : <span style="color: #2b91af">IOrderedQueryable</span>&lt;T&gt;, <span style="color: #2b91af">IQueryProvider
+</span>{
+    <span style="color: blue">private readonly </span><span style="color: #2b91af">Func</span>&lt;<span style="color: #2b91af">QueryableBase</span>&lt;T&gt;&gt; _createQuery;
+
+    <span style="color: blue">protected </span>QueryableBase(<span style="color: #2b91af">Func</span>&lt;<span style="color: #2b91af">QueryableBase</span>&lt;T&gt;&gt; createQuery)
+    {
+        _createQuery = createQuery;
+        Expression = <span style="color: #2b91af">Expression</span>.Constant(<span style="color: blue">this</span>);
+    }
+
+    <span style="color: blue">public abstract object </span>Query(<span style="color: #2b91af">Expression </span>expression);
+
+    <span style="color: green">// ---------------------- IOrderedQueryable Implementation -----------------
+
+    </span><span style="color: blue">public </span><span style="color: #2b91af">Expression </span>Expression { <span style="color: blue">get</span>; <span style="color: blue">set</span>; }
+    <span style="color: blue">public </span><span style="color: #2b91af">Type </span>ElementType { <span style="color: blue">get </span>{ <span style="color: blue">return typeof</span>(T); } }
+    <span style="color: blue">public </span><span style="color: #2b91af">IQueryProvider </span>Provider { <span style="color: blue">get </span>{ <span style="color: blue">return this</span>; } }
+
+    <span style="color: blue">public </span><span style="color: #2b91af">IEnumerator</span>&lt;T&gt; GetEnumerator()
+    {
+        <span style="color: blue">return </span>(<span style="color: #2b91af">IEnumerator</span>&lt;T&gt;)((<span style="color: #2b91af">IEnumerable</span>)<span style="color: blue">this</span>).GetEnumerator();
+    }
+
+    <span style="color: #2b91af">IEnumerator IEnumerable</span>.GetEnumerator()
+    {
+        <span style="color: blue">var </span>result = (<span style="color: #2b91af">IEnumerable</span>)Provider.Execute(Expression);
+        <span style="color: blue">return </span>result == <span style="color: blue">null </span>? <span style="color: #2b91af">Enumerable</span>.Empty&lt;T&gt;().GetEnumerator() : result.GetEnumerator();
+    }
+
+    <span style="color: green">// ---------------------- IQueryProvider Implementation -----------------
+
+    </span><span style="color: blue">public </span><span style="color: #2b91af">IQueryable</span>&lt;TElement&gt; CreateQuery&lt;TElement&gt;(<span style="color: #2b91af">Expression </span>expression)
+    {
+        <span style="color: blue">return </span>(<span style="color: #2b91af">IQueryable</span>&lt;TElement&gt;)CreateQuery(expression);
+    }
+
+    <span style="color: blue">public </span><span style="color: #2b91af">IQueryable </span>CreateQuery(<span style="color: #2b91af">Expression </span>expression)
+    {
+        <span style="color: blue">var </span>query = _createQuery();
+        query.Expression = expression;
+        <span style="color: blue">return </span>query;
+    }
+
+    <span style="color: blue">public </span>TResult Execute&lt;TResult&gt;(<span style="color: #2b91af">Expression </span>expression)
+    {
+        <span style="color: blue">var </span>value = Execute(expression);
+        <span style="color: blue">return </span>value == <span style="color: blue">null </span>? <span style="color: blue">default</span>(TResult) : (TResult)value;
+    }
+
+    <span style="color: blue">public object </span>Execute(<span style="color: #2b91af">Expression </span>expression)
+    {
+        <span style="color: blue">return </span>Query(expression);
+    }
+}</pre>
+
+
+<p>This base class provides everything you need, save the expression tree parsing, for a Linq provider. All you have to do is inherit from this class and implement the Query method as follows:</p>
+
+<pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">SqlTable </span>: <span style="color: #2b91af">QueryableBase</span>&lt;<span style="color: #2b91af">DataRow</span>&gt;
+{
+    <span style="color: blue">private </span><span style="color: #2b91af">SqlConnection </span>_connection;
+    <span style="color: blue">private string </span>_tableName;
+
+    <span style="color: blue">public </span>SqlTable(<span style="color: #2b91af">SqlConnection </span>connection, <span style="color: blue">string </span>tableName) : 
+        <span style="color: blue">base</span>(() =&gt; <span style="color: blue">new </span><span style="color: #2b91af">SqlTable</span>(connection, tableName))
+    { 
+        _tableName = tableName;
+        _connection = connection;
+    }
+
+    <span style="color: blue">public override object </span>Query(<span style="color: #2b91af">Expression </span>expression)
+    {
+        <span style="color: green">// </span><span style="color: #00008b">TODO: Parse the expression tree, generate TSQL, execute it and return the results.
+</span>    }
+}</pre>
+
+<p>You'll notice that the QueryableBase constructor requires a lambda that creates a new instance of your provider (In this case SqlTable). This is used by the base class in the implementation of IQueryProvider to construct new queries based on this one but with a different expression (So that's why we are creating the new provider with the exact same parameters that were passed into the constructor of this one). Now all the magic happens in the Query method. Here is where you would parse the expression tree and translate it into something useful; in this case a TSQL statement that will be executed. Parsing expression trees is a subject all its own (And covered pretty well on the interwebs) so we'll gloss over that. Here is how we could use our new table query provider:</p>
+
+<pre class="code"><span style="color: blue">using </span>(<span style="color: blue">var </span>connection = <span style="color: blue">new </span><span style="color: #2b91af">SqlConnection</span>(<span style="color: #a31515">&quot;...&quot;</span>))
+{
+    connection.Open();
+
+    <span style="color: blue">var </span>table = <span style="color: blue">new </span><span style="color: #2b91af">SqlTable</span>(connection, <span style="color: #a31515">&quot;Products&quot;</span>);
+
+    <span style="color: blue">var </span>cheapProducts = table.Where(x =&gt; (<span style="color: blue">double</span>)x[<span style="color: #a31515">&quot;Price&quot;</span>] &lt; 5.0).
+                              OrderBy(x =&gt; x[<span style="color: #a31515">&quot;Name&quot;</span>]).
+                              Take(50).
+                              Select(x =&gt; <span style="color: blue">new </span>{ Name = (<span style="color: blue">string</span>)x[<span style="color: #a31515">&quot;Name&quot;</span>], 
+                                                Price = (<span style="color: blue">double</span>)x[<span style="color: #a31515">&quot;Price&quot;</span>]}).
+                              ToList();
+
+    <span style="color: blue">foreach </span>(<span style="color: blue">var </span>product <span style="color: blue">in </span>cheapProducts) 
+        <span style="color: #2b91af">Console</span>.WriteLine(<span style="color: #a31515">&quot;{0} = ${1:0.00}&quot;</span>, product.Name, product.Price);
+}</pre>  

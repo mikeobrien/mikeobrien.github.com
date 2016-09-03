@@ -1,0 +1,17 @@
+---
+layout: post
+title: Obtaining an Xml Namespace from a Prefix in Xslt 1.0
+tags: [XML/XSL]
+redirect_from:
+  - /blog/2009/07/obtaining-xml-namespace-from-prefix-in.html
+---
+<p>I have been struggling for a while now to get a namespace from a prefix with xslt 1.0. Here is a sample fragment from a wsdl file:</p><pre class="code"><span style="color: blue"><</span><span style="color: #a31515">xs:complexType</span><span style="color: blue">>
+  <</span><span style="color: #a31515">xs:sequence</span><span style="color: blue">>
+    <</span><span style="color: #a31515">xs:element </span><span style="color: red">...
+        xmlns:q2</span><span style="color: blue">=</span>"<span style="color: blue">urn:Some/Namespace</span>"
+        <span style="color: red">type</span><span style="color: blue">=</span>"<span style="color: blue">q2:SomeDataContract</span>" <span style="color: blue">/>
+  </</span><span style="color: #a31515">xs:sequence</span><span style="color: blue">>
+</</span><span style="color: #a31515">xs:complexType</span><span style="color: blue">></span></pre><a href="http://11011.net/software/vspaste"></a>
+<p>So I want to obtain the namespace associated with the "q2" prefix (Which is dynamically generated) so I'm going to have to extract it from the type attribute and somehow get the namespace by the prefix. Well here is how you do it:</p><pre class="code"><span style="color: blue"><</span><span style="color: #2b91af">xsl:variable </span><span style="color: red">name</span><span style="color: blue">=</span>"<span style="color: blue">namespacePrefix</span>" <span style="color: red">select</span><span style="color: blue">=</span>"<span style="color: blue">substring-before(@type, ':')</span>"<span style="color: blue">/>
+<</span><span style="color: #2b91af">xsl:value-of </span><span style="color: red">select</span><span style="color: blue">=</span>"<span style="color: blue">namespace::*[local-name(.)=$namespacePrefix]</span>" <span style="color: blue">/></span></pre><a href="http://11011.net/software/vspaste"></a>
+<p> Hopefully this saves you some time.</p>

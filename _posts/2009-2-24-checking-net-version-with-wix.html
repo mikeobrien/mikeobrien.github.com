@@ -1,0 +1,29 @@
+---
+layout: post
+title: Checking .NET Version with Wix
+tags: [WiX, .NET]
+redirect_from:
+  - /blog/2009/02/checking-net-version-with-wix.html
+---
+<p>Checking for a specific .NET version is fairly simple with Wix. The following fragment illustrates how to make .NET 3.5 an installation requirement. Two things to note are: 1) The value is prefixed with a pound sign because it is a DWORD in the registry. The <a href="http://wix.sourceforge.net/manual-wix2/wix_xsd_registrysearch.htm">RegistrySearch element</a> will prefix values differently depending on the registry data type. 2) The condition is only evaluated when installing, not uninstalling (By using the "Installed" variable). If for some reason your required version of .NET gets uninstalled you still want to be able to uninstall your app.</p><pre class="code"><span style="color: blue"><</span><span style="color: #a31515">Wix ... </span><span style="color: blue">>
+  <</span><span style="color: #a31515">Product ... </span><span style="color: blue">>
+    <</span><span style="color: #a31515">Package ...</span> <span style="color: blue">/>
+
+    <</span><span style="color: #a31515">Property </span><span style="color: red">Id</span><span style="color: blue">=</span>"<span style="color: blue">NET_FRAMEWORK_INSTALLED</span>"<span style="color: blue">>
+      <</span><span style="color: #a31515">RegistrySearch 
+        </span><span style="color: red">Id</span><span style="color: blue">=</span>'<span style="color: blue">NetFrameworkCheck</span>' 
+        <span style="color: red">Type</span><span style="color: blue">=</span>'<span style="color: blue">raw</span>'
+        <span style="color: red">Root</span><span style="color: blue">=</span>'<span style="color: blue">HKLM</span>' 
+        <span style="color: red">Key</span><span style="color: blue">=</span>'<span style="color: blue">SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5</span>' 
+        <span style="color: red">Name</span><span style="color: blue">=</span>'<span style="color: blue">Install</span>' <span style="color: blue">/>
+    </</span><span style="color: #a31515">Property</span><span style="color: blue">>
+
+    <</span><span style="color: #a31515">Condition 
+      </span><span style="color: red">Message</span><span style="color: blue">=</span>"<span style="color: blue">.NET Framework 3.5 is not installed, go pound salt.</span>"<span style="color: blue">>
+      </span>Installed OR (NET_FRAMEWORK_INSTALLED = "#1" AND NOT Installed)
+    <span style="color: blue"></</span><span style="color: #a31515">Condition</span><span style="color: blue">>
+
+    </span>Do other things...
+    
+  <span style="color: blue"></</span><span style="color: #a31515">Product</span><span style="color: blue">></span><span style="color: blue">
+</</span><span style="color: #a31515">Wix</span><span style="color: blue">></span></pre><a href="http://11011.net/software/vspaste"></a>You can also check the exact version by looking at the "Version" reg value. Since this value is a string it will not be prefixed (Unless the first character is a pound sign, <a href="http://wix.sourceforge.net/manual-wix2/wix_xsd_registrysearch.htm">see the docs for more info</a>). 

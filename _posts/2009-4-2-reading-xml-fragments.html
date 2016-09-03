@@ -1,0 +1,111 @@
+---
+layout: post
+title: Reading Xml Fragments
+tags: [XML/XSL, Logging, C#, .NET 3.5]
+redirect_from:
+  - /blog/2009/04/reading-xml-fragments.html
+---
+<p>Today I wanted to setup a debugging page to read the trace log for our prototype WCF services and display the last 10 messages that have come across the wire. I'm using the XmlWriterTraceListener to write the entries. The XmlWriterTraceListener writes Xml fragments to the log file.&#160; This is good and all but the problem is <strong>reading</strong> in the log. Since a well formed xml file can only have one root element the log cant be successfully parsed (As far as I could tell anyway's, if anyone knows of another way please let me know). So the only decent solution I could come up with was to create a reader that injects a root element.&#160; The usage is simple, just pass in a stream or stream reader and the name of the root element:</p><pre class="code"><span style="color: #2b91af">XDocument </span>log = <span style="color: #2b91af">XDocument</span>.Load(
+    <span style="color: blue">new </span><span style="color: #2b91af">XmlFragmentTextReader</span>(
+        <span style="color: blue">new </span><span style="color: #2b91af">FileStream</span>(
+            <span style="color: #a31515">@"D:\Logs\Wcf.log"</span>, 
+            <span style="color: #2b91af">FileMode</span>.Open, 
+            <span style="color: #2b91af">FileAccess</span>.Read, 
+            <span style="color: #2b91af">FileShare</span>.ReadWrite), 
+         <span style="color: #a31515">"root"</span>));
+
+<span style="color: blue">var </span>entries = <span style="color: blue">from </span>entry <span style="color: blue">in </span>log.Element(<span style="color: #a31515">"root"</span>)
+                  .Elements(
+                    <span style="color: #2b91af">XName</span>.Get(
+                    <span style="color: #a31515">"E2ETraceEvent"</span>, 
+                    <span style="color: #a31515">"http://schemas.microsoft.com/2004/06/E2ETraceEvent"</span>))
+              <span style="color: blue">select </span>entry;
+
+<span style="color: blue">foreach </span>(<span style="color: #2b91af">XElement </span>entry <span style="color: blue">in </span>entries)
+{
+    <span style="color: green">// Do Something...
+</span>}</pre>
+<p><a href="http://11011.net/software/vspaste"></a>Here is the implementation. Since the read/peek methods in the readers in the BCL are not virtual I'm forced to choose aggregation over inheritance. Only the Read and Peek methods need to be implemented as all other methods call these in the base TextReader class.</p><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a><pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">XmlFragmentTextReader </span>: <span style="color: #2b91af">TextReader
+</span>{
+    <span style="color: blue">#region </span>Private Members
+
+        <span style="color: blue">private enum </span><span style="color: #2b91af">Location
+        </span>{ RootOpen, Fragments, RootClose }
+
+        <span style="color: blue">private </span><span style="color: #2b91af">StreamReader </span>_fragmentReader;
+        <span style="color: blue">private </span><span style="color: #2b91af">Location </span>_location = <span style="color: #2b91af">Location</span>.RootOpen;
+        <span style="color: blue">private int </span>_index = 0;
+        <span style="color: blue">private char</span>[] _rootOpenBuffer;
+        <span style="color: blue">private char</span>[] _rootCloseBuffer;
+
+    <span style="color: blue">#endregion
+
+    #region </span>Constructors
+
+        <span style="color: blue">public </span>XmlFragmentTextReader(<span style="color: #2b91af">StreamReader </span>reader, 
+            <span style="color: blue">string </span>rootElementName) : <span style="color: blue">base</span>()
+        {
+            _fragmentReader = reader;
+            _rootOpenBuffer = <span style="color: blue">string</span>.Format(<span style="color: #a31515">"<{0}>\r\n"</span>, 
+                rootElementName).ToCharArray();
+            _rootCloseBuffer = <span style="color: blue">string</span>.Format(<span style="color: #a31515">"\r\n</{0}>"</span>, 
+                rootElementName).ToCharArray();
+        }
+
+        <span style="color: blue">public </span>XmlFragmentTextReader(<span style="color: #2b91af">Stream </span>stream, 
+            <span style="color: blue">string </span>rootElementName) : 
+            <span style="color: blue">this</span>(<span style="color: blue">new </span><span style="color: #2b91af">StreamReader</span>(stream), rootElementName) { }
+
+    <span style="color: blue">#endregion
+
+    #region </span>Overridden Methods
+
+        <span style="color: blue">public override int </span>Peek()
+        {
+            <span style="color: blue">switch </span>(_location)
+            {
+                <span style="color: blue">case </span><span style="color: #2b91af">Location</span>.RootOpen:
+                    <span style="color: blue">return </span>_rootOpenBuffer[_index];
+                <span style="color: blue">case </span><span style="color: #2b91af">Location</span>.Fragments:
+                    <span style="color: blue">return </span>_fragmentReader.Peek();
+                <span style="color: blue">case </span><span style="color: #2b91af">Location</span>.RootClose:
+                    <span style="color: blue">return </span>_rootCloseBuffer[_index];
+                <span style="color: blue">default </span>: <span style="color: blue">return </span>- 1;
+            }
+        }
+
+        <span style="color: blue">public override int </span>Read()
+        {
+            <span style="color: blue">switch </span>(_location)
+            {
+                <span style="color: blue">case </span><span style="color: #2b91af">Location</span>.RootOpen:
+                    <span style="color: blue">if </span>(_index < _rootOpenBuffer.Length)
+                        <span style="color: blue">return </span>_rootOpenBuffer[_index++];
+                    <span style="color: blue">else
+                    </span>{
+                        _location = <span style="color: #2b91af">Location</span>.Fragments;
+                        <span style="color: blue">return </span>Read();
+                    }
+                <span style="color: blue">case </span><span style="color: #2b91af">Location</span>.Fragments:
+                    <span style="color: blue">if </span>(!_fragmentReader.EndOfStream)
+                        <span style="color: blue">return </span>_fragmentReader.Read();
+                    <span style="color: blue">else
+                    </span>{
+                        _location = <span style="color: #2b91af">Location</span>.RootClose;
+                        _index = 0;
+                        <span style="color: blue">return </span>Read();
+                    }
+                <span style="color: blue">case </span><span style="color: #2b91af">Location</span>.RootClose:
+                    <span style="color: blue">if </span>(_index < _rootCloseBuffer.Length)
+                        <span style="color: blue">return </span>_rootCloseBuffer[_index++];
+                    <span style="color: blue">else return </span>-1;
+                <span style="color: blue">default</span>: <span style="color: blue">return </span>-1;
+            }
+        }
+
+        <span style="color: blue">public override void </span>Close()
+        { _fragmentReader.Close(); }
+
+    <span style="color: blue">#endregion
+</span>}</pre><a href="http://11011.net/software/vspaste"></a>
+<p>Like I said, if anyone knows of a better way please drop me a line! </p>

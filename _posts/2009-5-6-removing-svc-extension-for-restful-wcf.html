@@ -1,0 +1,96 @@
+---
+layout: post
+title: Removing the .svc Extension for RESTful WCF Services
+tags: [REST, WCF]
+redirect_from:
+  - /blog/2009/05/removing-svc-extension-for-restful-wcf.html
+---
+<p>This has been done over and over on the web so I'll add my solution to the mix. Basically it automatically discovers the services in the web application and builds a static mapping table. Then it examines each request and attempts to find a mapping. If it finds one it performs the url rewriting, if not it lets it go though as is. Just register the module and your good to go.</p> <p>Http Module:</p><pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">ServiceAnonymityModule </span>: <span style="color: #2b91af">IHttpModule
+</span>{
+    <span style="color: blue">#region </span>IHttpModule Implementation
+
+        <span style="color: blue">public void </span>Dispose() { }
+
+        <span style="color: blue">public void </span>Init(<span style="color: #2b91af">HttpApplication </span>app)
+        {
+            app.BeginRequest +=
+                (s, e) => <span style="color: #2b91af">ServiceAnonymityMapper</span>.EnsureServiceMapping();
+        }
+
+    <span style="color: blue">#endregion
+</span>}</pre><a href="http://11011.net/software/vspaste"></a>
+<p>Mapping:</p><pre class="code"><span style="color: blue">public static class </span><span style="color: #2b91af">ServiceAnonymityMapper
+</span>{
+    <span style="color: blue">#region </span>Private Fields
+
+        <span style="color: blue">private static </span><span style="color: #2b91af">IEnumerable</span><<span style="color: #2b91af">KeyValuePair</span><<span style="color: blue">string</span>, <span style="color: blue">string</span>>> serviceMapping;
+
+    <span style="color: blue">#endregion
+
+    #region </span>Static Constructor
+
+        <span style="color: blue">static </span>ServiceAnonymityMapper()
+        { serviceMapping = GetServiceMapping(); }
+
+    <span style="color: blue">#endregion
+
+    #region </span>Public Methods
+
+        <span style="color: blue">public static void </span>EnsureServiceMapping()
+        {
+            <span style="color: blue">string </span>path = <span style="color: #2b91af">HttpContext</span>.Current.Request.AppRelativeCurrentExecutionFilePath;
+
+            <span style="color: #2b91af">Func</span><<span style="color: #2b91af">KeyValuePair</span><<span style="color: blue">string</span>, <span style="color: blue">string</span>>, <span style="color: blue">bool</span>> serviceMatch = map =>
+                !path.StartsWith(map.Value) &&
+                (
+                    path.StartsWith(map.Key + <span style="color: #a31515">'?'</span>, <span style="color: #2b91af">StringComparison</span>.OrdinalIgnoreCase) ||
+                    path.StartsWith(map.Key + <span style="color: #a31515">'/'</span>, <span style="color: #2b91af">StringComparison</span>.OrdinalIgnoreCase) ||
+                    <span style="color: blue">string</span>.Compare(path, map.Key, <span style="color: blue">true</span>) == 0
+                );
+
+            <span style="color: #2b91af">KeyValuePair</span><<span style="color: blue">string</span>, <span style="color: blue">string</span>> mapping =
+                serviceMapping.FirstOrDefault(serviceMatch);
+
+            <span style="color: blue">if </span>(mapping.Key != <span style="color: blue">null </span>&& mapping.Value != <span style="color: blue">null</span>)
+            {
+                <span style="color: #2b91af">HttpContext</span>.Current.RewritePath(
+                    mapping.Value + <span style="color: #a31515">"/"</span>, 
+                    path.Remove(0, mapping.Key.Length),
+                    <span style="color: #2b91af">HttpContext</span>.Current.Request.QueryString.ToString(),
+                    <span style="color: blue">false</span>);
+            }
+        }
+
+    <span style="color: blue">#endregion
+
+    #region </span>Private Methods
+
+        <span style="color: blue">private static </span><span style="color: #2b91af">IEnumerable</span><<span style="color: #2b91af">KeyValuePair</span><<span style="color: blue">string</span>, <span style="color: blue">string</span>>> GetServiceMapping()
+        {
+            <span style="color: #2b91af">List</span><<span style="color: #2b91af">KeyValuePair</span><<span style="color: blue">string</span>, <span style="color: blue">string</span>>> serviceMapping =
+                <span style="color: blue">new </span><span style="color: #2b91af">List</span><<span style="color: #2b91af">KeyValuePair</span><<span style="color: blue">string</span>, <span style="color: blue">string</span>>>();
+
+            <span style="color: blue">string </span>webRoot = <span style="color: #2b91af">HttpContext</span>.Current.Server.MapPath(<span style="color: #a31515">"~/"</span>);
+            <span style="color: blue">string</span>[] serviceFiles = <span style="color: #2b91af">Directory</span>.GetFiles(
+                webRoot, <span style="color: #a31515">"*.svc"</span>, <span style="color: #2b91af">SearchOption</span>.AllDirectories);
+
+            <span style="color: #2b91af">Func</span><<span style="color: blue">string</span>, <span style="color: blue">bool</span>, <span style="color: blue">string</span>> getRelative = (path, ext) =>
+                <span style="color: #a31515">"~/" </span>+
+                <span style="color: #2b91af">Path</span>.Combine(<span style="color: #2b91af">Path</span>.GetDirectoryName(path),
+                    ext ?
+                        <span style="color: #2b91af">Path</span>.GetFileNameWithoutExtension(path) :
+                        <span style="color: #2b91af">Path</span>.GetFileName(path))
+                    .Remove(0, webRoot.Length).Replace(<span style="color: #a31515">'\\'</span>, <span style="color: #a31515">'/'</span>);
+
+            <span style="color: blue">var </span>servicePaths = <span style="color: blue">from </span>servicePath <span style="color: blue">in </span>serviceFiles
+                               <span style="color: blue">orderby </span>servicePath.Length <span style="color: blue">descending
+                               select new </span><span style="color: #2b91af">KeyValuePair</span><<span style="color: blue">string</span>, <span style="color: blue">string</span>>(
+                                    getRelative(servicePath, <span style="color: blue">true</span>),
+                                    getRelative(servicePath, <span style="color: blue">false</span>));
+
+            serviceMapping.AddRange(servicePaths);
+            <span style="color: blue">return </span>serviceMapping;
+        }
+
+    <span style="color: blue">#endregion
+</span>}</pre><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a>

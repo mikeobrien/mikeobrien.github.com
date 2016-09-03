@@ -1,0 +1,41 @@
+---
+layout: post
+title: Does the Razor View Engine Support Generic Methods?
+tags: [Razor View Engine, ASP.NET MVC]
+redirect_from:
+  - /blog/2010/09/does-razor-view-engine-support-generic.html
+---
+<p>Trying out the Razor view engine and for some reason my generic helper methods are breaking. For example:</p>  <pre class="code"><span style="color: blue">public static class </span><span style="color: #2b91af">UrlHelperExtensions
+</span>{
+    <span style="color: blue">public static string </span>NonGenericHelper(<span style="color: blue">this </span><span style="color: #2b91af">UrlHelper </span>helper, <span style="color: #2b91af">Type </span>controller)
+    {
+        <span style="color: blue">return </span>controller.Name;
+    }
+
+    <span style="color: blue">public static string </span>GenericHelper&lt;TController&gt;(<span style="color: blue">this </span><span style="color: #2b91af">UrlHelper </span>helper)
+    {
+        <span style="color: blue">return typeof</span>(TController).Name;
+    }
+}</pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>Works as expected:</p>
+
+<pre class="code">@Url.NonGenericHelper(typeof(ProjectEuler.UI.Models.Home))</pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>Breaks with the following exception:</p>
+
+<pre class="code">@Url.GenericHelper<span style="color: blue">&lt;</span><span style="color: maroon">ProjectEuler.UI.Models.Home</span><span style="color: blue">&gt;</span>()</pre>
+
+<p><a href="http://11011.net/software/vspaste"></a>&quot;CS1502: The best overloaded method match for 'Microsoft.WebPages.WebPageUltimateBase.Write(Microsoft.WebPages.Helpers.HelperResult)' has some invalid arguments&quot; </p>
+
+<p>The only workaround I could find is treating it as a <a href="http://weblogs.asp.net/scottgu/archive/2010/07/02/introducing-razor.aspx">&quot;multi-token statement&quot;</a>:</p>
+
+<pre class="code">@(Url.GenericHelper<span style="color: blue">&lt;</span><span style="color: maroon">ProjectEuler.UI.Models.Home</span><span style="color: blue">&gt;</span>())</pre>
+
+<p><a href="http://11011.net/software/vspaste"></a>Not sure if this is the intended behavior or just a bug but it would be nice to be able to call a generic method as you would a non generic one. </p>
+
+<p></p>
+
+<p><font color="#ff0000">Update: </font><a href="http://forums.asp.net/p/1598699/4060826.aspx#4060826"><font color="#ff0000">Brad Wilson mentions the following</font></a><font color="#ff0000">: <em>&quot;That is the intended behavior, because otherwise the parser would not be able to tell the difference between a generic and a piece of HTML content. Using the surrounding ( ) disambiguates it.&quot;</em></font></p>  

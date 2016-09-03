@@ -1,0 +1,92 @@
+---
+layout: post
+title: Folding and Unfolding in F# and Linq
+tags: [F#]
+redirect_from:
+  - /blog/2009/08/folding-and-unfolding-in-f-and-linq.html
+---
+<p>I'll say up front that there is a lot of good information out there about this from folks who actually know what their doing... :) I'm mainly blogging about this to help me understand and remember it. One of the best resources I found is <a href="http://codebetter.com/blogs/matthew.podwysocki">Matthew Podwysocki's blog</a>. He blogs regularly about FP and has some nice posts on folds <a href="http://codebetter.com/blogs/matthew.podwysocki/archive/2008/06/16/functional-c-learn-from-f-and-linq.aspx">here</a> and <a href="http://codebetter.com/blogs/matthew.podwysocki/archive/2009/02/14/fun-with-folds.aspx">here</a>.</p> <p><strong>Folding</strong></p><a href="http://11011.net/software/vspaste"></a> <p>So a fold basically takes a sequence and turns it (Or "folds" it) into a single result. So for example if you have an array of integers you want to add together. Folds come in 2 flavors, right and left. Right folds iterate from the last element the the first whereas left folds iterate from the first element to the last. A right fold is not available out of the box for an F# sequence (Which is an IEnumerable) or Enumerable/Queryable since the last element of an enumeration is unknown and the enumeration could possibly be infinite (Although there are ways to make a right fold out of a left fold as seen <a href="http://community.bartdesmet.net/blogs/bart/archive/2008/08/17/folding-left-right-and-the-linq-aggregation-operator.aspx">here</a>). In the case of summation it doesn't really matter which direction we fold since addition is commutative. Folding can be done with the following:</p> <p><span style="widows: 2; text-transform: none; text-indent: 0px; border-collapse: separate; font: 13px arial; white-space: normal; orphans: 2; letter-spacing: normal; color: rgb(0,0,0); word-spacing: 0px; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px" class="Apple-style-span"><span style="border-collapse: collapse; font-family: arial; white-space: pre; -webkit-border-horizontal-spacing: 2px; -webkit-border-vertical-spacing: 2px" class="Apple-style-span">F#</span></span></p> <p><font size="2" face="Courier New">Microsoft.FSharp.Collections.List<br></font><pre class="code"><span style="color: blue">val </span>fold : ('State <span style="color: blue">-> </span>'T <span style="color: blue">-> </span>'State) <span style="color: blue">-> </span>'State <span style="color: blue">-> </span>'T list <span style="color: blue">-> </span>'State
+<span style="color: blue">val </span>foldBack : ('T <span style="color: blue">-> </span>'State <span style="color: blue">-> </span>'State) <span style="color: blue">-> </span>'T list <span style="color: blue">-> </span>'State <span style="color: blue">-> </span>'State</pre><a href="http://11011.net/software/vspaste"></a>
+<p><font size="2" face="Courier New">Microsoft.FSharp.Collections.Seq<br></font><pre class="code"><span style="color: blue">val </span>fold : ('State <span style="color: blue">-> </span>'T <span style="color: blue">-> </span>'State) <span style="color: blue">-> </span>'State <span style="color: blue">-> </span>seq<'T> <span style="color: blue">-> </span>'State</pre><a href="http://11011.net/software/vspaste"></a>
+<p>Linq:</p><pre class="code"><span style="color: blue">public static </span>TResult Aggregate<TSource, TAccumulate, TResult>(
+    <span style="color: blue">this </span><span style="color: #2b91af">IEnumerable</span><TSource> source,
+    TAccumulate seed,
+    <span style="color: #2b91af">Func</span><TAccumulate, TSource, TAccumulate> func
+) 
+
+<span style="color: blue">public static </span>TResult Aggregate<TSource, TAccumulate, TResult>(
+    <span style="color: blue">this </span><span style="color: #2b91af">IQueryable</span><TSource> source,
+    TAccumulate seed,
+    Expression<<span style="color: #2b91af">Func</span><TAccumulate, TSource, TAccumulate>> func
+)</pre><a href="http://11011.net/software/vspaste"></a>
+<p><font size="2" face="Courier New"></font>
+<p>Folds take an accumulator function that operates on each element and a seed value. The function that operates on each element is passed the element and current state and returns the new state. So addition using a left fold would be as follows:</p>
+<p>F#</p><pre class="code"><span style="color: blue">let </span>values = [1; 5; 22; 45] 
+<span style="color: green">// List.fold [function [state] [item]] [seed] [list]
+</span><span style="color: blue">let </span>total = List.fold (<span style="color: blue">fun </span>state item <span style="color: blue">-> </span>state + item) 0 values</pre><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a>
+<p>Linq/C#</p><pre class="code"><span style="color: blue">int</span>[] values = { 1, 5, 22, 45 };
+<span style="color: green">// [IEnumerable/IQueryable].Aggregate([seed], [function [state], [item]])
+</span><span style="color: blue">int </span>total = values.Aggregate(0, (state, item) => state + item);</pre>
+<p><a href="http://11011.net/software/vspaste"></a>The F# foldBack function, a right fold, is similar to the fold function except that it starts with the last element and works toward the first.</p>
+<p><strong>Folds Using the First or Last Element as a Seed</strong></p>
+<p>There are also times where you might want to use the first or last element as the seed. For example if you wanted to create a comma separated list of elements in an array you might use the String.Join() method in .NET. This creates a string that contains the elements separated by a specified value. In this case first element is simply a seed and the other elements are concatenated with the specified value (Like a comma). We can do this with the following:</p>
+<p>F#:</p>
+<p><font size="2" face="Courier New">Microsoft.FSharp.Collections.List</font></p><pre class="code"><span style="color: blue">val </span>reduce : ('T <span style="color: blue">-> </span>'T <span style="color: blue">-> </span>'T) <span style="color: blue">-> </span>'T list <span style="color: blue">-> </span>'T
+<span style="color: blue">val </span>reduceBack : ('T <span style="color: blue">-> </span>'T <span style="color: blue">-> </span>'T) <span style="color: blue">-> </span>'T list <span style="color: blue">-> </span>'T</pre><a href="http://11011.net/software/vspaste"></a>
+<p><font size="2" face="Courier New">Microsoft.FSharp.Collections.Seq</font></p><pre class="code"><span style="color: blue">val </span>reduce : ('T <span style="color: blue">-> </span>'T <span style="color: blue">-> </span>'T) <span style="color: blue">-> </span>seq<'T> <span style="color: blue">-> </span>'T</pre><a href="http://11011.net/software/vspaste"></a>
+<p>Linq:</p><pre class="code"><span style="color: blue">public static </span>TSource Aggregate<TSource>(
+    <span style="color: blue">this </span><span style="color: #2b91af">IEnumerable</span><TSource> source,
+    <span style="color: #2b91af">Func</span><TSource, TSource, TSource> func
+)
+
+<span style="color: blue">public static </span>TSource Aggregate<TSource>(
+    <span style="color: blue">this </span><span style="color: #2b91af">IQueryable</span><TSource> source,
+    Expression<<span style="color: #2b91af">Func</span><TSource, TSource, TSource>> func
+)</pre><a href="http://11011.net/software/vspaste"></a>
+<p>When using F# the reduce function, the first element is the seed, on the other hand when using the F# reduceBack function the last element is the seed. Note that the Linq version is simply an overload of Aggregate method that does not take a seed. Lets say we have a list of strings we want to join together into a comma separated list:</p>
+<p>F#:</p><pre class="code"><span style="color: blue">let </span>values = [<span style="color: maroon">"Alpha"</span>;<span style="color: maroon">"Beta"</span>;<span style="color: maroon">"Gamma"</span>;<span style="color: maroon">"Delta"</span>]<span style="color: blue"><font color="#000000"> 
+</font><span style="color: green">// List.reduce [function [state] [item]] [list]
+</span>let </span>value = values |> List.reduce (<span style="color: blue">fun </span>state item <span style="color: blue">-> </span>state + <span style="color: maroon">", " </span>+ item) </pre>
+<p><a href="http://11011.net/software/vspaste"></a>Linq/C#:</p><pre class="code"><span style="color: blue">string</span>[] values = { <span style="color: #a31515">"Alpha"</span>, <span style="color: #a31515">"Beta"</span>, <span style="color: #a31515">"Gamma"</span>, <span style="color: #a31515">"Delta" </span>};
+<span style="color: green">// [IEnumerable/IQueryable].Aggregate([function [state], [item]])
+</span><span style="color: blue">string </span>value = values.Aggregate((state, item) => state + <span style="color: #a31515">", " </span>+ item);</pre><a href="http://11011.net/software/vspaste"></a>
+<p>This produces the string <strong><font color="#008000" size="2" face="Courier New">Alpha, Beta, Gamma, Delta</font></strong> </p>
+<p>The calls to the accumulator looks like this: </p><pre class="code">1) (<span style="color: blue">fun </span><span style="color: maroon">"Alpha" "Beta" </span><span style="color: blue">-> </span><span style="color: maroon">"Alpha" </span>+ <span style="color: maroon">", " </span>+ <span style="color: maroon">"Beta"</span>)
+2) (<span style="color: blue">fun </span><span style="color: maroon">"Alpha, Beta" "Gamma" </span><span style="color: blue">-> </span><span style="color: maroon">"Alpha, Beta" </span>+ <span style="color: maroon">", " </span>+ <span style="color: maroon">"Gamma"</span>)
+3) (<span style="color: blue">fun </span><span style="color: maroon">"Alpha, Beta, Gamma" "Delta" </span><span style="color: blue">-> </span><span style="color: maroon">"Alpha, Beta, Gamma" </span>+ <span style="color: maroon">", " </span>+ <span style="color: maroon">"Delta"</span>)</pre><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a>
+<p><strong>Map/Reduce</strong></p>
+<p>Now what if you have a list of one type but want to reduce it to another. For example, what if we have a list of integers we want to reduce to a comma separated string. In that case we can us a map/reduce approach (See a recent discussion about this <a href="http://cs.hubfs.net/forums/11583/ShowThread.aspx">here</a> on hubFS, mad props to Kha). First we map every element in the array to a string then reduce results:</p>
+<p>F#</p><pre class="code"><span style="color: blue">let </span>primes = [2;3;5;7]  
+<span style="color: green">// Seq.map [function [item]] [list]
+// Seq.reduce [function [state] [item]] [list]
+</span><span style="color: blue">let </span>output = 
+    primes 
+    |> Seq.map (<span style="color: blue">fun </span>i <span style="color: blue">-> </span>i.ToString()) 
+    |> Seq.reduce (<span style="color: blue">fun </span>state item <span style="color: blue">-> </span>state + <span style="color: maroon">", " </span>+ item)</pre><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a>
+<p>Linq/C#:</p><pre class="code"><span style="color: blue">int</span>[] primes = { 2, 3, 5, 7 };
+<span style="color: green">// [IEnumerable/IQueryable].Select([function [item]])
+// [IEnumerable/IQueryable].Aggregate([function [state], [item]])
+</span><span style="color: blue">string </span>value = primes.Select(i => i.ToString()).Aggregate((state, item) => state + <span style="color: #a31515">", " </span>+ item);</pre><a href="http://11011.net/software/vspaste"></a>
+<p>This first converts the integer sequence to a list of strings. We could also format the strings as desired, for example if we were converting a list of datetimes or real numbers. Then that converted list can be reduced. Note that the reduce/Aggregate function requires that the state value be of the same type as the elements thus the need for the map/Select to convert them first.</p>
+<p>One thing to note about folds is that many other functions in F# and Linq are based on folds. For example the F# sum and Linq Sum functions are really just folds, as are others.</p>
+<p><strong>Unfolding</strong></p>
+<p>Now you may interested in doing the opposite of a fold; taking a single value and turning it into a list, or "unfolding" it. Linq doesn't offer an unfold function out of the box as of .NET 3.5 but Matthew Podwysocki discusses and implementation in C# <a href="http://codebetter.com/blogs/matthew.podwysocki/archive/2008/06/12/functional-c-unfolding-lists.aspx">here</a>. F# offers an unfold method in the Seq module:</p>
+<p><font size="2" face="Courier New">Microsoft.FSharp.Collections.Seq</font></p><pre class="code"><span style="color: blue">val </span>unfold : ('State <span style="color: blue">-> </span>('T * 'State) option) <span style="color: blue">-> </span>'State <span style="color: blue">-> </span>seq<'T></pre>
+<p>As a very simple example lets generate the even numbers between zero and ten:</p><pre class="code"><span style="color: green">// Seq.unfold [function [currentState]] [initialState]
+</span><span style="color: blue">let </span>values = Seq.unfold (<span style="color: blue">fun </span>state <span style="color: blue">-> </span>Some (state, 2 + state)) 0
+<span style="color: blue">let </span>output = 
+    values 
+    |> Seq.takeWhile(<span style="color: blue">fun </span>i <span style="color: blue">-> </span>i <= 10) 
+    |> Seq.map (<span style="color: blue">fun </span>i <span style="color: blue">-> </span>i.ToString()) 
+    |> Seq.reduce (<span style="color: blue">fun </span>state item <span style="color: blue">-> </span>state + <span style="color: maroon">", " </span>+ item)</pre>
+<p>This produces <strong><font color="#008000" size="2" face="Courier New">0, 2, 4, 6, 8, 10</font></strong>.</p>
+<p>So lets take a look at the unfold function. The first parameter is an generator function that accepts the current state. For the first iteration, the value passed in is the initial state parameter, which is the second parameter passed to the unfold function (To get things started) which is zero in the example above. The generator function must return an option type of a two element tuple. The first element of the tuple is the item to be yielded and the second element is the state to pass on the generator function in the next iteration (Which in the example above is the current state plus two). You return Some when there are results or None when there are no more results. In cases where the sequence is infinite you would never pass None (As is the case in the example above). </p>
+<p>As more complex example (And one that shows the true power of unfold) we can generate the Fibonacci sequence (As Erik describes <a href="http://geekswithblogs.net/Erik/archive/2008/01/18/118664.aspx">here</a>). Lets say we want elements of the Fibonacci sequence that are less than 50. </p><pre class="code"><span style="color: blue">let </span>fib = Seq.unfold (<span style="color: blue">fun </span>(lastValue, currentValue) <span style="color: blue">-> </span>Some (lastValue, (currentValue, lastValue + currentValue))) (1, 1)
+<span style="color: blue">let </span>output = 
+    fib 
+    |> Seq.takeWhile(<span style="color: blue">fun </span>i <span style="color: blue">-> </span>i <= 50) 
+    |> Seq.map (<span style="color: blue">fun </span>i <span style="color: blue">-> </span>i.ToString()) 
+    |> Seq.reduce (<span style="color: blue">fun </span>state item <span style="color: blue">-> </span>state + <span style="color: maroon">", " </span>+ item)</pre><a href="http://11011.net/software/vspaste"></a>
+<p>This produces <strong><font color="#008000" size="2" face="Courier New">1, 1, 2, 3, 5, 8, 13, 21, 34</font></strong></p>
+<p>You'll notice in this case that the state is now a two element tuple, the first element being the last value and the second element being the current value. </p>
+<p>Folding/unfolding are very powerful concepts. I've found that learning these functional concepts has really helped my imperative programming as these concepts enable you to create very succinct yet expressive code. Chuck Jazdzewski <a href="http://www.removingalldoubt.com/permalink.aspx/6080a8a8-bb63-4492-acd2-1398f086fca0">expressed it well</a> on his blog where he quoted the professor teaching his APL course; "If you are using a loop, you're doing it wrong"... Well said. </p>

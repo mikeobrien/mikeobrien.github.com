@@ -1,0 +1,86 @@
+---
+layout: post
+title: Prototyping in Lua
+tags: [JavaScript, Lua, Prototypal]
+redirect_from:
+  - /blog/2011/12/prototyping-in-lua.html
+---
+<p>One of the hardest things to get my head around in JavaScript (Besides "<a href="http://www.quirksmode.org/js/this.html">this</a>") was prototyping. I wasn't sure if it was prototyping itself that was hard to grok (It seemed amazingly simple to me in principle) or if it was how JavaScript implemented it. I thought it would be an interesting exercise to explore how another prototypal language worked to see where the difficulty lay. So let's take a look at how <a href="http://www.lua.org/">Lua</a> implements prototyping (Disclaimer: I only have a passing knowledge of Lua so please excuse my na&#239;vet&#233;).</p>  <p>Lua "<a href="http://www.lua.org/pil/16.html">tables</a>" form the basis of objects. They are essentially hash tables, &#224; la JavaScript objects. Prototyping in Lua is <a href="http://www.lua.org/pil/16.1.html">enabled by two actions</a>; first setting the objects' metatable (Which can be any table) and second, setting the prototype field in that metatable (Which is the __index field). Here is how it works (NB: see <a href="http://www.lua.org/pil/16.html">here about the use of colon vs. dot</a>. Compare it to call/apply in JavaScript):</p>  <pre class="code csharpcode"><span class="rem">-- Create the prototype</span>
+Greeting = { hello = <span class="str">'hello'</span> }
+
+<span class="kwrd">function</span> Greeting:say_hello()
+    <span class="kwrd">print</span>(self.hello)
+<span class="kwrd">end</span>
+
+<span class="rem">-- Create an object</span>
+lolcat = { hello = <span class="str">'hai'</span> }
+
+<span class="rem">-- Set the meta table (A table where metadata is held), in this case we'll just set it to be the object itself</span>
+setmetatable(lolcat, lolcat)
+
+<span class="rem">-- Set the prototype</span>
+lolcat.__index = Greeting</pre>
+<style type="text/css">
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style>
+
+<p>Other than the setting of the metatable I'd have to say this is incredibly straight forward. You can encapsulate the creation logic into a constructor which simplifies the process:</p>
+
+<pre class="code csharpcode"><span class="rem">-- Constructor</span>
+<span class="kwrd">function</span> Greeting:<span class="kwrd">new</span>(o)
+    o = o <span class="kwrd">or</span> {}
+    o.__index = self
+    <span class="kwrd">return</span> setmetatable(o, o)
+<span class="kwrd">end</span>
+
+lolcat = Greeting:<span class="kwrd">new</span>{ hello = <span class="str">'hai'</span> }
+
+<span class="rem">-- https://github.com/silentbicycle/lunatest</span>
+assert_equal(<span class="str">'hai'</span>, lolcat.hello)</pre>
+<style type="text/css">
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style>
+
+<p>Although prototyping still presents a mental shift for me the Lua approach feels much cleaner and simpler. I find the dot/colon approach (mentioned above) much cleaner as well.</p>  

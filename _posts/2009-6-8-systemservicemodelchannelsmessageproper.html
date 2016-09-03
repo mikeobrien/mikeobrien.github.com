@@ -1,0 +1,83 @@
+---
+layout: post
+title: "The System.ServiceModel.Channels.MessageProperties object has been disposed." Exception when Accessing IncomingWebRequestContext Properties in Response Code
+tags: [.NET 3.5, WCF]
+redirect_from:
+  - /blog/2009/06/systemservicemodelchannelsmessageproper.html
+---
+<p>Evidentially the request message isn't guaranteed to be around by the time you get to your response code. I found out this the hard way when I was getting sporadic failures accessing properties of the IncomingWebRequestContext in response code. To get around this I just stashed info (While in request code) I was interested in, in the outgoing message properties. Then I retrieve these properties in my response code. </p> <p>Using the outgoing message properties approach is pretty easy. To give you a little background, I have an error handler behavior that attaches a specified error handler to all channel dispatchers in a particular service. I also have a custom error handler that logs exceptions to a specified object that implemented a particular logging interface. This error handler passes the request http info to the logger. Originally I was directly accessing the IncomingWebRequestContext in the HandleError method of the error handler to get this request info and would sporadically get the error in the title. Now in my error handler behavior I'm adding a message inspector that will add the request http info to the outgoing message properties (I'm piggy backing off the error handler behavior to do this because they are so closely related):</p><pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">ErrorHandlerBehavior </span>: <span style="color: #2b91af">IServiceBehavior</span><span style="color: #2b91af">
+</span>{
+    <span style="color: blue">public const string </span>HttpRequestInformationProperty = <span style="color: #a31515">"HttpRequestInformation"</span>;
+
+    <span style="color: blue">public void </span>ApplyDispatchBehavior(
+            <span style="color: #2b91af">ServiceDescription </span>serviceDescription, 
+            <span style="color: #2b91af">ServiceHostBase </span>serviceHostBase)
+    {
+       <span style="color: blue">foreach </span>(<span style="color: #2b91af">ChannelDispatcher </span>dispatcher <span style="color: blue">in 
+                </span>serviceHostBase.ChannelDispatchers)
+       {
+<font color="#008000">            <font color="#008000"><span style="color: green">// Add the error handler...</span>
+
+</font><span style="color: green">            // Add the parameter inspector that gets the request info and</span>
+<span style="color: green">            // stores it in the outgoing message properties</span></font>
+            <span style="color: blue">foreach </span>(<span style="color: #2b91af">EndpointDispatcher </span>endpoint <span style="color: blue">in </span>dispatcher.Endpoints)
+                  endpoint.DispatchRuntime.MessageInspectors.Add(
+                       <span style="color: blue">new </span><span style="color: #2b91af">HttpRequestInformationInspector</span>());
+       }
+    }
+}</pre><a href="http://11011.net/software/vspaste"></a>
+<p>So now error handlers have this info at their disposal. Then in the message inspector we grab the http request info and stash it in the outgoing message properties:</p><pre class="code"><span style="color: blue">private class </span><span style="color: #2b91af">HttpRequestInformationInspector </span>: <span style="color: #2b91af">IDispatchMessageInspector   
+</span>{
+    <span style="color: blue">public object </span>AfterReceiveRequest(<span style="color: blue">ref </span>System.ServiceModel.Channels.<span style="color: #2b91af">Message </span>request, <span style="color: #2b91af">IClientChannel </span>channel, <span style="color: #2b91af">InstanceContext </span>instanceContext)
+    {
+        <span style="color: #2b91af">HttpRequestInformation </span>info = <span style="color: blue">new </span><span style="color: #2b91af">HttpRequestInformation</span>();
+
+        <span style="color: blue">string </span>contentLengthHeader =
+            <span style="color: #2b91af">WebOperationContext</span>.Current.IncomingRequest.Headers[<span style="color: #2b91af">HttpRequestHeader</span>.ContentLength];
+
+        <span style="color: blue">long </span>contentLength;
+        <span style="color: blue">if </span>(!<span style="color: blue">string</span>.IsNullOrEmpty(contentLengthHeader))
+            <span style="color: blue">long</span>.TryParse(contentLengthHeader, <span style="color: blue">out </span>contentLength);
+        <span style="color: blue">else
+            </span>contentLength = -1;
+
+        info.ContentLength = contentLength;
+        info.Uri = <span style="color: #2b91af">OperationContext</span>.Current.IncomingMessageHeaders.To;
+        info.Method = <span style="color: #2b91af">WebOperationContext</span>.Current.IncomingRequest.Method;
+        info.ContentType = <span style="color: #2b91af">WebOperationContext</span>.Current.IncomingRequest.ContentType;
+        info.Accept = <span style="color: #2b91af">WebOperationContext</span>.Current.IncomingRequest.Accept;
+        info.UserAgent = <span style="color: #2b91af">WebOperationContext</span>.Current.IncomingRequest.UserAgent;
+        info.Headers = <span style="color: #2b91af">WebOperationContext</span>.Current.IncomingRequest.Headers;
+
+        <span style="color: #2b91af">OperationContext</span>.Current.OutgoingMessageProperties.Add(
+            HttpRequestInformationProperty, info);
+        <span style="color: blue">return null</span>;
+    }
+
+    <span style="color: blue">public void </span>BeforeSendReply(<span style="color: blue">ref </span>System.ServiceModel.Channels.<span style="color: #2b91af">Message </span>reply, <span style="color: blue">object </span>correlationState) { }
+}</pre><pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">HttpRequestInformation
+</span>{
+    <span style="color: blue">public </span><span style="color: #2b91af">Uri </span>Uri { <span style="color: blue">get</span>; <span style="color: blue">set</span>; }
+    <span style="color: blue">public string </span>Method { <span style="color: blue">get</span>; <span style="color: blue">set</span>; }
+    <span style="color: blue">public string </span>ContentType { <span style="color: blue">get</span>; <span style="color: blue">set</span>; }
+    <span style="color: blue">public long </span>ContentLength { <span style="color: blue">get</span>; <span style="color: blue">set</span>; }
+    <span style="color: blue">public string </span>Accept { <span style="color: blue">get</span>; <span style="color: blue">set</span>; }
+    <span style="color: blue">public string </span>UserAgent { <span style="color: blue">get</span>; <span style="color: blue">set</span>; }
+    <span style="color: blue">public </span><span style="color: #2b91af">WebHeaderCollection </span>Headers { <span style="color: blue">get</span>; <span style="color: blue">set</span>; }
+}</pre><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a>
+<p>Note that I'm manually grabbing the content length from the headers. Interestingly the content length header may not always be present. And its absence may not mean that the content length is zero (That's why I return a negative number if it is absent). The problem is the IncomingWebRequestContext ContentLength property does not check for the existence of the header before it parses it. So if its not there (Which is what's going to happen with a GET request) it will throw a null ref exception (Which can be confusing). I have submitted feedback <a href="https://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=462088">here</a> it you want to read more about this and Microsoft's response. </p>
+<p>So now it's available in response code:</p><pre class="code"><span style="color: blue">public bool </span>HandleError(<span style="color: #2b91af">Exception </span>error)
+{
+    <span style="color: #2b91af">HttpRequestInformation </span>info;
+
+    <span style="color: blue">if </span>(<span style="color: #2b91af">OperationContext</span>.Current.OutgoingMessageProperties.ContainsKey(
+        <span style="color: #2b91af">ErrorHandlerBehavior</span>.HttpRequestInformationProperty))
+        info = (<span style="color: #2b91af">RequestInformation</span>)<span style="color: #2b91af">OperationContext</span>.Current.OutgoingMessageProperties[
+            <span style="color: #2b91af">ErrorHandlerBehavior</span>.HttpRequestInformationProperty];
+    <span style="color: blue">else
+        </span>info = <span style="color: blue">new </span><span style="color: #2b91af">RequestInformation</span>();
+
+    LogHandler.Write(error, info);
+    <span style="color: blue">return true</span>;
+}</pre><a href="http://11011.net/software/vspaste"></a>
+<p>Do you know of a better way to handle this? If so, please leave a comment as I'm not 100% satisfied with this approach and would be interested in a simpler alternative. </p>

@@ -1,0 +1,1302 @@
+---
+layout: post
+title: JavaScript Prototyping Reference
+tags: [JavaScript, CoffeeScript]
+redirect_from:
+  - /blog/2011/12/javascript-prototyping-reference.html
+---
+<p>I've had problems remembering what is actually happening when working with constructor functions and prototyping. I created the following table to demonstrate what's going on. If I'm missing something please let me know as I'm not a JavaScript ninja by any means. </p>  <p>A couple of things to note:</p>  <ul>   <li>The <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object/proto">__proto__ property is deprecated and non standard</a>. I include it only as a way to indicate an object's prototype. </li>    <li>I included the <a href="http://documentcloud.github.com/underscore/#extend">underscore.js extend function</a> only to show how it compares to protypal inheritance in JS or CS. I think the name of this function is not clear. </li>    <li>The <a href="http://documentcloud.github.com/backbone/docs/backbone.html#section-121">backbone.js extend method</a> is functionally equivalent to the <a href="http://jashkenas.github.com/coffee-script/#classes">CoffeeScript extends operator</a>. </li> </ul>  <br /><center>   
+
+
+
+
+<table><tbody>       <tr>         <th colspan="2" style="background-color: #F8F8F8">JavaScript</td></tr> </th>       </tr>        <tr>         <td style="background-color: #fff">           <div align="left">             <pre class="code csharpcode"><span class="kwrd">var</span> x = <span class="kwrd">function</span>() {}</pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+
+        <td style="background-color: #fff">
+          <div align="left">
+            <pre class="code csharpcode">x = {
+    <span class="rem">// Only meaningful for constructors not functions.</span>
+    prototype: { 
+        constructor: x,
+        __proto__: Object.prototype
+    },
+    __proto__: Function.prototype
+}</pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+      </tr>
+
+      <tr>
+        <td style="background-color: #fff">
+          <div align="left">
+            <pre class="code csharpcode"><span class="kwrd">var</span> Y = <span class="kwrd">function</span>(name) {
+    <span class="rem">// In a constructor 'this' refers to the</span>
+    <span class="rem">// new object.</span>
+    <span class="kwrd">this</span>.name = name;
+}
+
+Y.prototype.printName = <span class="kwrd">function</span>() {
+    <span class="rem">// In a method, 'this' refers to the </span>
+    <span class="rem">// declaring object (Unless overridden).</span>
+    console.log(<span class="kwrd">this</span>.name);
+}
+
+<span class="kwrd">var</span> y = <span class="kwrd">new</span> Y(<span class="str">'Fritz London'</span>); </pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+
+        <td style="background-color: #fff">
+          <div align="left">
+            <pre class="code csharpcode">Y = {
+    <span class="rem">// This will be set as the new objects prototype.</span>
+    prototype: { 
+        constructor: Y,
+        __proto__: Object.prototype,
+        printName: <span class="kwrd">function</span>() {
+            console.log(<span class="kwrd">this</span>.name);
+        }
+    },
+    __proto__: Function.prototype
+}
+
+y = {
+    __proto__: Y.prototype,
+    name: <span class="str">'Fritz London'</span>
+}</pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+      </tr>
+
+      <tr>
+        <td style="background-color: #fff">
+          <div align="left">
+            <pre class="code csharpcode"><span class="kwrd">var</span> z = { name: <span class="str">'Richard Feynman'</span> }</pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+
+        <td style="background-color: #fff">
+          <div align="left">
+            <pre class="code csharpcode">z = {
+    __proto__: Object.prototype,
+    name: <span class="str">'Richard Feynman'</span>
+}</pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+      </tr>
+
+      <tr>
+        <td style="background-color: #fff">
+          <div align="left">
+            <pre class="code csharpcode"><span class="kwrd">var</span> a = { name: <span class="str">'Werner Heisenberg'</span> }
+
+<span class="kwrd">var</span> createObject = <span class="kwrd">function</span>(prototype) {
+    <span class="kwrd">var</span> F = <span class="kwrd">function</span>() {};
+    F.prototype = prototype;
+    <span class="kwrd">return</span> <span class="kwrd">new</span> F();
+}
+
+<span class="kwrd">var</span> b = createObject(a);
+<span class="rem">// Or the built in</span>
+<span class="kwrd">var</span> b = Object.create(a);</pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+
+        <td style="background-color: #fff">
+          <div align="left">
+            <pre class="code csharpcode">a = {
+    __proto__: Object.prototype,
+    name: <span class="str">'Werner Heisenberg'</span>
+}
+
+F = {
+    prototype: a,
+    __proto__: Function.prototype
+}
+
+b = {
+    __proto__: a
+}</pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+      </tr>
+
+      <tr>
+        <th colspan="2" style="background-color: #F8F8F8">CoffeeScript</td></tr> </th>
+      </tr>
+
+      <tr>
+        <td style="background-color: #fff">
+          <div align="left">
+            <pre class="code csharpcode"><span class="kwrd">class</span> Parent
+    constructor: -&gt;
+        <span class="preproc">@id</span> = ++Parent.identity
+    name: <span class="str">'Niels Bohr'</span>
+    @identity: 0</pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+
+        <td style="background-color: #fff">
+          <div align="left">
+            <pre class="code csharpcode"><span class="kwrd">function</span> Parent() {
+    <span class="kwrd">this</span>.id = ++Parent.identity;
+}
+Parent.prototype.name = <span class="str">'Niels Bohr'</span>;
+Parent.identity = 0;
+
+redirect_from:
+  - /blog/2011/12/javascript-prototyping-reference.html
+---
+
+Parent = {
+    prototype: { 
+        constructor: Parent,
+        __proto__: Object.prototype,
+        name: <span class="str">'Niels Bohr'</span>
+    },
+    __proto__: Function.prototype,
+    identity: 0
+}</pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+      </tr>
+
+      <tr>
+        <td style="background-color: #fff">
+          <div align="left">
+            <pre class="code csharpcode">parent = <span class="kwrd">new</span> Parent()</pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+
+        <td style="background-color: #fff">
+          <div align="left">
+            <pre class="code csharpcode">parent = {
+    __proto__: Parent.prototype,
+    id: 1
+}</pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+      </tr>
+
+      <tr>
+        <td style="background-color: #fff">
+          <div align="left">
+            <pre class="code csharpcode"><span class="kwrd">class</span> Child extends Parent
+    url: <span class="str">'http://www.google.com'</span></pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+
+        <td style="background-color: #fff">
+          <div align="left">
+            <pre class="code csharpcode">__extends(Child, Parent);
+<span class="kwrd">function</span> Child() {
+    Child.__super__.constructor.apply(<span class="kwrd">this</span>, arguments);
+}
+Child.prototype.url = <span class="str">'http://www.google.com'</span>;
+
+redirect_from:
+  - /blog/2011/12/javascript-prototyping-reference.html
+---
+
+Child = {
+    prototype: { 
+        constructor: Child,
+        __proto__: Parent,
+        url: <span class="str">'http://www.google.com'</span>
+    },
+    __proto__: Function.prototype,
+    <span class="rem">// CoffeeScript generated property</span>
+    __super__: Parent.prototype
+}</pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+      </tr>
+
+      <tr>
+        <td style="background-color: #fff">
+          <div align="left">
+            <pre class="code csharpcode">child = <span class="kwrd">new</span> Child()</pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+
+        <td style="background-color: #fff">
+          <div align="left">
+            <pre class="code csharpcode">child = {
+    __proto__: Child.prototype,
+    id: 1
+}</pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+      </tr>
+
+      <tr>
+        <th colspan="2" style="background-color: #F8F8F8">backbone.js</td></tr> </th>
+      </tr>
+
+      <tr>
+        <td style="background-color: #fff">
+          <div align="left">
+            <pre class="code csharpcode"><span class="rem">// [backbone.js].extend(protoProps, classProps)</span>
+<span class="kwrd">var</span> Person = Backbone.Model.extend({
+    constructor: <span class="kwrd">function</span>() {
+        <span class="kwrd">this</span>.id = ++Person.identity;
+    },
+    name: <span class="str">'Niels Bohr'</span>
+}, {
+    identity: 0
+});</pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+
+        <td style="background-color: #fff">
+          <div align="left">
+            <pre class="code csharpcode">Person = {
+    prototype: {
+        <span class="rem">// If a constructor property is not </span>
+        <span class="rem">// specified, a new function is used  </span>
+        <span class="rem">// that calls the parent constructor</span>
+        <span class="rem">// in the context of the new object.</span>
+        constructor: protoProps.constructor,
+        __proto__: Backbone.Model.prototype,
+        name: <span class="str">'Niels Bohr'</span>
+    },
+    __proto__: Function.prototype,
+    <span class="rem">// Backbone added property</span>
+    __super__: Backbone.Model.prototype
+    <span class="rem">// Backbone attaches this to new objects</span>
+    extend: Backbone.Model.extend,
+    identity: 0
+}</pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+      </tr>
+
+      <tr>
+        <th colspan="2" style="background-color: #F8F8F8">underscore.js</td></tr> </th>
+      </tr>
+
+      <tr>
+        <td style="background-color: #fff">
+          <div align="left">
+            <pre class="code csharpcode"><span class="kwrd">var</span> person = { id: 5 }
+<span class="kwrd">var</span> a = { name: <span class="str">'Werner Heisenberg'</span> }
+<span class="kwrd">var</span> b = { occupation: <span class="str">'Physicist'</span> }
+_.extend(person, a, b);</pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+
+        <td style="background-color: #fff">
+          <div align="left">
+            <pre class="code csharpcode">person = {
+    id: 5,
+    name: <span class="str">'Werner Heisenberg'</span>,
+    occupation: <span class="str">'Physicist'</span>
+}</pre>
+          </div>
+          <style type="text/css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style></td>
+      </tr>
+    </tbody></table>
+</center>  

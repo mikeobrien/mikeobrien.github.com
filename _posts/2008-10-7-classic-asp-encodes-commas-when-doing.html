@@ -1,0 +1,10 @@
+---
+layout: post
+title: Classic ASP Encodes Commas When Doing a Redirect
+tags: [Classic ASP]
+redirect_from:
+  - /blog/2008/10/classic-asp-encodes-commas-when-doing.html
+---
+<p>Yes, there is a lot of classic ASP still out there..... *sigh*... My boss ran into an issue with a client of ours where we were redirecting to a link with a comma in it in a classic ASP page. The classic ASP Response.Redirect escapes commas before performing the redirect therefore invalidating the link (BTW, ASP.NET does not do this). Unfortunately you cannot change this behavior so the only workaround we could find is manually setting the HTTP status and location header. </p><pre class="code">Response.Status = "302 Object moved"
+Response.AddHeader "Location", "http://www.somesite.com/yada,yada,yada/default.html"
+Response.End</pre><a href="http://11011.net/software/vspaste"></a>

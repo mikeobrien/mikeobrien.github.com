@@ -1,0 +1,82 @@
+---
+layout: post
+title: Enterprise Library 4.0 XmlTraceListener Behaving Badly...
+tags: [XML/XSL, .NET, IIS 6, Configuration, Logging, IIS 7, Enterprise Library]
+redirect_from:
+  - /blog/2008/10/enterprise-library-40-xmltracelistener.html
+---
+<P>I have been having XmlTraceListener woes... None of which are showstoppers just major time wasters! <FONT color=#ff0000><STRONG>The following bug is fixed as of version 4.1!</STRONG></FONT>&#160;<STRIKE>The first of which has to do the message. The message is <STRONG><EM>not</EM></STRONG> <EM><STRONG>escaped</STRONG></EM> and/or CDATA qualified. So if you have an ampersand or greater/less than sign in the message it will throw this cryptic error:</STRIKE></P>
+<P><STRIKE>An error occurred while parsing EntityName. Line x, position y.</STRIKE></P>
+<P><STRIKE>I ended up manually running the log entry object through the Format() method on the XmlLogFormatter class to get the raw xml and see what exactly it was complaining about. Sure enough there was an ampersand. Adding an extension method to the string class and manually escaping the LogEntry message alleviated this to some degree. Bad thing is though, the message is escaped for all listeners and you probably don't want to see HTML entities in your event log entry or email message. I think the only way around this would be to write your own xml trace listener.</STRIKE></P><PRE class=code><STRIKE><SPAN style="COLOR: blue">namespace </SPAN>MyApp.Runtime.Extensions
+{
+    <SPAN style="COLOR: blue">public static class </SPAN></STRIKE><STRIKE><SPAN style="COLOR: #2b91af">String
+    </SPAN>{
+        <SPAN style="COLOR: blue">public static string </SPAN>EscapeUnsafeXmlCharacters(<SPAN style="COLOR: blue">this string </SPAN>value)
+        {
+            <SPAN style="COLOR: blue">return </SPAN>value.Replace(<SPAN style="COLOR: #a31515">"<"</SPAN>, <SPAN style="COLOR: #a31515">"&lt;"</SPAN>).Replace(<SPAN style="COLOR: #a31515">">"</SPAN>, <SPAN style="COLOR: #a31515">"&gt;"</SPAN>).Replace(<SPAN style="COLOR: #a31515">"&"</SPAN>, <SPAN style="COLOR: #a31515">"&amp;"</SPAN>);
+        }
+    }
+}</STRIKE></PRE><A href="http://11011.net/software/vspaste"></A>
+<P>Issue #2 has to do with where the log file is saved. The FlatFileTraceListner actually saves the log file relative to the application root (Where the .config file is). Take a look at the RootFileNameAndEnsureTargetFolderExists() method in the FormattedTextWriterTraceListener class (The FlatFileTraceListener's base class). Before it passes the filename to it's base class constructor, it runs it through this method. The XmlTraceListener on the other hand does not follow this pattern which had me going nuts trying to figure out what I was doing wrong (Thinking that it just wasn't saving at all). I wasn't getting any errors from the XmlTraceListener (More on this below) so I started to get the feeling that perhaps it was writing to the log but just not where I expected. So I fired up Process Monitor and didn't see any log writes. Then I switched the app (It was a web application project BTW) to use the built in web server instead of IIS. Ran everything again and voil&#224;:</P>
+<P><A href="http://blog.mikeobrien.net/content/binary/WindowsLiveWriter/EnterpriseLibraryXmlTraceListenerBehavi_142A7/image_2.png"><IMG style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; BORDER-TOP: 0px; BORDER-RIGHT: 0px" border=0 alt=image src="/blog/images/2a203f469b0f4a55840a4040bf6bdbaa.png" width=566 height=211></A> </P>
+<P>So it was saving it somewhere else, but only when running under the built in web server. Looking at the code in reflector you can see that, unlike the FormattedTextWriterTraceListener, the XmlWriterTraceListener does not modify the path to be the application root before it passes it to it's base class constructor. So the directory ends up being that of the entry assembly. Bottom line is you have to supply an explicit path when you're using the XmlTraceListener in a web application.</P>
+<P>This leads me to the third oddity; where it would save running under the builtin web server but not IIS. The base class, TextWriterTraceListener, calls the EnsureWriter() method (Shown below) before writing to the file. If it returns true it writes the entry, otherwise it doesn't. Notice that if there is a UnauthorizedAccessException it just returns false and then subsequently, in the calling Write method, <STRONG><EM>silently</EM></STRONG> skips writing. When I was using IIS as my web server (And the code was running as the Network Service account) I didn't see any exceptions and no log writes were showing up in Process Monitor. Which was very confusing! But when I switched over to using the built in web server (Which was obviously running as my interactive account) I saw the log writes. So when it was running under the Network Service account it obviously did not have permissions to save the log file to wherever it was trying to save it and no exception was raised... Very confusing behavior this. Reminds me of the advice in Jeffrey Richter's CLR Via C# book not to ever swallow exceptions! So keep that in mind, if you don't see any errors and log writes with the XmlTraceListner, it may be permissions and/or path related.</P>
+<P>Well, hopefully this wasn't too long winded and hopefully it clears up some oddities with the XmlTraceListener.</P><PRE class=code><SPAN style="COLOR: blue">public class </SPAN><SPAN style="COLOR: #2b91af">TextWriterTraceListener </SPAN>: TraceListener
+{
+    <SPAN style="COLOR: blue">public override void </SPAN>Write(<SPAN style="COLOR: blue">string </SPAN>message)
+    {
+        <SPAN style="COLOR: blue">if </SPAN>(<SPAN style="COLOR: blue">this</SPAN>.EnsureWriter())
+        {
+            <SPAN style="COLOR: blue">if </SPAN>(<SPAN style="COLOR: blue">base</SPAN>.NeedIndent)
+            {
+                <SPAN style="COLOR: blue">this</SPAN>.WriteIndent();
+            }
+            <SPAN style="COLOR: blue">this</SPAN>.writer.Write(message);
+        }
+    }
+    <SPAN style="COLOR: blue">internal bool </SPAN>EnsureWriter()
+    {
+        <SPAN style="COLOR: blue">bool </SPAN>flag = <SPAN style="COLOR: blue">true</SPAN>;
+        <SPAN style="COLOR: blue">if </SPAN>(<SPAN style="COLOR: blue">this</SPAN>.writer == <SPAN style="COLOR: blue">null</SPAN>)
+        {
+            flag = <SPAN style="COLOR: blue">false</SPAN>;
+            <SPAN style="COLOR: blue">if </SPAN>(<SPAN style="COLOR: blue">this</SPAN>.fileName == <SPAN style="COLOR: blue">null</SPAN>)
+            {
+                <SPAN style="COLOR: blue">return </SPAN>flag;
+            }
+            Encoding encodingWithFallback = GetEncodingWithFallback(<SPAN style="COLOR: blue">new </SPAN>UTF8Encoding(<SPAN style="COLOR: blue">false</SPAN>));
+            <SPAN style="COLOR: blue">string </SPAN>fullPath = Path.GetFullPath(<SPAN style="COLOR: blue">this</SPAN>.fileName);
+            <SPAN style="COLOR: blue">string </SPAN>directoryName = Path.GetDirectoryName(fullPath);
+            <SPAN style="COLOR: blue">string </SPAN>fileName = Path.GetFileName(fullPath);
+            <SPAN style="COLOR: blue">for </SPAN>(<SPAN style="COLOR: blue">int </SPAN>i = 0; i < 2; i++)
+            {
+                <SPAN style="COLOR: blue">try
+                </SPAN>{
+                    <SPAN style="COLOR: blue">this</SPAN>.writer = <SPAN style="COLOR: blue">new </SPAN>StreamWriter(fullPath, <SPAN style="COLOR: blue">true</SPAN>, encodingWithFallback, 0x1000);
+                    flag = <SPAN style="COLOR: blue">true</SPAN>;
+                    <SPAN style="COLOR: blue">break</SPAN>;
+                }
+                <SPAN style="COLOR: blue">catch </SPAN>(IOException)
+                {
+                    fileName = <SPAN style="COLOR: #2b91af">Guid</SPAN>.NewGuid().ToString() + fileName;
+                    fullPath = Path.Combine(directoryName, fileName);
+                }
+                <SPAN style="COLOR: blue">catch </SPAN>(<SPAN style="COLOR: #2b91af">UnauthorizedAccessException</SPAN>)
+                {
+                    <SPAN style="COLOR: blue">break</SPAN>;
+                }
+                <SPAN style="COLOR: blue">catch </SPAN>(<SPAN style="COLOR: #2b91af">Exception</SPAN>)
+                {
+                    <SPAN style="COLOR: blue">break</SPAN>;
+                }
+            }
+            <SPAN style="COLOR: blue">if </SPAN>(!flag)
+            {
+                <SPAN style="COLOR: blue">this</SPAN>.fileName = <SPAN style="COLOR: blue">null</SPAN>;
+            }
+        }
+        <SPAN style="COLOR: blue">return </SPAN>flag;
+    }
+
+    <SPAN style="COLOR: green">// Other members removed for brevity...
+</SPAN>}</PRE>

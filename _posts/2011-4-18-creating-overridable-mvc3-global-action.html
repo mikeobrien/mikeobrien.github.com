@@ -1,0 +1,54 @@
+---
+layout: post
+title: Creating an Overridable MVC3 Global Filter
+tags: [ASP.NET MVC3]
+redirect_from:
+  - /blog/2011/04/creating-overridable-mvc3-global-action.html
+---
+<p>The new global filters in MVC3 are a nice way to apply behavior globally. Sometimes though you'll want to opt out an action or controller from that behavior. Lets take authentication as an example; we want everything to be secure by default but we may have individual controllers or actions that will be public. The following authorize attribute enables us to create a global filter and then override the global behavior where we need to:</p>  <pre class="code"><span style="color: green">// Make sure we specify that this attribute should only be specified once.
+</span>[<span style="color: #2b91af">AttributeUsage</span>(<span style="color: #2b91af">AttributeTargets</span>.Method, AllowMultiple = <span style="color: blue">false</span>)]
+<span style="color: blue">public class </span><span style="color: #2b91af">SecureAttribute </span>: <span style="color: #2b91af">AuthorizeAttribute
+</span>{
+    <span style="color: blue">private readonly bool </span>_enabled;
+
+    <span style="color: green">// Default constructor with security enabled, used as a global filter
+    </span><span style="color: blue">public </span>SecureAttribute()
+    {
+        _enabled = <span style="color: blue">true</span>;
+    }
+
+    <span style="color: green">// Attribute constructor
+    </span><span style="color: blue">public </span>SecureAttribute(<span style="color: blue">bool </span>enabled)
+    {
+        _enabled = enabled;
+    }
+
+    <span style="color: blue">protected override bool </span>AuthorizeCore(System.Web.<span style="color: #2b91af">HttpContextBase </span>httpContext)
+    {
+        <span style="color: blue">return </span>!_enabled || <span style="color: #2b91af">AuthenticationService</span>.Authenticate();
+    }
+}</pre>
+
+<p>A few things to note. First we need to specify that this attribute should only be applied once with the <a href="http://msdn.microsoft.com/en-us/library/system.attributeusageattribute.aspx">AttributeUsageAttribute</a>. Under the covers the <a href="http://msdn.microsoft.com/en-us/library/system.web.mvc.filterattribute.aspx">FilterAttribute</a> class looks for this attribute to determine if multiple instances of the filter can exist. In the default constructor we specify the default behavior; in this case security being enabled. In our authorization method we can check to see if authentication is enabled and proceed accordingly. </p>
+
+<p>Here we can register the global default. This filter will have a scope of "Global" which is a lower priority scope:</p>
+
+<pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">MvcApplication </span>: <span style="color: #2b91af">HttpApplication
+</span>{
+    <span style="color: blue">protected void </span>Application_Start()
+    {
+        <span style="color: #2b91af">GlobalFilters</span>.Filters.Add(<span style="color: blue">new </span><span style="color: #2b91af">SecureAttribute</span>());
+        <span style="color: green">// ...
+</span>    }
+}</pre>
+
+<p>We can then override the default behavior where appropriate. The action attribute has a scope of "Action" which is a higher priority scope. So this filter will take precedence over the globally added one:</p>
+
+<pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">SomeController </span>: <span style="color: #2b91af">Controller
+</span>{
+    [<span style="color: #2b91af">Secure</span>(<span style="color: blue">false</span>)]
+    <span style="color: blue">public </span><span style="color: #2b91af">ActionResult </span>SomePublicAction()
+    {
+        <span style="color: blue">return </span>View();
+    }
+}</pre>  
