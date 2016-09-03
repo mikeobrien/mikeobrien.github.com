@@ -1,8 +1,0 @@
----
-layout: post
-title: VSeWSS Only Supports Deployment of the Project Assembly
-tags: [Visual Studio 2005, .NET, VSeWSS, SharePoint]
-redirect_from:
-  - /blog/2007/06/vsewss-only-supports-deployment-of.html
----
-<p>Normally I like to create a stand alone,&#160;abstract&#160;BLL assembly&#160;that can be used by multiple components (ASP.NET, WinForms, Windows Service, etc), nothing new, standard procedure. Well the VSeWSS Solution builder will only load and reference the VSeWSS project assembly in the SharePoint Solution. Pretty lame if you ask me! You would think that it would package all referenced assemblies not just the project assembly, how hard is that?? So you ether have to&#160;house all your code in the VSeWSS&#160;assembly or deploy referenced assemblies separately to the SP&#160;web front ends. If you forget about this, any code that tries to call code in the referenced assembly will throw a <strong>generic</strong> "File Not Found" exception in SP.</p> <p>I sincerely hope there is a newer version of VSeWSS coming down the pike. It has the potential to be a really great tool for SP development but the limitations I keep encountering are seriously lessening its value. This is just another example of that.</p>

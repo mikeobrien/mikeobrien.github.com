@@ -1,8 +1,0 @@
----
-layout: post
-title: Persits.MailSender 'Access is denied'
-tags: [IIS 6, Classic ASP, ASP.NET]
-redirect_from:
-  - /blog/2008/04/persitsmailsender-is-denied.html
----
-<p>If you happen to be using the Persits mail component and you get the 'Access is denied' exception:</p>  <p><font face="Courier New" size="2">Persits.MailSender.4 error '800a0011' </font></p>  <p><font face="Courier New" size="2">Access is denied. </font></p>  <p><font face="Courier New" size="2">/pages/somepage.asp, line 208</font> </p>  <p>You'll probably find, from the Persits support site or elsewhere, that the queue folder needs to have increased permissions. It doesn't however tell you where this is. So here is the default install path for version 4:</p>  <p>C:\Program Files\Persits Software\AspEmail\Queue</p>  <p>As far as the permissions go I have found that granting Read and Write permissions to the accessing account on that folder is sufficient. In IIS 6 the accessing account for .NET will be the identity of the App Pool assigned to the site (if you are not doing impersonation) which is the NetworkService account by default. For Classic ASP it will be the anon account (Which by default is the IUSR_xxx) for anon access or the user/group if you are doing other types of auth.</p>
