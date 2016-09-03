@@ -1,0 +1,32 @@
+---
+layout: post
+title: Enumerable Types in F#
+tags: [.NET, F#]
+redirect_from:
+  - /blog/2010/01/enumerable-types-in-f.html
+---
+<p>Functional programming never ceases to amaze me. The more I code in F# the more I've come to appreciate how succinct and terse you can write your code. I'll sometimes start out with an imperative solution but there always seems to be a functional one that is fewer lines of code and much clearer. I'm working on rewriting a <a href="http://hidlibrary.codeplex.com/">project</a> in F#, that allows you to interact with USB HID devices, in order to learn F#. One of the things I ran into is creating an enumerable and disposable type that wraps a couple of API calls.</p>  <pre class="code"><span style="color: blue">type </span>DeviceInfoSet(connectedOnly:bool) = 
+    <span style="color: blue">let </span>handle = GetDeviceInfoSet connectedOnly
+    <span style="color: blue">member private </span>c.ToSeq = 
+        Seq.unfold (<span style="color: blue">fun </span>index <span style="color: blue">-> 
+                            let </span>info, more = GetDeviceInfo handle index
+                            <span style="color: blue">match </span>more <span style="color: blue">with
+                            </span>| <span style="color: blue">true -> </span>Some (info, index + <span style="color: brown">1</span>)
+                            | _ <span style="color: blue">-> </span>None
+                    ) <span style="color: brown">0
+    </span><span style="color: blue">interface </span>IEnumerable <span style="color: blue">with
+        member </span>c.GetEnumerator () = c.ToSeq.GetEnumerator() :> IEnumerator
+    <span style="color: blue">interface </span>IEnumerable<SP_DEVINFO_DATA> <span style="color: blue">with
+        member </span>c.GetEnumerator () = c.ToSeq.GetEnumerator()
+    <span style="color: blue">interface </span>IDisposable <span style="color: blue">with
+        member </span>c.Dispose () = handle.Dispose()</pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>Here we have a constructed class type that takes in a parameter required by the native call. Unlike a C# type definition, the construction doesn't occur in a constructor function but in the body of the type. The ToSeq property generates the sequence. <a href="/2009/08/folding-and-unfolding-in-f-and-linq.html">I absolutely love the unfold function, it is so powerful.</a> Here the native method requires an integer to be incremented until an error code is returned to indicate that there are no more records (Not shown). As long as there are more records we return the item and increment the index. Once there are no more we return None. Now we get to the interface implementation. This is pretty straight forward, the only thing you have to do with the non generic IEnumerable implementation is downcast it to IEnumerator with the :> operator. </p>
+
+<p>Here is an example of the usage:</p>
+
+<pre class="code"><span style="color: blue">let </span>enumerate = 
+    <span style="color: blue">use </span>devices = <span style="color: blue">new </span>DeviceInfoSet(<span style="color: blue">false</span>)
+    devices |> Seq.iter (<span style="color: blue">fun </span>item <span style="color: blue">-> </span>Console.WriteLine(item.ClassGuid.ToString()))</pre>
+The "use" keyword is equivalent to a using statement in C#. Once the "devices" value goes out of scope it is disposed of.&#160; 

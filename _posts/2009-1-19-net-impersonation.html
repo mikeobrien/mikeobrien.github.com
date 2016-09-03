@@ -1,0 +1,119 @@
+---
+layout: post
+title: .NET Impersonation
+tags: [C#, .NET 3.5]
+redirect_from:
+  - /blog/2009/01/net-impersonation.html
+---
+<P>The WindowsIdentity class offers a constructor that accepts a user principal name (<A href="mailto:username@domain.int">username@domain.int</A>) and doesn't require the password. This sounds like a great way to get a token for impersonation but there are some&#160;limitations. First of all the account must be an AD account and...</P>
+<OL>
+<LI>To use it on the network you must use constrained delegation to grant permission to the source server to generate tokens (And mark restricted accounts as not authorized for delegation)&#160;and also which target servers can be accessed with the token generated. 
+<LI>To use it locally to access secured resources (Like files, etc) the process needs to have the trusted computing base priviledge which is root access to the box.</LI></OL>
+<P>Keith Brown covers this <A href="http://alt.pluralsight.com/wiki/default.aspx/Keith.GuideBook/WhatIsProtocolTransition.html">here</A> in detail.&#160;Unfortunately if you need to impersonate a LSA account or you&#160;cant/dont want to use constrained delegation&#160;you&#160;have to&#160;use the LogonUser API call to get a token to pass to the WindowsIdentity constructor. This call requires the domain, username and password. The WindowsIdentity class doesent offer a constructor that does this so you have to roll your own. Below is a simple class I whipped up that will do this. </P>
+<P>Interesting aside, the SafeUserTokenHandle class is actually defined in the FCL but marked internal. There are actually a number of SafeHandle derived classes in System.dll (Under the Microsoft.Win32.SafeHandles namespace). So if you need a SafeHandle for a handle for a particular API call you may be able to snag one here for "free" with Reflector. </P>
+<P>Some further reading on this subject; <A href="http://msdn.microsoft.com/en-us/library/ms998351.aspx">MSDN - How To: Use Impersonation and Delegation in ASP.NET 2.0</A>, <A href="http://www.amazon.com/Developers-Windows-Security-Microsoft-Development/dp/0321228359">The .NET Developer's Guide to Windows Security</A> (Or free online <A href="http://alt.pluralsight.com/wiki/default.aspx/Keith.GuideBook.HomePage">here</A>!) and <A href="http://www.amazon.com/Professional-Security-Membership-Management-Programmer/dp/0470379308">Professional ASP.NET 3.5 Security, Membership, and Role Management with C# and VB</A>.</P>
+<P>Here is the usage:</P><PRE class=code><SPAN style="COLOR: blue">using </SPAN>(<SPAN style="COLOR: #2b91af">WindowsImpersonationContext</SPAN><SPAN style="COLOR: #2b91af"> </SPAN>context = 
+        <SPAN style="COLOR: #2b91af">Impersonation</SPAN>.Impersonate("domain", "username", <A href="mailto:P@$$w0rd">P@$$w0rd</A>, <SPAN style="COLOR: blue"><SPAN style="COLOR: #2b91af">LogonSessionType<FONT color=#003300>.Network</FONT></SPAN></SPAN>))
+{
+    <SPAN style="COLOR: green">//Do something...
+</SPAN>}</PRE><A href="http://11011.net/software/vspaste"></A>
+<P>Here is the class:</P><PRE class=code><SPAN style="COLOR: blue">using </SPAN>System;
+<SPAN style="COLOR: blue">using </SPAN>System.ComponentModel;
+<SPAN style="COLOR: blue">using </SPAN>System.Runtime.ConstrainedExecution;
+<SPAN style="COLOR: blue">using </SPAN>System.Runtime.InteropServices;
+<SPAN style="COLOR: blue">using </SPAN>System.Security;
+<SPAN style="COLOR: blue">using </SPAN>System.Security.Permissions;
+<SPAN style="COLOR: blue">using </SPAN>System.Security.Principal;
+<SPAN style="COLOR: blue">using </SPAN>System.Threading;
+<SPAN style="COLOR: blue">using </SPAN>Microsoft.Win32.SafeHandles;
+
+<SPAN style="COLOR: blue">public static class </SPAN><SPAN style="COLOR: #2b91af">Impersonation
+</SPAN>{
+    <SPAN style="COLOR: blue">#region </SPAN>Public Methods
+
+        <SPAN style="COLOR: blue">public static </SPAN><SPAN style="COLOR: #2b91af">WindowsImpersonationContext </SPAN>Impersonate(
+            <SPAN style="COLOR: blue">string </SPAN>domain, <SPAN style="COLOR: blue">string </SPAN>username, <SPAN style="COLOR: blue">string </SPAN>password, <SPAN style="COLOR: blue"><SPAN style="COLOR: #2b91af">LogonSessionType </SPAN></SPAN>sessionType)
+        {
+            <SPAN style="COLOR: #2b91af">WindowsImpersonationContext </SPAN>impersonationContext = <SPAN style="COLOR: blue">null</SPAN>;
+            <SPAN style="COLOR: #2b91af">SafeUserTokenHandle </SPAN>token;
+
+            <SPAN style="COLOR: blue">if </SPAN>(LogonUser(
+               username,
+               domain,
+               password,
+               sessionType,
+               <SPAN style="COLOR: #2b91af">LogonProvider</SPAN>.Default,
+               <SPAN style="COLOR: blue">out </SPAN>token))
+            {
+                <SPAN style="COLOR: blue">using </SPAN>(token)
+                {
+                    impersonationContext = <SPAN style="COLOR: #2b91af">WindowsIdentity</SPAN>.Impersonate(
+                        token.DangerousGetHandle());
+                }
+            }
+            <SPAN style="COLOR: blue">else
+                throw new </SPAN><SPAN style="COLOR: #2b91af">Win32Exception</SPAN>(<SPAN style="COLOR: #2b91af">Marshal</SPAN>.GetLastWin32Error());
+
+            <SPAN style="COLOR: blue">return </SPAN>impersonationContext;
+        }
+
+    <SPAN style="COLOR: blue">#endregion
+
+    #region </SPAN>Native Methods
+
+        [<SPAN style="COLOR: #2b91af">DllImport</SPAN>(<SPAN style="COLOR: #a31515">"advapi32.dll"</SPAN>, SetLastError = <SPAN style="COLOR: blue">true</SPAN>)]
+        <SPAN style="COLOR: blue">private static extern bool </SPAN>LogonUser(
+          <SPAN style="COLOR: blue">string </SPAN>principal,
+          <SPAN style="COLOR: blue">string </SPAN>authority,
+          <SPAN style="COLOR: blue">string </SPAN>password,
+          <SPAN style="COLOR: #2b91af">LogonSessionType </SPAN>logonType,
+          <SPAN style="COLOR: #2b91af">LogonProvider </SPAN>logonProvider,
+          <SPAN style="COLOR: blue">out </SPAN><SPAN style="COLOR: #2b91af">SafeUserTokenHandle </SPAN>token);
+
+        <SPAN style="COLOR: blue">public enum </SPAN><SPAN style="COLOR: #2b91af">LogonSessionType </SPAN>: <SPAN style="COLOR: blue">uint
+        </SPAN>{
+            Interactive = 2,
+            Network,
+            Batch,
+            Service,
+            NetworkCleartext = 8,
+            NewCredentials
+        }
+
+        <SPAN style="COLOR: blue">private enum </SPAN><SPAN style="COLOR: #2b91af">LogonProvider </SPAN>: <SPAN style="COLOR: blue">uint
+        </SPAN>{
+            Default = 0, <SPAN style="COLOR: green">// default for platform (use this!)
+            </SPAN>WinNT35,     <SPAN style="COLOR: green">// sends smoke signals to authority
+            </SPAN>WinNT40,     <SPAN style="COLOR: green">// uses NTLM
+            </SPAN>WinNT50      <SPAN style="COLOR: green">// negotiates Kerb or NTLM
+        </SPAN>}
+
+    <SPAN style="COLOR: blue">#endregion
+
+    #region </SPAN>SafeTokenHandle Class
+
+        [<SPAN style="COLOR: #2b91af">SuppressUnmanagedCodeSecurity</SPAN>, 
+         <SPAN style="COLOR: #2b91af">HostProtection</SPAN>(<SPAN style="COLOR: #2b91af">SecurityAction</SPAN>.LinkDemand, MayLeakOnAbort=<SPAN style="COLOR: blue">true</SPAN>)]
+        <SPAN style="COLOR: blue">private sealed class </SPAN><SPAN style="COLOR: #2b91af">SafeUserTokenHandle </SPAN>: <SPAN style="COLOR: #2b91af">SafeHandleZeroOrMinusOneIsInvalid
+        </SPAN>{
+            <SPAN style="COLOR: blue">internal </SPAN>SafeUserTokenHandle() : <SPAN style="COLOR: blue">base</SPAN>(<SPAN style="COLOR: blue">true</SPAN>) { }
+
+            <SPAN style="COLOR: blue">internal </SPAN>SafeUserTokenHandle(<SPAN style="COLOR: #2b91af">IntPtr </SPAN>existingHandle, <SPAN style="COLOR: blue">bool </SPAN>ownsHandle) : 
+                <SPAN style="COLOR: blue">base</SPAN>(ownsHandle)
+            {
+                <SPAN style="COLOR: blue">base</SPAN>.SetHandle(existingHandle);
+            }
+
+            [<SPAN style="COLOR: #2b91af">ReliabilityContract</SPAN>(<SPAN style="COLOR: #2b91af">Consistency</SPAN>.WillNotCorruptState, <SPAN style="COLOR: #2b91af">Cer</SPAN>.Success), 
+             <SPAN style="COLOR: #2b91af">DllImport</SPAN>(<SPAN style="COLOR: #a31515">"kernel32.dll"</SPAN>, SetLastError=<SPAN style="COLOR: blue">true</SPAN>, ExactSpelling=<SPAN style="COLOR: blue">true</SPAN>)]
+            <SPAN style="COLOR: blue">private static extern bool </SPAN>CloseHandle(<SPAN style="COLOR: #2b91af">IntPtr </SPAN>handle);
+
+            <SPAN style="COLOR: blue">protected override bool </SPAN>ReleaseHandle()
+            {
+                <SPAN style="COLOR: blue">return </SPAN>CloseHandle(<SPAN style="COLOR: blue">base</SPAN>.handle);
+            }
+        }
+
+    <SPAN style="COLOR: blue">#endregion
+</SPAN>}
+</PRE><A href="http://11011.net/software/vspaste"></A><A href="http://11011.net/software/vspaste"></A><A href="http://11011.net/software/vspaste"></A>

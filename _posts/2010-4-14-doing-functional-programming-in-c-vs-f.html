@@ -1,0 +1,109 @@
+---
+layout: post
+title: Doing Functional Programming in C# vs F#
+tags: [.NET, F#, C#]
+redirect_from:
+  - /blog/2010/04/doing-functional-programming-in-c-vs-f.html
+---
+<p>I wanted to use the F# unfold construct in some C# code today (.NET 3.5) and of course Linq doesn't offer an equivalent. So just for fun I thought I'd hand craft what was needed to do it in C# (I know this has been done before, nothing new): </p>  <pre class="code"><span style="color: blue">public static class </span><span style="color: #2b91af">Functional
+</span>{
+    <span style="color: blue">public static class </span><span style="color: #2b91af">Seq
+    </span>{
+        <span style="color: blue">public static </span><span style="color: #2b91af">IEnumerable</span>&lt;T&gt; Unfold&lt;T,TState&gt;(<span style="color: #2b91af">Func</span>&lt;TState, <span style="color: #2b91af">Tuple</span>&lt;T, <span style="color: #2b91af">Option</span>&lt;TState&gt;&gt;&gt; generator, TState state)
+        {
+            TState currentState = state;
+            <span style="color: blue">while </span>(<span style="color: blue">true</span>)
+            {
+                <span style="color: #2b91af">Tuple</span>&lt;T, <span style="color: #2b91af">Option</span>&lt;TState&gt;&gt; result = generator(currentState);
+                <span style="color: blue">if </span>(result.Value2.State == <span style="color: #2b91af">Option</span>&lt;TState&gt;.<span style="color: #2b91af">OptionState</span>.None) <span style="color: blue">break</span>;
+
+                currentState = result.Value2.Value;
+                <span style="color: blue">yield return </span>result.Value1;
+            }
+        }
+    }
+
+    <span style="color: blue">public class </span><span style="color: #2b91af">Tuple</span>&lt;T1, T2&gt;
+    {
+        <span style="color: blue">private </span>Tuple(T1 value1, T2 value2)
+        { Value1 = value1; Value2 = value2; }
+
+        <span style="color: blue">public static </span><span style="color: #2b91af">Tuple</span>&lt;T1, T2&gt; Create(T1 value1)
+        { <span style="color: blue">return new </span><span style="color: #2b91af">Tuple</span>&lt;T1, T2&gt;(value1, <span style="color: blue">default</span>(T2)); }
+
+        <span style="color: blue">public static </span><span style="color: #2b91af">Tuple</span>&lt;T1, T2&gt; Create(T2 value2)
+        { <span style="color: blue">return new </span><span style="color: #2b91af">Tuple</span>&lt;T1, T2&gt;(<span style="color: blue">default</span>(T1), value2); }
+
+        <span style="color: blue">public static </span><span style="color: #2b91af">Tuple</span>&lt;T1, T2&gt; Create(T1 value1, T2 value2)
+        { <span style="color: blue">return new </span><span style="color: #2b91af">Tuple</span>&lt;T1, T2&gt;(value1, value2); }
+
+        <span style="color: blue">public </span>T1 Value1 { <span style="color: blue">get</span>; <span style="color: blue">private set</span>; }
+        <span style="color: blue">public </span>T2 Value2 { <span style="color: blue">get</span>; <span style="color: blue">private set</span>; }
+    }
+
+    <span style="color: blue">public class </span><span style="color: #2b91af">Option</span>&lt;T&gt;
+    {
+        <span style="color: blue">public enum </span><span style="color: #2b91af">OptionState </span>{ Some, None }
+
+        <span style="color: blue">private </span>Option() { State = <span style="color: #2b91af">OptionState</span>.None; }
+        <span style="color: blue">private </span>Option(T value) { State = <span style="color: #2b91af">OptionState</span>.Some; Value = value; }
+
+        <span style="color: blue">public static </span><span style="color: #2b91af">Option</span>&lt;T&gt; None() { <span style="color: blue">return new </span><span style="color: #2b91af">Option</span>&lt;T&gt;(); }
+        <span style="color: blue">public static </span><span style="color: #2b91af">Option</span>&lt;T&gt; Some(T value) { <span style="color: blue">return new </span><span style="color: #2b91af">Option</span>&lt;T&gt;(value); }
+
+        <span style="color: blue">public </span><span style="color: #2b91af">OptionState </span>State { <span style="color: blue">get</span>; <span style="color: blue">private set</span>; }
+        <span style="color: blue">public </span>T Value { <span style="color: blue">get</span>; <span style="color: blue">private set</span>; }
+    }
+}</pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>Let's see how this is defined in F# (From the source, pre .NET 4.0 tuple definition):</p>
+
+<pre class="code"><span style="color: blue">let </span>unfold f x : IEnumerator&lt;_&gt; =
+  <span style="color: blue">let </span>state = ref x
+  <span style="color: blue">upcast 
+      </span>{  <span style="color: blue">new </span>MapEnumerator&lt;_&gt;() <span style="color: blue">with
+            member </span>this.DoMoveNext curr =
+                <span style="color: blue">match </span>f !state <span style="color: blue">with
+                </span>|   None <span style="color: blue">-&gt; false
+                </span>|   Some(r,s) <span style="color: blue">-&gt;
+                        </span>curr &lt;- r
+                        state := s
+                        <span style="color: blue">true
+            member </span>this.Dispose() = ()
+      }</pre>
+
+<pre class="code"><span style="color: blue">type </span>Option&lt;'T&gt; = 
+    | None :       'T option
+    | Some : Value:'T <span style="color: blue">-&gt; </span>'T option 
+
+    <span style="color: blue">member </span>x.Value = <span style="color: blue">match </span>x <span style="color: blue">with </span>Some x <span style="color: blue">-&gt; </span>x | None <span style="color: blue">-&gt; </span>raise (<span style="color: blue">new </span>System.InvalidOperationException(<span style="color: maroon">&quot;Option.Value&quot;</span>))
+    <span style="color: blue">member </span>x.IsNone = <span style="color: blue">match </span>x <span style="color: blue">with </span>None <span style="color: blue">-&gt; true </span>| _ <span style="color: blue">-&gt; false
+    member </span>x.IsSome = <span style="color: blue">match </span>x <span style="color: blue">with </span>Some _ <span style="color: blue">-&gt; true </span>| _ <span style="color: blue">-&gt; false
+    static member </span>None : 'T option = None
+    <span style="color: blue">static member </span>Some(x) : 'T option = Some(x)
+
+    <span style="color: blue">override </span>x.ToString() = <span style="color: maroon">&quot;Some(&quot;</span>^anyToStringShowingNull x.Value^<span style="color: maroon">&quot;)&quot;
+
+</span><span style="color: blue">and </span>'T option = Option&lt;'T&gt; </pre>
+<a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a>
+
+<pre class="code">[&lt;Struct&gt;]
+<span style="color: blue">type </span>Tuple&lt;'T1,'T2&gt; = 
+    <span style="color: blue">new </span>(v1,v2) = { Item1 = v1; Item2 = v2 }
+    <span style="color: blue">val </span>Item1 : 'T1 
+    <span style="color: blue">val </span>Item2 : 'T2</pre>
+
+<p>Discriminated unions and tuples are a language feature (Not just a type in the BCL as with tuples in 4.0). F# is nice and terse, much less "noise", esp. with type inference and the light syntax. </p>
+
+<p>Here is the usage, and what really makes a big difference for me. C#:</p>
+
+<pre class="code"><span style="color: blue">var </span>result = <span style="color: #2b91af">Functional</span>.<span style="color: #2b91af">Seq</span>.Unfold(state =&gt; gimmie(state) == <span style="color: blue">null </span>?
+        <span style="color: #2b91af">Functional</span>.<span style="color: #2b91af">Tuple</span>&lt;<span style="color: blue">string</span>, <span style="color: #2b91af">Functional</span>.<span style="color: #2b91af">Option</span>&lt;<span style="color: blue">int</span>&gt;&gt;.Create(<span style="color: #2b91af">Functional</span>.<span style="color: #2b91af">Option</span>&lt;<span style="color: blue">int</span>&gt;.None()) :
+        <span style="color: #2b91af">Functional</span>.<span style="color: #2b91af">Tuple</span>&lt;<span style="color: blue">string</span>, <span style="color: #2b91af">Functional</span>.<span style="color: #2b91af">Option</span>&lt;<span style="color: blue">int</span>&gt;&gt;.Create(gimmie(state), <span style="color: #2b91af">Functional</span>.<span style="color: #2b91af">Option</span>&lt;<span style="color: blue">int</span>&gt;.Some(state + 1)), 0);</pre>
+
+<p>F#:</p>
+
+<pre class="code"><span style="color: blue">let </span>result = Seq.unfold (<span style="color: blue">fun </span>state <span style="color: blue">-&gt; if </span>(gimmie state) = <span style="color: blue">null then </span>None <span style="color: blue">else </span>Some(gimmie state, state + 1)) 0</pre>
+
+<p>Now I'm sure we can optimize and clean up the C# to be even terser (I'm sure my C# is a bit biased because I'm trying to make a point :) but the type inference and discriminated unions &amp; tuples as a language feature make a huge difference. People often ask "what can I do in F# that I cant in C#?". And at first I had a hard time answering that question (Esp. with all the functional language features and constructs in C#/.NET these days). But the big difference is not necessarily what you can/cant do per se, but how easily and naturally you can do it. Functional programming is just much simpler and natural in F# because, well, its a functional language and therefore fully embraces the functional paradigm. In C#, which obviously is an imperative/OO language, you have to struggle to accomplish the same things you can naturally do in F#, and they can end up pretty ugly. </p>  

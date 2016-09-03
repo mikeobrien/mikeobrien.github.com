@@ -1,0 +1,8 @@
+---
+layout: post
+title: A Couple of WCF Namespace Interoperability Tips
+tags: [SOAP, Apache Axis, Interoperability, ColdFusion, WCF]
+redirect_from:
+  - /blog/2009/04/couple-of-wcf-namespace.html
+---
+<p>The following are a couple of things I've discovered about web service namespaces while working on interoperability:</p> <p>1) If your not going to use a URL for your namespace you need to prepend your namespace with a <a href="http://en.wikipedia.org/wiki/URI_scheme">uri scheme</a> (IE: "myscheme:MyNamespace") to signify that it is absolute. The <a href="http://tools.ietf.org/html/rfc2141">urn scheme</a> is an appropriate choice but this isn't required as the namespace must simply be a URI. The Microsoft stacks don't seem to mind if the scheme is not present but the Apache Xml Security library is finicky about this (Thinking its a relative namespace if its not there), you will see the following error on the client side if you don't:</p> <p><font color="#ff0000" size="2" face="Courier New">org.apache.xml.security.c14n.CanonicalizationException: Element ns1:doSomething has a relative namespace: xmlns:ns1="MyNamespace"</font>  <p>2) Use the same namespace for your binding namespace, behavior namespace, and all service and data contract namespaces. WCF will break out WSDL artifacts from different namespaces into different files and some proxy generators don't like this (Notably ColdFusion).</p>

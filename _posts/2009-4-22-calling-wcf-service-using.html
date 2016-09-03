@@ -1,0 +1,72 @@
+---
+layout: post
+title: Calling a WCF Service using basicHttpBinding that requires a UsernameToken with Axis 1.4 & wss4j 1.5.7
+tags: [SOAP, Web Services, Apache Axis, .NET 3.5, WS-Security, Interoperability, WCF]
+redirect_from:
+  - /blog/2009/04/calling-wcf-service-using.html
+---
+<p>So here is the scenario on the service side: WCF, basicHttpBinding, UsernameToken Profile (No signing or encryption). On the client side we are working in Eclipse Ganymede, JRE 6, JDK 1.6 Update 13. The following steps outline how to consume the WCF service.</p> <p>1) Download wss4j-1.5.7.jar from <a href="http://www.apache.org/dyn/closer.cgi/ws/wss4j/">here</a> (Pick a mirror) and save it to your Eclipse plugins folder (Or where ever you like). More information about wss4j can be found <a href="http://ws.apache.org/wss4j/">here</a>.</p> <p>2) Download xml-security-bin-1_4_2.zip from <a href="http://santuario.apache.org/dist/java-library/">here</a> and unzip it into temporary folder. Copy the contents of the libs folder into a subfolder under the Eclipse plugins folder called org.apache.xml.security_1.4 (Or where ever you like). More information about Apache XML Security can be found <a href="http://santuario.apache.org/">here</a>.</p> <p>3) If you haven't already done so create a new Java project and add references to the wss4j-1.5.7.jar and org.apache.xml.security_1.4\xmlsec-1.4.2.jar file.</p> <p>4) If you haven't already, install the Web Services Tools (WST). Go to "Help|Software Updates" and select the "Available Software" tab. Expand the "Web Tools (WTP) Update Site" node and check the "Web Tools Platform (WTP) x.x.x" node. Then click the "Install" button. Opt to restart the IDE after the install.</p> <p><a href="http://blog.mikeobrien.net/content/binary/WindowsLiveWriter/CallingaWCFServiceusingbasicHttpBindin.7_F64F/image_2.png"><img style="border-right-width: 0px; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" border="0" alt="image" src="/blog/images/560660cb0b4040c9b258ecb8b9becd17.png" width="706" height="526"></a> </p> <p>5) Next right click your project and select "New|Other". Scroll down and expand the "Web Services" node and select "Web Service Client" and click Next:</p> <p><a href="http://blog.mikeobrien.net/content/binary/WindowsLiveWriter/CallingaWCFServiceusingbasicHttpBindin.7_F64F/image_4.png"><img style="border-right-width: 0px; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" border="0" alt="image" src="/blog/images/13bd87023bb0409b94dda05edfc60ce7.png" width="525" height="500"></a> </p> <p>6) Enter the url to the WSDL and make sure the "Client type" is set to "Java Proxy". Next under "Configuration" the "Web service runtime" should be "Apache Axis" and the "Client project" should be your project, if not click the property link and make the appropriate modifications. Move the slider all the way down until it is set to "Develop client". </p> <p><a href="http://blog.mikeobrien.net/content/binary/WindowsLiveWriter/CallingaWCFServiceusingbasicHttpBindin.7_F64F/image_6.png"><img style="border-right-width: 0px; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" border="0" alt="image" src="/blog/images/8b2c2ca8afe44603a06bb233c49eab91.png" width="525" height="500"></a> </p> <p>7) Create a new class called Credentials and paste in the following code:</p><pre class="code">import javax.security.auth.callback.Callback;
+import org.apache.axis.client.Stub;
+import org.apache.ws.security.WSPasswordCallback;
+import org.apache.ws.security.handler.WSHandlerConstants;
+import javax.security.auth.callback.CallbackHandler;
+
+<span style="color: blue">public class </span><span style="color: #2b91af">Credentials
+</span>{
+    <span style="color: blue">static class </span><span style="color: #2b91af">PasswordCallback </span>implements CallbackHandler {
+        <span style="color: blue">private </span>String password;
+        <span style="color: blue">public </span>PasswordCallback(<span style="color: #2b91af">String </span>password)
+        { <span style="color: blue">this</span>.password = password; }
+        <span style="color: blue">public void </span>handle(Callback[] callbacks) 
+        {((WSPasswordCallback)callbacks[0]).setPassword(<span style="color: blue">this</span>.password); }
+    }
+    
+    <span style="color: blue">public static void </span>Add(Stub stub, <span style="color: #2b91af">String </span>username, <span style="color: #2b91af">String </span>password)
+    {
+        stub._setProperty(WSHandlerConstants.USER, username);
+        stub._setProperty(WSHandlerConstants.PW_CALLBACK_REF, 
+                            <span style="color: blue">new </span><span style="color: #2b91af">PasswordCallback</span>(password));
+    }
+}</pre><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a>
+<p>8) Create a new file called ServiceConfig.wsdd and paste in the following xml:</p><pre class="code"><span style="color: blue"><</span><span style="color: #a31515">deployment </span><span style="color: red">xmlns</span><span style="color: blue">=</span>"<span style="color: blue">http://xml.apache.org/axis/wsdd/</span>" 
+            <span style="color: red">xmlns:java</span><span style="color: blue">=</span>"<span style="color: blue">http://xml.apache.org/axis/wsdd/providers/java</span>"<span style="color: blue">>
+  <</span><span style="color: #a31515">transport </span><span style="color: red">name</span><span style="color: blue">=</span>"<span style="color: blue">http</span>" 
+             <span style="color: red">pivot</span><span style="color: blue">=</span>"<span style="color: blue">java:org.apache.axis.transport.http.HTTPSender</span>"<span style="color: blue">/>
+  <</span><span style="color: #a31515">globalConfiguration </span><span style="color: blue">>
+    <</span><span style="color: #a31515">requestFlow </span><span style="color: blue">>
+      <</span><span style="color: #a31515">handler </span><span style="color: red">type</span><span style="color: blue">=</span>"<span style="color: blue">java:org.apache.ws.axis.security.WSDoAllSender</span>" <span style="color: blue">>
+        <</span><span style="color: #a31515">parameter </span><span style="color: red">name</span><span style="color: blue">=</span>"<span style="color: blue">action</span>" <span style="color: red">value</span><span style="color: blue">=</span>"<span style="color: blue">UsernameToken</span>"<span style="color: blue">/>
+        <</span><span style="color: #a31515">parameter </span><span style="color: red">name</span><span style="color: blue">=</span>"<span style="color: blue">passwordType</span>" <span style="color: red">value</span><span style="color: blue">=</span>"<span style="color: blue">PasswordText</span>"<span style="color: blue">/>
+      </</span><span style="color: #a31515">handler</span><span style="color: blue">>
+    </</span><span style="color: #a31515">requestFlow</span><span style="color: blue">>
+    <</span><span style="color: #a31515">responseFlow</span><span style="color: blue">>
+      <</span><span style="color: #a31515">handler </span><span style="color: red">type</span><span style="color: blue">=</span>"<span style="color: blue">java:org.apache.ws.axis.security.WSDoAllReceiver</span>"<span style="color: blue">>
+        <</span><span style="color: #a31515">parameter </span><span style="color: red">name</span><span style="color: blue">=</span>"<span style="color: blue">action</span>" <span style="color: red">value</span><span style="color: blue">=</span>"<span style="color: blue">Timestamp</span>"<span style="color: blue">/>
+      </</span><span style="color: #a31515">handler</span><span style="color: blue">>
+    </</span><span style="color: #a31515">responseFlow</span><span style="color: blue">>
+  </</span><span style="color: #a31515">globalConfiguration </span><span style="color: blue">>
+</</span><span style="color: #a31515">deployment</span><span style="color: blue">></span></pre><a href="http://11011.net/software/vspaste"></a>
+<p>9) If one is not already created then create a class called Startup and paste in the following code. Note, you must specify the bracketed portions as they will be named differently depending on the service and its WSDL.</p><pre class="code">import <font color="#ff0000"><ServiceNamespace></font>.*;
+import org.apache.axis.*;
+import java.rmi.RemoteException;
+import org.apache.axis.client.Stub;
+import javax.xml.rpc.ServiceException;
+import org.apache.ws.security.handler.*;
+import org.apache.axis.configuration.FileProvider;
+
+<span style="color: blue">public class </span><span style="color: #2b91af">Startup 
+</span>{
+    <span style="color: blue">public static void </span>main(<span style="color: #2b91af">String</span>[] args) throws RemoteException, ServiceException 
+    {
+        EngineConfiguration config = <span style="color: blue">new </span>FileProvider(<span style="color: #a31515">"ServiceConfig.wsdd"</span>);
+        <font color="#ff0000"><ServiceName></font>ServiceLocator locator = <span style="color: blue">new </span><font color="#ff0000"><ServiceName></font>ServiceLocator(config);
+        <font color="#ff0000"><ServiceInterface></font> service = locator.get<font color="#ff0000"><ServiceStub></font>();
+        
+        Credentials.Add((Stub)service, <span style="color: #a31515">"Username"</span>, <span style="color: #a31515">"P@$$w0rd"</span>);
+
+<font color="#ff0000">        <ResultType></font> result = service.<font color="#ff0000"><Method></font>();
+        System.<span style="color: blue">out</span>.println(result);
+    }
+}</pre>
+<p>&#160;</p>
+<p>At this point you should be able to successfully consume the target service.</p>

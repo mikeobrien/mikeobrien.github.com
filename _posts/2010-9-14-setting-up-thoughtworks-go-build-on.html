@@ -1,0 +1,142 @@
+---
+layout: post
+title: Setting up a ThoughtWorks Go Build on Windows to Push a Ruby Gem using Ruby/Rake/Albacore
+tags: [ThoughtWorks Go, Ruby, Ruby Gems]
+redirect_from:
+  - /blog/2010/09/setting-up-thoughtworks-go-build-on.html
+---
+<p>I'm really loving <a href="http://www.thoughtworks-studios.com/go-agile-release-management">ThoughtWorks Go</a> and <a href="http://www.code-magazine.com/Article.aspx?QuickID=1006101">Ruby/Rake/Albacore</a>. I'd really suggest checking out this stack for your CI/CD environment. One thing I wanted to do was configure CI with a manual option to push a gem to <a href="https://rubygems.org/">rubygems.org</a>. This is very easy with the stack just mentioned.</p>  <p><strong>Go Configuration</strong></p>  <p>First we will need to tweak the Go setup to facilitate this. By default the Go server and agent(s) run under the local system account. We want to instead run them under a service account so that we can cache the rubygems.org api key in the user profile. As an aside, you'll see &quot;Cruise&quot; peppered throughout these instructions; Go used to be called Cruise and still retains this name in some areas. So create an account for these services called GoService (Or whatever you want):</p>  <p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/46c1590fdd9c43dd8b8200fa960cf913.png" width="388" height="382" /> </p>  <p>Set the service account on the &quot;Cruise Server&quot; and &quot;Cruise Agent&quot; services to be the service account you just created (Or agent<em><strong>s</strong></em> if you have many):</p>  <p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/9bb38776d4b94268804612104f3928c2.png" width="410" height="461" /> </p>  <p>Next, grant this service account full control of the &quot;%PROGRAM_FILES%\Cruise Server&quot; and &quot;%PROGRAM_FILES%\Cruise Agent&quot; folders:</p>  <p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/6065141bbff742b9b441e78b65522427.png" width="367" height="443" /> </p>  <p>Now restart the services and test your build. By default this account will be in the local Users group which may or may not have sufficient permissions for your build. If not then you'll obviously have to grant the additional permissions required by your build to this account. This is good practice anyways. </p>  <p>Now we'll need to add a gem credentials file to the service accounts' user profile directory. When we push the gem in our build script it will use the api key stored in this file to authenticate. You can obtain this key by browsing to your rubygems.org profile page:</p>  <p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/24e9408d4e5a44e193bde92f3d826a78.png" width="778" height="324" />&#160; </p>  <p>Under the service accounts' user profile folder (Usually C:\Users\&lt;Username&gt;) create a folder called <font face="Courier New">.gem</font> (You will have to use the command line to do this as Explorer doesn't like the name) and a file under that folder called <font face="Courier New">credentials</font>:</p>  <p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/e2a6fd079d114cd0b501fa2f2ad9cc56.png" width="672" height="324" /> </p>  <p>Copy and paste the snippet from the rubygems.org profile page (In the dark brown section), paste it into the <font face="Courier New">credentials</font> file and save it.</p>  <p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/b1057693a1a84a3387621f37789f5cea.png" width="449" height="118" /> </p>  <p>Now the build server is configured to do the push.</p>  <p><strong>Generating the Gem</strong></p>  <p>I'm not going to get into how to write Rake scripts, see <a href="http://blog.mikeobrien.net/2010/07/rubyrakealbacore-quickstart-guide-for.html">here</a> for more info on that. In order to create a gem you will need to create a gem spec. You can find more info about that <a href="http://docs.rubygems.org/read/chapter/20">here</a>. Here is a simple gem spec:</p>  <pre class="code">spec = Gem::Specification.<span style="color: blue">new do </span>|spec|
+    spec.platform = Gem::Platform::RUBY
+    spec.summary = <span style="color: maroon">&quot;Goodies for .NET WCF Rest&quot;
+    </span>spec.name = <span style="color: maroon">&quot;wcfrestcontrib&quot;
+    </span>spec.version = <span style="color: maroon">&quot;#{ENV['GO_PIPELINE_LABEL']}&quot;
+    </span>spec.files = Dir[<span style="color: maroon">&quot;lib/**/*&quot;</span>] + Dir[<span style="color: maroon">&quot;docs/**/*&quot;</span>]
+    spec.authors = [<span style="color: maroon">&quot;Mike O'Brien&quot;</span>]
+    spec.homepage = <span style="color: maroon">&quot;http://github.com/mikeobrien/WcfRestContrib&quot;
+    </span>spec.description = <span style="color: maroon">&quot;The WCF REST Contrib library adds functionality to the current .NET WCF REST implementation.&quot;
+</span>end</pre>
+
+<p>I think the above spec is pretty self explanatory but I'll point out a couple of things. First, the name of the gem (<font face="Courier New">spec.name = &quot;wcfrestcontrib&quot;</font>) must be available on the gem server (Just do a search on rubygems.org to check this) and you shouldn't change it after you create it. This is the handle developers will use to identify your gem, so if you go changing it, users may not realize this and continue to use the old handle (Which will no longer be updated). Secondly, we are setting the version of the gem (<font face="Courier New">spec.version = &quot;#{ENV['GO_PIPELINE_LABEL']}&quot;</font>). This is important as this is how the gem server knows what to return when a user asks for the latest gem and it differentiates one version of a gem from another. I'm managing the version number via the build label in Go. I have this set to automatically increment the build number using the COUNT macro (And I can manually modify the major and minor versions when needed). Here is the pipeline configuration in Go:</p>
+
+<pre class="code"><span style="color: blue">&lt;</span><span style="color: #a31515">pipeline </span><span style="color: red">...</span> <span style="color: red">labeltemplate</span><span style="color: blue">=</span>&quot;<span style="color: blue">1.0.6.${COUNT}</span>&quot;<span style="color: blue">&gt;
+    </span>...
+<span style="color: blue">&lt;/</span><span style="color: #a31515">pipeline</span><span style="color: blue">&gt;</span></pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>The third thing I'd like to point out is how to specify the files you want included in the gem (<font face="Courier New">spec.files = Dir[&quot;lib/**/*&quot;] + Dir[&quot;docs/**/*&quot;]</font>). There is a particular folder layout you will need in in the gem in order for it to work properly. For example binaries or code must be in a folder called &quot;lib&quot; and documents in a folder called &quot;docs&quot;. The tricky thing is that when you specify the files, the folder structure in the gem will be based on the path you specify. So lets say you want to add the binaries of one of the projects in your solution. You could say something like this &quot;<font face="Courier New">spec.files = Dir[&quot;myproject/bin/release/**/*&quot;]</font>&quot; but then the actual folder structure in the gem will be &quot;/myproject/bin/release/&lt;Your Binaries&gt;&quot;; not going to work. One way to handle this is to create a temporary folder that has the folder structure you want and then copy the files into it. Then you can specify the files for the gem from that folder. Here is how we can accomplish this: </p>
+
+<pre class="code">desc <span style="color: maroon">&quot;Prepares the gem files to be packaged.&quot;
+</span>task :prepareGemFiles =&gt; :build <span style="color: blue">do
+    
+    </span>gem = <span style="color: maroon">&quot;gem&quot;
+    </span>lib = <span style="color: maroon">&quot;#{gem}/files/lib&quot;
+    </span>docs = <span style="color: maroon">&quot;#{gem}/files/docs&quot;
+    </span>pkg = <span style="color: maroon">&quot;#{gem}/pkg&quot;
+    
+    </span><span style="color: blue">if </span>Dir.exists?(gem) then 
+         FileUtils.rm_rf gem
+    end
+
+    FileUtils.mkdir_p(lib)
+    FileUtils.mkdir_p(pkg)
+    FileUtils.mkdir_p(docs)
+    
+    Dir.glob(<span style="color: maroon">&quot;src/WcfRestContrib/bin/Release/*&quot;</span>) <span style="color: blue">do </span>|name|
+        FileUtils.cp(name, lib)
+    end    
+    
+    Dir.glob(<span style="color: maroon">&quot;src/docs/**/*&quot;</span>) <span style="color: blue">do </span>|name|
+        FileUtils.cp(name, docs)
+    end    
+    
+end</pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>This task generates the following folder structure and copies necessary files into that folder structure:</p>
+
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/669db0637b3a48f7b362d73e79933b1a.png" width="676" height="368" /> </p>
+
+<p>Now the following task will create the gem, referencing the files in our temporary folder &quot;gem/files&quot; (Instead of elsewhere in our project structure):</p>
+
+<pre class="code">desc <span style="color: maroon">&quot;Creates gem&quot;
+</span>task :createGem =&gt; :prepareGemFiles <span style="color: blue">do
+
+    </span>FileUtils.cd(<span style="color: maroon">&quot;gem/files&quot;</span>) <span style="color: blue">do
+    
+        </span>spec = Gem::Specification.<span style="color: blue">new do </span>|spec|
+            spec.platform = Gem::Platform::RUBY
+            spec.summary = <span style="color: maroon">&quot;Goodies for .NET WCF Rest&quot;
+            </span>spec.name = <span style="color: maroon">&quot;wcfrestcontrib&quot;
+            </span>spec.version = <span style="color: maroon">&quot;#{ENV['GO_PIPELINE_LABEL']}&quot;
+            </span>spec.files = Dir[<span style="color: maroon">&quot;lib/**/*&quot;</span>] + Dir[<span style="color: maroon">&quot;docs/**/*&quot;</span>]
+            spec.authors = [<span style="color: maroon">&quot;Mike O'Brien&quot;</span>]
+            spec.homepage = <span style="color: maroon">&quot;http://github.com/mikeobrien/WcfRestContrib&quot;
+            </span>spec.description = <span style="color: maroon">&quot;The WCF REST Contrib library adds functionality to the current .NET WCF REST implementation.&quot;
+        </span>end
+
+        Rake::GemPackageTask.<span style="color: blue">new</span>(spec) <span style="color: blue">do </span>|package|
+            package.package_dir = <span style="color: maroon">&quot;../pkg&quot;
+        </span>end
+        
+        Rake::Task[<span style="color: maroon">&quot;package&quot;</span>].invoke
+    end
+end</pre>
+<a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a><span style="color: maroon"></span><a href="http://11011.net/software/vspaste"></a>
+
+<p>You'll notice that the first thing it does is make the current directory &quot;gem/files&quot;. This is important because the paths we specify in the gem spec must be relative to the current directory. We put the code into a block because the cd method will change the current directory only for the code in the block then set the current directory back when the block completes. The Rake::GemPackageTask call dynamically generates some Rake tasks related to gem packages using the gem spec we pass in. The dynamically generated task we're interested in is &quot;package&quot;. This task creates our gem and puts it in &quot;gem/pkg&quot; folder (<font face="Courier New">package.package_dir = &quot;../pkg&quot;</font>).</p>
+
+<p>As an aside, most examples show the gem spec definition (<font face="Courier New">spec = Gem::Specification...</font>) and gem task creation (<font face="Courier New">Rake::GemPackageTask...</font>) in the body of the script (Not in a Rake task). The reason that we are encapsulating it into a task is because we want to specify the files we want in the gem spec (<font face="Courier New">spec.files = Dir[&quot;lib/**/*&quot;] + Dir[&quot;docs/**/*&quot;]</font>) <strong><em>after</em></strong> depended-on tasks have run. If we create the spec in the body of the script it <strong><em>immediately</em></strong> executes and pulls the file list <strong><em>before</em></strong> any tasks are run. This is no good because it will not pick up binaries or other items generated by the build task or other tasks. So we want to delay this until all depended-on tasks are run. Plus in this example we also need to make sure we have a prepared folder structure in place to pull our files from so that they are laid out correctly in the gem. </p>
+
+<p>The last thing we'll need to do is push the gem. This is pretty straight forward:</p>
+
+<pre class="code">desc <span style="color: maroon">&quot;Push the gem to ruby gems&quot;
+</span>task :pushGem =&gt; :createGem <span style="color: blue">do
+    </span>result = system(<span style="color: maroon">&quot;gem&quot;</span>, <span style="color: maroon">&quot;push&quot;</span>, <span style="color: maroon">&quot;gem/pkg/wcfrestcontrib-#{ENV['GO_PIPELINE_LABEL']}.gem&quot;</span>)
+end</pre>
+<a href="http://11011.net/software/vspaste"></a>One thing to notice in the tasks we've created are the dependencies. The :pushGem task relies on the :createGem task which relies on the :prepareGemFiles task and so on. We can run the :pushGem task and be certain that all required tasks will be run before hand.&#160;&#160;&#160; <p>The entire Rake file can be found here: <a href="http://gist.github.com/578564"><u><font color="#0066cc">http://gist.github.com/578564</font></u></a></p>
+
+<p><strong>Go Pipeline Configuration</strong></p>
+
+<p>Now that we have our build script prepared we want to configure Go to have a CI stage and a manual gem push stage. The following pipeline configuration does this:</p>
+
+<pre class="code"><span style="color: blue">&lt;</span><span style="color: #a31515">pipeline </span><span style="color: red">name</span><span style="color: blue">=</span>&quot;<span style="color: blue">WCFRestContrib</span>&quot; <span style="color: red">labeltemplate</span><span style="color: blue">=</span>&quot;<span style="color: blue">1.0.6.${COUNT}</span>&quot;<span style="color: blue">&gt;
+  &lt;</span><span style="color: #a31515">materials</span><span style="color: blue">&gt;
+    &lt;</span><span style="color: #a31515">git </span><span style="color: red">url</span><span style="color: blue">=</span>&quot;<span style="color: blue">git://github.com/mikeobrien/WcfRestContrib.git</span>&quot; <span style="color: blue">/&gt;
+  &lt;/</span><span style="color: #a31515">materials</span><span style="color: blue">&gt;
+  &lt;</span><span style="color: #a31515">stage </span><span style="color: red">name</span><span style="color: blue">=</span>&quot;<span style="color: blue">CI</span>&quot;<span style="color: blue">&gt;
+    &lt;</span><span style="color: #a31515">jobs</span><span style="color: blue">&gt;
+      &lt;</span><span style="color: #a31515">job </span><span style="color: red">name</span><span style="color: blue">=</span>&quot;<span style="color: blue">Default</span>&quot;<span style="color: blue">&gt;
+        &lt;</span><span style="color: #a31515">tasks</span><span style="color: blue">&gt;
+          &lt;</span><span style="color: #a31515">rake </span><span style="color: red">buildfile</span><span style="color: blue">=</span>&quot;<span style="color: blue">release\rakefile.rb</span>&quot; <span style="color: red">target</span><span style="color: blue">=</span>&quot;<span style="color: blue">build</span>&quot; <span style="color: blue">/&gt;
+        &lt;/</span><span style="color: #a31515">tasks</span><span style="color: blue">&gt;
+      &lt;/</span><span style="color: #a31515">job</span><span style="color: blue">&gt;
+    &lt;/</span><span style="color: #a31515">jobs</span><span style="color: blue">&gt;
+  &lt;/</span><span style="color: #a31515">stage</span><span style="color: blue">&gt;
+  &lt;</span><span style="color: #a31515">stage </span><span style="color: red">name</span><span style="color: blue">=</span>&quot;<span style="color: blue">PushGem</span>&quot;<span style="color: blue">&gt;
+    &lt;</span><span style="color: #a31515">approval </span><span style="color: red">type</span><span style="color: blue">=</span>&quot;<span style="color: blue">manual</span>&quot; <span style="color: blue">/&gt;
+    &lt;</span><span style="color: #a31515">jobs</span><span style="color: blue">&gt;
+      &lt;</span><span style="color: #a31515">job </span><span style="color: red">name</span><span style="color: blue">=</span>&quot;<span style="color: blue">Default</span>&quot;<span style="color: blue">&gt;
+        &lt;</span><span style="color: #a31515">tasks</span><span style="color: blue">&gt;
+          &lt;</span><span style="color: #a31515">rake </span><span style="color: red">buildfile</span><span style="color: blue">=</span>&quot;<span style="color: blue">release\rakefile.rb</span>&quot; <span style="color: red">target</span><span style="color: blue">=</span>&quot;<span style="color: blue">pushGem</span>&quot; <span style="color: blue">/&gt;
+        &lt;/</span><span style="color: #a31515">tasks</span><span style="color: blue">&gt;
+      &lt;/</span><span style="color: #a31515">job</span><span style="color: blue">&gt;
+    &lt;/</span><span style="color: #a31515">jobs</span><span style="color: blue">&gt;
+  &lt;/</span><span style="color: #a31515">stage</span><span style="color: blue">&gt;
+&lt;/</span><span style="color: #a31515">pipeline</span><span style="color: blue">&gt;</span></pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>Here in the pipeline element we see the build label template discussed earlier from which our version is generated. For demonstration purposes the CI stage simply builds the project. This stage automatically runs every time we commit to the central repo. The next stage pushes the gem. You'll notice it this has an approval type of manual. This means that you have to explicitly run the next stage. It allows you to choose which version you want pushed to the gem server. Here is what this would look like in the Go UI:</p>
+
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/193cc63ac8b44842ad121325bb31e84b.png" width="785" height="545" /> </p>
+
+<p>Clicking the icon between the two stages brings up a confirmation dialog verifying that you want to run the next stage in the pipeline. </p>
+
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="/blog/images/6c5ccb07fa3a443788eb1249c0e8b744.png" width="785" height="545" /> </p>
+
+<p>This gem push stage was successful; version 1.0.6.81 was pushed out.</p>
+
+<p></p>
+
+<p><strong>Summary</strong></p>
+
+<p>Go + Ruby/Rake/Albacore provides a powerful stack for CI and CD. On thing I really like about Go is the build pipeline. You can create multiple stages that either run automatically when previous stages are complete. Or in the case of deploying to a staging or production environment you can manually run these stages. The price is right for Go as well since ThoughtWorks offers a free community edition. </p>  

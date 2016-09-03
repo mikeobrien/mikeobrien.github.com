@@ -1,0 +1,50 @@
+---
+layout: post
+title: Why Updating a Clean Property with the NHibernate Pre Update Event Listener, with Dynamic Update Set on the Entity, Doesn't Work
+tags: [NHibernate]
+redirect_from:
+  - /blog/2010/11/why-updating-clean-property-with.html
+---
+<p>Wow, that's a mouthful. Anyways, if your trying to update a property in an NHibernate (2.1.2.4000) pre update event listener that is &quot;clean&quot; (In other words wasn't updated in the calling code) and your entity is set to dynamic update the update will not make it to the database. Here is why that is the case. The pre update event gets called in the NHibernate.Action.EntityUpdateAction class. Problem is that by the time the event is called the dirty field list has already been set in this class. So no matter what you do the dirty list is already set in stone as an invariant:</p>  <pre class="code"><span style="color: blue">public sealed class </span><span style="color: #2b91af">EntityUpdateAction </span>: <span style="color: #2b91af">EntityAction
+</span>{
+    <span style="color: blue">private <font color="#ff0000"><strong>readonly</strong></font> int</span>[] <strong><font color="#ff0000">dirtyFields</font></strong>;
+
+    <span style="color: green">// ...
+
+    </span><span style="color: blue">public </span>EntityUpdateAction(<span style="color: blue">object </span>id, <span style="color: blue">object</span>[] state, <span style="color: blue">int</span>[] <font color="#ff0000"><strong>dirtyProperties</strong></font>, <span style="color: blue">bool </span>hasDirtyCollection, 
+                              <span style="color: blue">object</span>[] previousState, <span style="color: blue">object </span>previousVersion, <span style="color: blue">object </span>nextVersion, <span style="color: blue">object </span>instance, 
+                              <span style="color: #2b91af">IEntityPersister </span>persister, <span style="color: #2b91af">ISessionImplementor </span>session)
+        : <span style="color: blue">base</span>(session, id, instance, persister)
+    {
+        <font color="#ff0000"><strong><span style="color: blue">this</span>.dirtyFields = dirtyProperties</strong></font>;
+        <span style="color: green">// ...
+    </span>}
+
+    <span style="color: blue">public override void </span>Execute()
+    {
+        <span style="color: green">// ...
+        </span><span style="color: blue">bool </span>flag2 = <span style="color: blue">this</span>.<span style="color: red">PreUpdate</span>();
+        <span style="color: green">// ...
+        </span><span style="color: blue">if </span>(!flag2)
+        {
+            persister.Update(id, <span style="color: blue">this</span>.<span style="color: red"><font color="#333333">state</font></span>, <span style="color: blue">this</span>.<font color="#ff0000"><strong>dirtyFields</strong></font>, <span style="color: blue">this</span>.<span style="color: red"><font color="#000000">hasDirtyCollection</font></span>, <span style="color: blue">this</span>.<span style="color: red"><font color="#333333">previousState</font></span>,
+                             <span style="color: blue">this</span>.<span style="color: red"><font color="#000000">previousVersion</font></span>, instance, <span style="color: blue">null</span>, session);
+        }
+        <span style="color: green">// ...
+    </span>}
+}</pre>
+
+
+<p>So as you can see, there is no way the pre update event can effect the dirty fields value that is passed into the update call. What's the solution? Create an interceptor and implement the OnFlushDirty method. The easiest way to do this is to inherit from EmptyInterceptor and override the method as follows:</p>
+
+<pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">TimestampInterceptor </span>: <span style="color: #2b91af">EmptyInterceptor
+</span>{
+    <span style="color: blue">public override bool </span>OnFlushDirty(<span style="color: blue">object </span>entity, <span style="color: blue">object </span>id, <span style="color: blue">object</span>[] currentState, <span style="color: blue">object</span>[] previousState, 
+                                      <span style="color: blue">string</span>[] propertyNames, <span style="color: blue">global</span>::NHibernate.Type.<span style="color: #2b91af">IType</span>[] types)
+    {
+        <span style="color: blue">return </span>SetTimestamp(entity, propertyNames, currentState, x =&gt; x.Modified);
+    }
+}</pre>
+
+
+<p>Then register your interceptor and your good to go. </p>  

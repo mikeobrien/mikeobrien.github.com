@@ -1,0 +1,60 @@
+---
+layout: post
+title: Temporarily Storing a View Model During a Post-Redirect-Get
+tags: [.NET, ASP.NET MVC]
+redirect_from:
+  - /blog/2010/08/temporarily-storing-view-model-during.html
+---
+<p>MVC enables you to cache data across requests using the TempData dictionary. This is handy when your doing a post-redirect-get:</p>  <pre class="code">[<span style="color: #2b91af">HttpPost</span>]
+<span style="color: blue">public </span><span style="color: #2b91af">ActionResult </span>Register(<span style="color: #2b91af">UserRegistration </span>registration)
+{
+    <span style="color: green">// ...
+    </span>TempData[<span style="color: #a31515">&quot;user-registration&quot;</span>] = registration;
+    <span style="color: blue">return </span>RedirectToAction(<span style="color: #a31515">&quot;RegisterSuccess&quot;</span>);
+}
+
+<span style="color: blue">public </span><span style="color: #2b91af">ActionResult </span>RegisterSuccess()
+{
+    <span style="color: blue">return </span>View(TempData[<span style="color: #a31515">&quot;user-registration&quot;</span>]);
+}</pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>Since this is so common why not have a type safe method sans magic strings:</p>
+
+<pre class="code">[<span style="color: #2b91af">HttpPost</span>]
+<span style="color: blue">public </span><span style="color: #2b91af">ActionResult </span>Register(<span style="color: #2b91af">UserRegistration </span>registration)
+{
+    <span style="color: green">// ...
+    </span>TempData.Model&lt;<span style="color: #2b91af">UserRegistration</span>&gt;().Current = registration;
+    <span style="color: blue">return </span>RedirectToAction(<span style="color: #a31515">&quot;RegisterSuccess&quot;</span>);
+}
+
+<span style="color: blue">public </span><span style="color: #2b91af">ActionResult </span>RegisterSuccess()
+{
+    <span style="color: blue">return </span>View(TempData.Model&lt;<span style="color: #2b91af">UserRegistration</span>&gt;().Current);
+}</pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>Here is the implementation:</p>
+
+<pre class="code"><span style="color: blue">public static class </span><span style="color: #2b91af">TempDataDictionaryExtensions
+</span>{
+    <span style="color: blue">public static </span><span style="color: #2b91af">TempModelContext</span>&lt;T&gt; Model&lt;T&gt;(<span style="color: blue">this </span><span style="color: #2b91af">TempDataDictionary </span>tempData)
+    { <span style="color: blue">return new </span><span style="color: #2b91af">TempModelContext</span>&lt;T&gt;(tempData); }
+
+    <span style="color: blue">public class </span><span style="color: #2b91af">TempModelContext</span>&lt;T&gt;
+    {
+        <span style="color: blue">private readonly </span><span style="color: #2b91af">TempDataDictionary </span>_tempData;
+        <span style="color: blue">private readonly string </span>_key = <span style="color: #a31515">&quot;__TYPE#&quot; </span>+ <span style="color: blue">typeof</span>(T).Name;
+
+        <span style="color: blue">public </span>TempModelContext(<span style="color: #2b91af">TempDataDictionary </span>tempData)
+        { _tempData = tempData; }
+
+        <span style="color: blue">public </span>T Current
+        {
+            <span style="color: blue">get </span>{ <span style="color: blue">return </span>_tempData.ContainsKey(_key) ? 
+                         (T)_tempData[_key] : <span style="color: blue">default</span>(T); }
+            <span style="color: blue">set </span>{ _tempData[_key] = <span style="color: blue">value</span>; }
+        }
+    }
+}</pre>  

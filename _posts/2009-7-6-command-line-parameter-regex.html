@@ -1,0 +1,20 @@
+---
+layout: post
+title: Command Line Parameter Regex
+tags: [.NET, Regular Expressions]
+redirect_from:
+  - /blog/2009/07/command-line-parameter-regex.html
+---
+<p>Recently I needed a regex to parse the command line. Something like this:</p> <p>/param1="sfsdf&#160; sdf sdfsdf&#160; sdfsdf" /param2 =rstwertw /param3 = "rtwqert sdfas f"</p> <p>I found a <a href="http://regexlib.com/UserPatterns.aspx?authorId=ecfe249d-ed34-44e2-8257-0fa8861cd351">great regex on RegExLib</a> by Richard Hauer for doing this. I made one minor tweak to allow whitespace between the name/value delimiter:</p> <p><font size="2" face="Courier New">(?:\s*)(?<=[-|/])(?<name>\w*)\s*[:|=]\s*("((?<value>.*?)(?<!\\)")|(?<value>[\w]*))</font></p> <p>Here it is in action:</p><pre class="code"><span style="color: blue">string </span>commandLineRegEx = 
+    <span style="color: #a31515">@"(?:\s*)(?<=[-|/])(?<name>\w*)\s*[:|=]\s*(""((?<value>.*?)(?<!\\)"")|(?<value>[\w]*))"</span>;
+<span style="color: #2b91af">Regex </span>regex = <span style="color: blue">new </span><span style="color: #2b91af">Regex</span>(commandLineRegEx);
+
+<span style="color: #2b91af">MatchCollection </span>matches = regex.Matches(
+    <span style="color: #a31515">"/param1=\"sfsdf  sdf sdfsdf  sdfsdf\" /param2 =rstwertw /param3 = \"rtwqert sdfas f\""</span>);
+
+<span style="color: blue">foreach </span>(<span style="color: #2b91af">Match </span>match <span style="color: blue">in </span>matches)
+    <span style="color: #2b91af">Console</span>.WriteLine(<span style="color: #a31515">"{0}={1}"</span>, 
+        match.Groups[<span style="color: #a31515">"name"</span>].Value, 
+        match.Groups[<span style="color: #a31515">"value"</span>].Value);
+
+<span style="color: #2b91af">Console</span>.ReadKey();</pre><a href="http://11011.net/software/vspaste"></a><a href="http://blog.mikeobrien.net/content/binary/WindowsLiveWriter/CommandLineRegex_ECFA/image_2.png"><img style="border-bottom: 0px; border-left: 0px; border-top: 0px; border-right: 0px" border="0" alt="image" src="/blog/images/9bca4d59ff82424d80c1c0afe1010696.png" width="365" height="129"></a>

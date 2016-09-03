@@ -1,0 +1,38 @@
+---
+layout: post
+title: Consuming a Web Service that Requires a WSS UsernameToken with ColdFusion
+tags: [SOAP, WS-Security, Interoperability, ColdFusion]
+redirect_from:
+  - /blog/2009/04/consuming-web-service-that-requires-wss.html
+---
+<p>The following demonstrates how to consume a web service that requires a WSS UsernameToke with ColdFusion:</p><pre class="code"><span style="color: blue"><</span><span style="color: #a31515">html</span><span style="color: blue">>
+<</span><span style="color: #a31515">head</span><span style="color: blue">><</span><span style="color: #a31515">title</span><span style="color: blue">></span>My Web Services<span style="color: blue"></</span><span style="color: #a31515">title</span><span style="color: blue">></</span><span style="color: #a31515">head</span><span style="color: blue">>
+<</span><span style="color: #a31515">body</span><span style="color: blue">>
+<</span><span style="color: #a31515">h2</span><span style="color: blue">></span>My Web Services<span style="color: blue"></</span><span style="color: #a31515">h2</span><span style="color: blue">>
+
+<</span><span style="color: #a31515">cfscript</span><span style="color: blue">>
+
+</span>service = createObject("webservice", "https://services.nsa.gov/NOCList.svc?wsdl");
+
+AddCredentials(service, "username", "p@$$w0rd");
+
+result = service.DoSomething();
+
+writeoutput("Result=" & result);
+
+function AddCredentials(service, username, password)
+{
+      wssNamespace = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
+      header = createObject("java", "org.apache.axis.message.SOAPHeaderElement");
+      header.init(wssNamespace, "wsse:Security");
+      header.addChildElement("wsse:UsernameToken");
+      header.getFirstChild().addChildElement("wsse:Username").setValue(username);
+      header.getFirstChild().addChildElement("wsse:Password").setValue(password);
+      header.setMustUnderstand(1);
+      service.setHeader(header);
+}
+
+<span style="color: blue"></</span><span style="color: #a31515">cfscript</span><span style="color: blue">>
+
+</</span><span style="color: #a31515">body</span><span style="color: blue">>
+</</span><span style="color: #a31515">html</span><span style="color: blue">></span></pre><a href="http://11011.net/software/vspaste"></a>

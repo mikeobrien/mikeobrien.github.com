@@ -1,0 +1,112 @@
+---
+layout: post
+title: WCF REST Per Method Basic Authentication
+tags: [REST, .NET 3.5, WCF]
+redirect_from:
+  - /blog/2009/05/wcf-rest-per-method-basic.html
+---
+<p>One of the things I really wanted with our REST API is per method basic authentication. So lets say we have a library with a books resource. We want everyone to be able to read this resource but we want people to authenticate when modifying this resource. As far as I could tell there is no way to do this OOB with WCF REST without resorting to breaking your resource up into two parts, read and write and hosting the secure one in a separate IIS app with basic auth enabled. The only way I could figure out how to do this properly is implement basic auth in an operation invoker. This way you could define authentication on a per method basis as follows (With the BasicAuthenticationInvoker) without breaking the resource up:</p><pre class="code">[<span style="color: #2b91af">ServiceContract</span>]
+<span style="color: blue">public interface </span><span style="color: #2b91af">IBookService
+</span>{
+    [<span style="color: #2b91af">WebGet</span>(UriTemplate = <span style="color: #a31515">"/{isbn}"</span>)]
+    [<span style="color: #2b91af">OperationContract</span>]
+    <span style="color: #2b91af">Book </span>GetBook(<span style="color: blue">string </span>isbn);
+            
+    [<span style="color: #2b91af">WebInvoke</span>(UriTemplate = <span style="color: #a31515">"/{isbn}"</span>, Method=<span style="color: #2b91af">Verbs</span>.Delete)]
+    [<span style="color: #2b91af">OperationContract</span>]
+    [<span style="color: #2b91af">BasicAuthenticationInvoker</span>]
+    <span style="color: blue">void </span>DeleteBook(<span style="color: blue">string </span>isbn);
+}</pre><a href="http://11011.net/software/vspaste"></a>
+<p>It's pretty simple to do this and doesn't require integration with IIS. First define a class that will act as a behavior attribute and an operation invoker:</p><pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">BasicAuthenticationInvoker </span>: <span style="color: #2b91af">Attribute</span>, <span style="color: #2b91af">IOperationBehavior</span>, <span style="color: #2b91af">IOperationInvoker 
+</span>{
+}</pre><a href="http://11011.net/software/vspaste"></a>
+<p>Next, implement the operation behavior. We will store the original invoker to call if the user successfully authenticates, our invoker will basically act as a proxy. We can ignore the other three implemented methods.</p><pre class="code"><span style="color: blue">#region </span>Private Fields
+
+    <span style="color: blue">private </span><span style="color: #2b91af">IOperationInvoker </span>_invoker;
+
+<span style="color: blue">#endregion
+</span><span style="color: blue">
+#region </span>IOperationBehavior Members
+
+    <span style="color: blue">public void </span>ApplyDispatchBehavior(<span style="color: #2b91af">OperationDescription </span>operationDescription, 
+        <span style="color: #2b91af">DispatchOperation </span>dispatchOperation)
+    {
+        _invoker = dispatchOperation.Invoker;
+        dispatchOperation.Invoker = <span style="color: blue">this</span>;
+    }
+
+    <span style="color: blue">public void </span>ApplyClientBehavior(<span style="color: #2b91af">OperationDescription </span>operationDescription, 
+        <span style="color: #2b91af">ClientOperation </span>clientOperation) { }
+    <span style="color: blue">public void </span>AddBindingParameters(<span style="color: #2b91af">OperationDescription </span>operationDescription, 
+        <span style="color: #2b91af">BindingParameterCollection </span>bindingParameters) { }
+    <span style="color: blue">public void </span>Validate(<span style="color: #2b91af">OperationDescription </span>operationDescription) { }
+
+<span style="color: blue">#endregion</span></pre><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a>
+<p>Now implement the operation invoker. First we call our private authenticate method, if this is successful we'll call the invoker, otherwise we return nothing.</p><pre class="code"><span style="color: blue">#region </span>IOperationInvoker Members
+
+    <span style="color: blue">public object </span>Invoke(<span style="color: blue">object </span>instance, <span style="color: blue">object</span>[] inputs, <span style="color: blue">out object</span>[] outputs)
+    {
+        <span style="color: blue">if </span>(Authenticate(<span style="color: #a31515">"New York Public Library"</span>))
+            <span style="color: blue">return </span>_invoker.Invoke(instance, inputs, <span style="color: blue">out </span>outputs);
+        <span style="color: blue">else
+        </span>{
+            outputs = <span style="color: blue">null</span>;
+            <span style="color: blue">return null</span>;
+        }
+    }
+
+<span style="color: blue">    public object</span>[] AllocateInputs() { <span style="color: blue">return </span>_invoker.AllocateInputs(); } 
+
+    <span style="color: blue">public </span><span style="color: #2b91af">IAsyncResult </span>InvokeBegin(<span style="color: blue">object </span>instance, <span style="color: blue">object</span>[] inputs, 
+        <span style="color: #2b91af">AsyncCallback </span>callback, <span style="color: blue">object </span>state)
+    { <span style="color: blue">throw new </span><span style="color: #2b91af">NotSupportedException</span>(); }
+
+    <span style="color: blue">public object </span>InvokeEnd(<span style="color: blue">object </span>instance, <span style="color: blue">out object</span>[] outputs, <span style="color: #2b91af">IAsyncResult </span>result)
+    { <span style="color: blue">throw new </span><span style="color: #2b91af">NotSupportedException</span>(); }
+
+    <span style="color: blue">public bool </span>IsSynchronous { <span style="color: blue">get </span>{ <span style="color: blue">return true</span>; } }
+
+<span style="color: blue">#endregion</span></pre><a href="http://11011.net/software/vspaste"></a>
+<p>The private authentication methods are as follows. The authenticate method checks the username and password and if successful returns true, otherwise it sets the authenticate header and the status code to unauthorized. </p><pre class="code"><span style="color: blue">private bool </span>Authenticate(<span style="color: blue">string </span>realm)
+{
+    <span style="color: blue">string</span>[] credentials = 
+        GetCredentials(<span style="color: #2b91af">WebOperationContext</span>.Current.IncomingRequest.Headers);
+
+    <span style="color: blue">if </span>(credentials != <span style="color: blue">null </span>&& 
+        credentials[0] == <span style="color: #a31515">"tony" </span>&& 
+        credentials[1] == <span style="color: #a31515">"clifton"</span>) <span style="color: blue">return true</span>;
+
+    <span style="color: #2b91af">WebOperationContext</span>.Current.OutgoingResponse.Headers[<span style="color: #a31515">"WWW-Authenticate"</span>] = 
+        <span style="color: blue">string</span>.Format(<span style="color: #a31515">"Basic realm=\"{0}\""</span>, realm);
+    <span style="color: #2b91af">WebOperationContext</span>.Current.OutgoingResponse.StatusCode = 
+        <span style="color: #2b91af">HttpStatusCode</span>.Unauthorized;
+    <span style="color: blue">return false</span>;
+}
+
+<span style="color: blue">private string</span>[] GetCredentials(<span style="color: #2b91af">WebHeaderCollection </span>headers)
+{
+    <span style="color: blue">string </span>credentials = <span style="color: #2b91af">WebOperationContext</span>.Current.IncomingRequest.
+        Headers[<span style="color: #a31515">"Authorization"</span>];
+    <span style="color: blue">if </span>(credentials != <span style="color: blue">null</span>) credentials = credentials.Trim();
+
+    <span style="color: blue">if </span>(!<span style="color: blue">string</span>.IsNullOrEmpty(credentials))
+    {
+        <span style="color: blue">try
+        </span>{
+            <span style="color: blue">string</span>[] credentialParts = credentials.Split(<span style="color: blue">new char</span>[] { <span style="color: #a31515">' ' </span>});
+            <span style="color: blue">if </span>(credentialParts.Length == 2 && 
+                credentialParts[0].Equals(<span style="color: #a31515">"basic"</span>, 
+                <span style="color: #2b91af">StringComparison</span>.OrdinalIgnoreCase))
+            {
+                credentials = <span style="color: #2b91af">ASCIIEncoding</span>.ASCII.GetString(
+                    <span style="color: #2b91af">Convert</span>.FromBase64String(credentialParts[1]));
+                credentialParts = credentials.Split(<span style="color: blue">new char</span>[] { <span style="color: #a31515">':' </span>});
+                <span style="color: blue">if </span>(credentialParts.Length == 2) <span style="color: blue">return </span>credentialParts;
+            }
+        }
+        <span style="color: blue">catch </span>{ }
+    }
+
+    <span style="color: blue">return null</span>;
+}</pre><a href="http://11011.net/software/vspaste"></a>
+<p>This same approach could also be used to examine parameters as part of the authentication process (If you are using tokens or the like). </p>

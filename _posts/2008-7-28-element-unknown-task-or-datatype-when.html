@@ -1,0 +1,8 @@
+---
+layout: post
+title: &quot;Invalid element &lt;xyz&gt;. Unknown task or datatype.&quot; When Using a NantContrib 0.85 Task With Nant 0.86
+tags: [NantContrib, Nant]
+redirect_from:
+  - /blog/2008/07/element-unknown-task-or-datatype-when.html
+---
+<p>If you are receiving the above error message it may be that you installed the NantContrib task binaries under the <nant>\bin\<strong><font color="#ff0000">tasks</font></strong>\net\20 folder (As the NantContrib readme.txt specifies). Evidently the "tasks" folder is now called "extensions" in Nant 0.86. So the proper path would be <nant>\bin\<strong><font color="#ff0000">extensions</font></strong>\net\20.</p>

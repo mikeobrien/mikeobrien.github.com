@@ -1,0 +1,78 @@
+---
+layout: post
+title: Registering Types with an Interface that Derives from an Open Generic Type in StructureMap
+tags: [.NET, StructureMap]
+redirect_from:
+  - /blog/2010/01/registering-types-with-interface-that.html
+---
+<p><a href="http://www.lostechies.com/blogs/jimmy_bogard/default.aspx">Jimmy Bogard</a> has written a couple of posts <a href="http://www.lostechies.com/blogs/jimmy_bogard/archive/2010/01/07/advanced-structuremap-custom-registration-conventions-for-partially-closed-types.aspx">here</a> and <a href="http://www.lostechies.com/blogs/jimmy_bogard/archive/2009/09/01/partially-closed-generic-types.aspx">here</a> discussing the registering partially closed generic types with <a href="http://structuremap.sourceforge.net">StructureMap</a>. These posts helped me solve a problem I was having which is a little bit different. To set the stage let me explain what we're doing. First we have a generic repository interface:</p>  <pre class="code"><span style="color: blue">public interface </span><span style="color: #2b91af">IRepository</span><TEntity> : <span style="color: #2b91af">IQueryable</span><TEntity> <span style="color: blue">where </span>TEntity : <span style="color: blue">class
+</span>{
+    TEntity Get(<span style="color: #2b91af">Guid </span>id);
+    <span style="color: blue">void </span>Save(TEntity entity);
+    <span style="color: blue">void </span>Delete(TEntity entity);
+    <span style="color: blue">void </span>DeleteSingle(<span style="color: #2b91af">IQueryable</span><TEntity> query);
+    <span style="color: blue">void </span>DeleteMany(<span style="color: #2b91af">IQueryable</span><TEntity> query);
+}</pre>
+
+<p>Then we will have an interface for a specific repository that inherits from the generic repository interface and includes convenience methods:</p>
+
+<pre class="code"><span style="color: blue">public interface </span><span style="color: #2b91af">IAccountRepository </span>: <span style="color: #2b91af">IRepository</span><<span style="color: #2b91af">Account</span>>
+{
+    <span style="color: blue">void </span>DeleteInactiveAccountsOlderThanTwoYears();
+    <span style="color: blue">void </span>CreateAccountBasedOnExistingAccount(<span style="color: #2b91af">Account </span>account);
+    <span style="color: green">// Etc, etc, etc
+</span>}</pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>Then we have the concrete class that implements the repository specific interface (The NHibernateRepositoryBase class implements the members defined by IRepository<TEntity> not show below):</p>
+
+<pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">AccountRepository </span>: <span style="color: #2b91af">NHibernateRepositoryBase</span><<span style="color: #2b91af">Account</span>>, <span style="color: #2b91af">IAccountRepository
+</span>{
+    <span style="color: blue">public void </span>DeleteInactiveAccountsOlderThanTwoYears() {...};
+    <span style="color: blue">public void </span>CreateAccountBasedOnExistingAccount(<span style="color: #2b91af">Account </span>account) {...};
+    <span style="color: green">// Etc, etc, etc    
+</span>}</pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>So what I wanted is to scan our persistence assembly for any concrete types (IE: AccountRepository) that implement an interface (IE: IAccountRepository) that derives from a closed generic interface (IE: IRepository<Account>) that is of a particular open generic interface type (IE: IRepository<>). Clear as mud?? :) Simply put, I want to scan for IRepository<> and want to map IAccountRepository to AccountRepository. This is cake with StructureMap using a registration convention. BTW, I'm using StructureMap 2.5.4 and from what I understand you may need this version to do what I'm doing here. </p>
+
+<p>I lifted the GenericConnectionScanner class (Which is what the ConnectImplementationsToTypesClosing convenience method uses) from the StructureMap code as my starting point and modified the logic:</p>
+
+<pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">DerivedOpenGenericInterfaceConnectionScanner </span>: <span style="color: #2b91af">IRegistrationConvention
+</span>{
+    <span style="color: blue">private readonly </span><span style="color: #2b91af">Type </span>_openType;
+
+    <span style="color: blue">public </span>DerivedOpenGenericInterfaceConnectionScanner(<span style="color: #2b91af">Type </span>openType)
+    {
+        _openType = openType;
+        <span style="color: blue">if </span>(!_openType.IsInterface || !_openType.IsOpenGeneric())
+            <span style="color: blue">throw new </span><span style="color: #2b91af">ApplicationException</span>(
+                <span style="color: #a31515">"This scanning convention can only be used with open generic interface types"</span>);
+    }
+
+    <span style="color: blue">public void </span>Process(<span style="color: #2b91af">Type </span>type, StructureMap.Configuration.DSL.<span style="color: #2b91af">Registry </span>registry)
+    {
+        <span style="color: blue">if </span>(!type.IsConcrete()) <span style="color: blue">return</span>;
+        <span style="color: blue">var </span>derivedTypes = type.GetInterfaces().
+                            Where(i => i.GetInterfaces().
+                                    Any(i2 => i2.IsGenericType && 
+                                              i2.GetGenericTypeDefinition() == _openType));
+        <span style="color: blue">if </span>(derivedTypes.Count() > <span style="color: brown">0</span>) registry.For(derivedTypes.First()).Add(type);
+    }
+}</pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p>The constructor takes the open generic interface type. The Process method is called for each type; we only want concrete types. We check the type for interfaces that derive from an interface that has a type definition of our open generic interface type. If one exists we map the derived interface type to the concrete type. </p>
+
+<pre class="code"><span style="color: #2b91af">ObjectFactory</span>.Initialize(
+    x => x.Scan(
+        config => {
+             config.AssemblyContainingType(<span style="color: blue">typeof</span>(<span style="color: #2b91af">IRepository</span><>));
+             config.With(<span style="color: blue">new </span><span style="color: #2b91af">DerivedOpenGenericInterfaceConnectionScanner</span>(<span style="color: blue">typeof</span>(<span style="color: #2b91af">IRepository</span><>)));
+         }));
+
+<span style="color: blue">var </span>accountRepo = <span style="color: #2b91af">ObjectFactory</span>.GetInstance<<span style="color: #2b91af">IAccountRepository</span>>();
+System.Diagnostics.<span style="color: #2b91af">Debug</span>.Assert(accountRepo != <span style="color: blue">null </span>&& accountRepo <span style="color: blue">is </span><span style="color: #2b91af">AccountRepository</span>);</pre>
+<a href="http://11011.net/software/vspaste"></a>
+
+<p><span style="color: #2b91af"></span>The above initialization scans the assembly containing our open generic interface type and specifies our registration convention using the With() method. That's all there is to it!</p>

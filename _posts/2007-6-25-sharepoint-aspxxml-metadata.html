@@ -1,0 +1,31 @@
+---
+layout: post
+title: SharePoint aspx/xml MetaData
+tags: [VSeWSS, SharePoint]
+redirect_from:
+  - /blog/2007/06/sharepoint-aspxxml-metadata.html
+---
+<p>If you have worked with VSeWSS templates you will have probably noticed the comment added to the top of certain aspx/xml files:</p><font color="#008000" size="2"> <p><!-- _filecategory="ListDefinition" _filetype="File" _filename="editform.aspx" _uniqueid="0cfa6bc5-6fe6-47c2-b557-9b0f56475962" --></p> <p></font>First of all don't delete this! This "comment" is actually meta data that enables the VSeWSS solution builder to process the file. The "_filecategory" property identifies the file category (I have a gift for stating the obvious...). It is actually tied the the SolutionElementFileCategory in the SPDevTools.dll library under the Microsoft.SharePoint.Tools.SharePointSolutions namespace.</p> <p> <table style="margin-bottom: 0px" cellspacing="0" cellpadding="0" width="100%" unselectable="on"> <tbody> <tr> <td style="padding-right: 5px; padding-left: 5px; padding-bottom: 4px; padding-top: 4px" valign="top" colspan="2"><pre><font color="#1000a0">public</font> <font color="#1000a0">enum</font> <a class="bold" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://SPDevTools:12.0.0.0:71e9bce111e9429c/Microsoft.SharePoint.Tools.SharePointSolutions.SolutionElementFileCategory"><strong><font color="#000000">SolutionElementFileCategory</font></strong></a>
+{
+    <a class="bold" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://SPDevTools:12.0.0.0:71e9bce111e9429c/Microsoft.SharePoint.Tools.SharePointSolutions.SolutionElementFileCategory/Unknown"><strong><font color="#000000">Unknown</font></strong></a>,
+    <a class="bold" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://SPDevTools:12.0.0.0:71e9bce111e9429c/Microsoft.SharePoint.Tools.SharePointSolutions.SolutionElementFileCategory/SiteDefinition"><strong><font color="#000000">SiteDefinition</font></strong></a>,
+    <a class="bold" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://SPDevTools:12.0.0.0:71e9bce111e9429c/Microsoft.SharePoint.Tools.SharePointSolutions.SolutionElementFileCategory/ListDefinition"><strong><font color="#000000">ListDefinition</font></strong></a>,
+    <a class="bold" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://SPDevTools:12.0.0.0:71e9bce111e9429c/Microsoft.SharePoint.Tools.SharePointSolutions.SolutionElementFileCategory/ListInstance"><strong><font color="#000000">ListInstance</font></strong></a>,
+    <a class="bold" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://SPDevTools:12.0.0.0:71e9bce111e9429c/Microsoft.SharePoint.Tools.SharePointSolutions.SolutionElementFileCategory/Module"><strong><font color="#000000">Module</font></strong></a>,
+    <a class="bold" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://SPDevTools:12.0.0.0:71e9bce111e9429c/Microsoft.SharePoint.Tools.SharePointSolutions.SolutionElementFileCategory/ContentType"><strong><font color="#000000">ContentType</font></strong></a>,
+    <a class="bold" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://SPDevTools:12.0.0.0:71e9bce111e9429c/Microsoft.SharePoint.Tools.SharePointSolutions.SolutionElementFileCategory/Provisioner"><strong><font color="#000000">Provisioner</font></strong></a>
+}
+</pre></td></tr></tbody></table></p>
+<p>Next, the "_filetype" identifies the type of file (Duh!) and is tied to the SolutionElementFileType enumeration in the library/namespace mentioned previously.</p>
+<p>
+<table style="margin-bottom: 0px" cellspacing="0" cellpadding="0" width="100%" unselectable="on">
+<tbody>
+<tr>
+<td style="padding-right: 5px; padding-left: 5px; padding-bottom: 4px; padding-top: 4px" valign="top" colspan="2"><pre><font color="#1000a0">public</font> <font color="#1000a0">enum</font> <a class="bold" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://SPDevTools:12.0.0.0:71e9bce111e9429c/Microsoft.SharePoint.Tools.SharePointSolutions.SolutionElementFileType"><strong><font color="#000000">SolutionElementFileType</font></strong></a>
+{
+    <a class="bold" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://SPDevTools:12.0.0.0:71e9bce111e9429c/Microsoft.SharePoint.Tools.SharePointSolutions.SolutionElementFileType/Unknown"><strong><font color="#000000">Unknown</font></strong></a>,
+    <a class="bold" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://SPDevTools:12.0.0.0:71e9bce111e9429c/Microsoft.SharePoint.Tools.SharePointSolutions.SolutionElementFileType/Schema"><strong><font color="#000000">Schema</font></strong></a>,
+    <a class="bold" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://SPDevTools:12.0.0.0:71e9bce111e9429c/Microsoft.SharePoint.Tools.SharePointSolutions.SolutionElementFileType/File"><strong><font color="#000000">File</font></strong></a>
+}
+</pre></td></tr></tbody></table></p>
+<p>Next, the "_filename" property tells the solution builder what the name of the file should be in the resulting solution. And last but not least the guid which <strong>uniquely</strong> identifies the file. Every element in a solution <strong>must have a unique&#160;guid</strong> in order for the solution builder to work with it ("Element" meaning a SP Solution&#160;aspx/xml file or a class). Classes are given a unique identifier by defining&#160;a Guid attribute to the class. If you copy an existing aspx/xml solution file, as a template for a new file, <strong>remember to change the guid</strong>. Also if you are copying a solution file as a template for a new <strong>module file</strong> don't forget to <strong><em>remove the meta data</em></strong>. If you don't, the solution builder will not include it in the module as it thinks the file has another purpose because of the metadata. </p>

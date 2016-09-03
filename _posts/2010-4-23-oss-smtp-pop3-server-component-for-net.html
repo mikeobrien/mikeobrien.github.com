@@ -1,0 +1,89 @@
+---
+layout: post
+title: OSS SMTP & POP3 Server Component for .NET
+tags: [.NET, SMTP]
+redirect_from:
+  - /blog/2010/04/oss-smtp-pop3-server-component-for-net.html
+---
+<p>Found a great <a href="http://sourceforge.net/projects/cses/">OSS .NET SMTP &amp; POP3 server component</a> today by <a href="http://www.ericdaugherty.com/">Eric Daugherty</a>. The last release was about 6 years ago so I created a VS2010 solution for it and compiled it to .NET 3.5: <a href="/blog/downloads/Cses.zip">cses.zip</a></p>  <p>It's really simple to use and even comes with a "simple server" (Not recommended for production but worked for my purposes). Here is a simple wrapper I created for a project I'm working on:</p>  <pre class="code"><span style="color: blue">using </span>System;
+<span style="color: blue">using </span>System.Linq;
+<span style="color: blue">using </span>System.Net.Mail;
+<span style="color: blue">using </span>EricDaugherty.CSES.Net;
+<span style="color: blue">using </span>EricDaugherty.CSES.SmtpServer;
+
+<span style="color: blue">namespace </span>CruiseNotificationInterceptor
+{
+    <span style="color: blue">public class </span><span style="color: #2b91af">SmtpServer
+    </span>{
+        <span style="color: blue">private </span><span style="color: #2b91af">SimpleServer </span>_server;
+        <span style="color: blue">private </span><span style="color: #2b91af">SMTPProcessor </span>_processor;
+
+        <span style="color: blue">public </span>SmtpServer(<span style="color: blue">int </span>port, <span style="color: #2b91af">Action</span>&lt;<span style="color: #2b91af">MailMessage</span>&gt; messageHandler)
+        {
+            _processor = <span style="color: blue">new </span><span style="color: #2b91af">SMTPProcessor</span>(
+                            <span style="color: #2b91af">Environment</span>.MachineName, 
+                            <span style="color: blue">new </span><span style="color: #2b91af">AllRecipientFilter</span>(), 
+                            <span style="color: blue">new </span><span style="color: #2b91af">MessageSpoolProxy</span>(messageHandler));
+            _server = <span style="color: blue">new </span><span style="color: #2b91af">SimpleServer</span>(port, _processor.ProcessConnection);
+        }
+
+        <span style="color: blue">public void </span>Start()
+        {
+            _server.Start();
+        }
+
+        <span style="color: blue">public void </span>Stop()
+        {
+            _server.Stop();
+        }
+
+        <span style="color: blue">private class </span><span style="color: #2b91af">MessageSpoolProxy </span>: <span style="color: #2b91af">IMessageSpool
+        </span>{
+            <span style="color: blue">private </span><span style="color: #2b91af">Action</span>&lt;<span style="color: #2b91af">MailMessage</span>&gt; _handleMessage;
+
+            <span style="color: blue">public </span>MessageSpoolProxy(<span style="color: #2b91af">Action</span>&lt;<span style="color: #2b91af">MailMessage</span>&gt; messageHandler)
+            {
+                _handleMessage = messageHandler;   
+            }
+
+            <span style="color: blue">public bool </span>SpoolMessage(<span style="color: #2b91af">SMTPMessage </span>message)
+            {
+                <span style="color: blue">var </span>netMessage = <span style="color: blue">new </span><span style="color: #2b91af">MailMessage
+                            </span>{ From = <span style="color: blue">new </span><span style="color: #2b91af">MailAddress</span>(message.FromAddress.Address) };
+
+                <span style="color: blue">foreach </span>(<span style="color: blue">var </span>address <span style="color: blue">in </span>message.ToAddresses) 
+                    netMessage.To.Add(<span style="color: blue">new </span><span style="color: #2b91af">MailAddress</span>(address.Address));
+
+                <span style="color: blue">foreach </span>(<span style="color: blue">var </span>key <span style="color: blue">in </span>message.Headers.Keys.Cast&lt;<span style="color: blue">string</span>&gt;())
+                    netMessage.Headers[key] = message.Headers[key].ToString();
+
+                <span style="color: blue">if </span>(message.Headers.ContainsKey(<span style="color: #a31515">&quot;Subject&quot;</span>)) 
+                    netMessage.Subject = message.Headers[<span style="color: #a31515">&quot;Subject&quot;</span>].ToString();
+                <span style="color: blue">if </span>(message.Headers.ContainsKey(<span style="color: #a31515">&quot;Sender&quot;</span>)) 
+                    netMessage.Sender = <span style="color: blue">new </span><span style="color: #2b91af">MailAddress</span>(message.Headers[<span style="color: #a31515">&quot;Sender&quot;</span>].ToString());
+                <span style="color: blue">if </span>(message.Headers.ContainsKey(<span style="color: #a31515">&quot;Reply-To&quot;</span>)) 
+                    netMessage.ReplyToList.Add(<span style="color: blue">new </span><span style="color: #2b91af">MailAddress</span>(message.Headers[<span style="color: #a31515">&quot;Reply-To&quot;</span>].ToString()));
+
+                <span style="color: blue">var </span>data = message.Data.Split(<span style="color: blue">new</span>[] {<span style="color: #a31515">&quot;\r\n\r\n&quot;</span>}, 2, <span style="color: #2b91af">StringSplitOptions</span>.None);
+                <span style="color: blue">if </span>(data.Length == 2) netMessage.Body = data[1];
+                <span style="color: blue">if </span>(netMessage.Body.EndsWith(<span style="color: #a31515">&quot;\r\n\r\n&quot;</span>))
+                    netMessage.Body = netMessage.Body.Substring(0, netMessage.Body.Length - 4);
+
+                _handleMessage(netMessage);
+                <span style="color: blue">return true</span>;
+            }
+        }
+
+        <span style="color: blue">private class </span><span style="color: #2b91af">AllRecipientFilter </span>: <span style="color: #2b91af">IRecipientFilter
+        </span>{
+            <span style="color: blue">public bool </span>AcceptRecipient(<span style="color: #2b91af">SMTPContext </span>context, 
+                                        EricDaugherty.CSES.Common.<span style="color: #2b91af">EmailAddress </span>recipient)
+            {
+                <span style="color: blue">return true</span>;
+            }
+        }
+    }
+}</pre>
+<a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a>
+
+<p>Thanks Eric!</p>  

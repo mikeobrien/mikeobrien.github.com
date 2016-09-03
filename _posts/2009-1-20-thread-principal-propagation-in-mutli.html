@@ -1,0 +1,57 @@
+---
+layout: post
+title: Thread Principal Propagation in Mutli Threaded Applications
+tags: [Threading, Security, .NET, .NET 3.5]
+redirect_from:
+  - /blog/2009/01/thread-principal-propagation-in-mutli.html
+---
+<p>I have been reading <a href="http://www.amazon.com/Developers-Windows-Security-Microsoft-Development/dp/0321228359">The .NET Developer's Guide to Windows Security</a> and it mentioned that as of .NET 1.1 a calling threads principal is not automatically propagated to a thread spun off by the ThreadPool using the QueueUserWorkItem method; it has to be manually set. Looks like this has changed as of .NET 2.0 as the following test shows. It automatically propagates when the ThreadPool initiates a call with a thread in the pool, when using the APM and manually creating threads:</p> <p>&#160;</p><a href="http://11011.net/software/vspaste"></a><pre class="code"><span style="color: green">// Set the executing threads principle\identity
+</span><span style="color: #2b91af">Thread</span>.CurrentPrincipal = <span style="color: blue">new </span><span style="color: #2b91af">GenericPrincipal</span>(
+    <span style="color: blue">new </span><span style="color: #2b91af">GenericIdentity</span>(<span style="color: #a31515">"Louis De Broglie"</span>), <span style="color: blue">null</span>);
+
+<span style="color: #2b91af">Action</span><<span style="color: blue">string</span>> writeInfo = <span style="color: blue">new </span><span style="color: #2b91af">Action</span><<span style="color: blue">string</span>>((n) =>
+    <span style="color: #2b91af">Console</span>.WriteLine(<span style="color: blue">string</span>.Format(<span style="color: #a31515">"{0} - {1}"</span>, n,
+    <span style="color: #2b91af">Thread</span>.CurrentPrincipal.Identity.Name)));
+
+<span style="color: green">// Test the executing thread
+</span>writeInfo.Invoke(<span style="color: #a31515">"Main Thread"</span>);
+
+<span style="color: green">// Test queueing a worker item on the thread pool
+</span><span style="color: #2b91af">ThreadPool</span>.QueueUserWorkItem(x => 
+    writeInfo.Invoke(<span style="color: #a31515">"Thread Pool Initiated Thread"</span>));
+
+<span style="color: green">// Test making an async call
+</span><span style="color: #2b91af">Action </span>asyncCall = <span style="color: blue">new </span><span style="color: #2b91af">Action</span>(() => 
+    writeInfo.Invoke(<span style="color: #a31515">"Async Initiated Thread"</span>));
+
+asyncCall.BeginInvoke(ar => asyncCall.EndInvoke(ar), <span style="color: blue">null</span>);
+
+<span style="color: green">// Test manually creating a thread
+</span><span style="color: blue">new </span><span style="color: #2b91af">Thread</span>(() => 
+    {
+        writeInfo.Invoke(<span style="color: #a31515">"Manually Created Thread"</span>);
+
+        <span style="color: green">// Set a new principal
+        </span><span style="color: #2b91af">Thread</span>.CurrentPrincipal = <span style="color: blue">new </span><span style="color: #2b91af">GenericPrincipal</span>(
+            <span style="color: blue">new </span><span style="color: #2b91af">GenericIdentity</span>(<span style="color: #a31515">"Erwin Schr&#246;dinger"</span>), <span style="color: blue">null</span>);
+
+        writeInfo.Invoke(<span style="color: #a31515">"Manually Created Thread, new identity"</span>);
+
+        <span style="color: green">// Test queueing a worker item on the thread pool
+        </span><span style="color: #2b91af">ThreadPool</span>.QueueUserWorkItem(x =>
+            writeInfo.Invoke(<span style="color: #a31515">"Thread Pool Initiated Thread from a new Thread"</span>));
+
+        <span style="color: green">// Test making an async call
+        </span>asyncCall = <span style="color: blue">new </span><span style="color: #2b91af">Action</span>(() =>
+            writeInfo.Invoke(<span style="color: #a31515">"Async Initiated Thread from a new Thread"</span>));
+
+        asyncCall.BeginInvoke(ar => asyncCall.EndInvoke(ar), <span style="color: blue">null</span>);
+
+        <span style="color: green">// Test manually creating a thread from a thread
+        </span><span style="color: blue">new </span><span style="color: #2b91af">Thread</span>(() => 
+            writeInfo.Invoke(<span style="color: #a31515">"Manually Created Thread from a new Thread"</span>)
+            ).Start();
+    }).Start();
+
+<span style="color: #2b91af">Console</span>.ReadKey();</pre><a href="http://11011.net/software/vspaste"></a><pre class="code">&#160;</pre><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a>
+<p><a href="http://blog.mikeobrien.net/content/binary/WindowsLiveWriter/ThreadPrinciplePropagationinMutliThreade_10CF9/image_7.png"><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="189" alt="image" src="/blog/images/ec5a4574ea7f4f3eaeec9953511b0608.png" width="621" border="0"></a></p>

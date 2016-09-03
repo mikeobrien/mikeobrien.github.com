@@ -1,0 +1,25 @@
+---
+layout: post
+title: Using Statement in F#
+tags: [F#]
+redirect_from:
+  - /blog/2009/09/using-statement-in-f.html
+---
+<p>I just learned that there is an equivalent in F# to the using statement in C# and VB.NET. There are actually two approaches; one a using function that is passed a function or lambda and the second is a binding similar to the let statement except that it also acts as a using statement when the value goes out of scope. <a href="http://msdn.microsoft.com/en-us/library/dd233240(VS.100).aspx">The docs</a> do a good job explaining it. Here is a little demo of the two approaches:</p>  <pre class="code"><span style="color: blue">#light
+
+open </span>System
+<span style="color: blue">open </span>System.IO
+
+<span style="color: blue">let </span>readFile path = 
+    <span style="color: blue">use </span>r = <span style="color: blue">new </span>StreamReader(<span style="color: blue">new </span>FileStream(path, FileMode.Open))
+    Console.WriteLine(r.ReadToEnd())
+
+<span style="color: blue">let </span>readFile2 path = 
+    using (<span style="color: blue">new </span>StreamReader(<span style="color: blue">new </span>FileStream(path, FileMode.Open)))  
+        (<span style="color: blue">fun </span>r <span style="color: blue">-> </span>Console.WriteLine(r.ReadToEnd()))
+
+readFile <span style="color: maroon">@"D:\temp\test.txt"
+</span>readFile2 <span style="color: maroon">@"D:\temp\test.txt"
+
+</span>Console.ReadKey() |> ignore</pre>
+<a href="http://11011.net/software/vspaste"></a>

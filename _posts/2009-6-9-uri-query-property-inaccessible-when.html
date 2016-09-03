@@ -1,0 +1,10 @@
+---
+layout: post
+title: Uri Query Property Inaccessible when Uri is Relative
+tags: [.NET 3.5]
+redirect_from:
+  - /blog/2009/06/uri-query-property-inaccessible-when.html
+---
+<p>Why, why, why? Is it not possible that someone would want to parse a relative uri that has a querystring? M$, why do you impose these needless limits? Ok, so lets say we have the following UriTemplate:</p> <p>/books/?language={language}</p> <p>And you want to pick this uri apart and grab the querystring portion. You can load it into a Uri as relative but the Query and Segments properties will not be accessible and you will get the following exception: "This operation is not supported for a relative URI." There is a simple workaround but I really don't think we should have to do this. Basically you pass in a dummy base uri along with your relative one and this does the trick:</p><pre class="code"><span style="color: #2b91af">Uri </span>myUri = <span style="color: blue">new </span><span style="color: #2b91af">Uri</span>(<span style="color: blue">new </span><span style="color: #2b91af">Uri</span>(<span style="color: #a31515">"dummy:"</span>), <span style="color: #a31515">"/books/?language={language}"</span>);
+System.Diagnostics.<span style="color: #2b91af">Debug</span>.Print(myUri.Query);</pre><a href="http://11011.net/software/vspaste"></a>
+<p>If you want to vote on changing this, click <a href="https://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=465640">here</a> for the Microsoft Connect feedback page.</p>

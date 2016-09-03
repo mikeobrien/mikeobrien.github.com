@@ -1,0 +1,43 @@
+---
+layout: post
+title: Getting a Data Contract Name and Namespace From a Type
+tags: [.NET, WCF]
+redirect_from:
+  - /blog/2009/07/getting-data-contract-name-and.html
+---
+<p>I just had a requirement in the project I'm working on to get a data contract name and namespace from a type and found that there really isn't an easy, built in way to do it (Without actually serializing an instance of the type). After looking around with reflector I found the methods that the DataContractSerializer uses but found it was a little too complex and dangerous to try to strip the code from the framework or write my own (Especially when it comes to formulating generic type names). So I found a simple alterative which I don't really like but it works. Basically you instantiate the type in question and run it through the serializer and grab the root element name and namespace:</p><pre class="code"><span style="color: blue">public class </span><span style="color: #2b91af">DataContractTypeInfo
+</span>{
+    <span style="color: blue">public </span>DataContractTypeInfo()
+    {
+        Name = <span style="color: blue">string</span>.Empty;
+        TypeNamespace = <span style="color: blue">string</span>.Empty;
+    }
+
+    <span style="color: blue">private </span>DataContractTypeInfo(<span style="color: blue">string </span>name, <span style="color: blue">string </span>typeNamespace)
+    {
+        Name = name;
+        TypeNamespace = typeNamespace;
+    }
+
+    <span style="color: blue">public string </span>Name { <span style="color: blue">get</span>; <span style="color: blue">private set</span>; }
+    <span style="color: blue">public string </span>TypeNamespace { <span style="color: blue">get</span>; <span style="color: blue">private set</span>; }
+
+    <span style="color: blue">public static </span><span style="color: #2b91af">DataContractTypeInfo </span>Generate(<span style="color: #2b91af">Type </span>type)
+    {
+        <span style="color: blue">if </span>(type.FullName.StartsWith(<span style="color: #a31515">"System."</span>)) <span style="color: blue">return new </span><span style="color: #2b91af">DataContractTypeInfo</span>();
+        <span style="color: blue">if </span>(type.ContainsGenericParameters) <span style="color: blue">return new </span><span style="color: #2b91af">DataContractTypeInfo</span>();
+        <span style="color: #2b91af">DataContractSerializer </span>serializer = <span style="color: blue">new </span><span style="color: #2b91af">DataContractSerializer</span>(type);
+        <span style="color: #2b91af">MemoryStream </span>objectStream = <span style="color: blue">new </span><span style="color: #2b91af">MemoryStream</span>();
+        <span style="color: blue">object </span>instance = <span style="color: blue">null</span>;
+        <span style="color: blue">if </span>(type.IsArray)
+            <span style="color: #2b91af">Activator</span>.CreateInstance(type, <span style="color: blue">new object</span>[] {0});
+        <span style="color: blue">else
+            </span><span style="color: #2b91af">Activator</span>.CreateInstance(type);
+        serializer.WriteObject(objectStream, instance);
+        objectStream.Position = 0;
+        <span style="color: #2b91af">XDocument </span>objectDocument = <span style="color: #2b91af">XDocument</span>.Load(<span style="color: blue">new </span><span style="color: #2b91af">XmlTextReader</span>(objectStream));
+        <span style="color: blue">return new </span><span style="color: #2b91af">DataContractTypeInfo</span>(objectDocument.Root.Name.LocalName,
+            objectDocument.Root.Name.NamespaceName);
+    }
+}</pre><a href="http://11011.net/software/vspaste"></a><pre class="code"></pre><a href="http://11011.net/software/vspaste"></a>
+<p>This code took about 20 ms to get the info of a type that had about 5 members.</p>

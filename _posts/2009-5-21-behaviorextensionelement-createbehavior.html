@@ -1,0 +1,79 @@
+---
+layout: post
+title: BehaviorExtensionElement's CreateBehavior is Marked Internal
+tags: [REST, .NET 3.5, WCF]
+redirect_from:
+  - /blog/2009/05/behaviorextensionelement-createbehavior.html
+---
+<p>This is really lame. I'm creating a custom service host (That inherits from WebServiceHost) and I want to be able to programmatically add behaviors from configuration. Since the WebServiceHost is zero config there are no service elements to define a behavior config. Now I know I could manually create those service elements with an webHttpBinding and specify the behavior config, but I really do like the zero configuration feature, I just want to be able to define behaviors in config. Unfortunately the BehaviorExtensionElement's CreateBehavior is marked as internal. <a href="http://social.msdn.microsoft.com/forums/en-US/wcf/thread/d00d2a87-4d89-4510-9569-fab73a3ad070">I'm not sure if M$ will make this public in the future or not but it looks like the only good way to get around it for now is with reflection (Or create a dummy service element with the behavior config, have the runtime load the behaviors and then copy them to your service, boo)</a>. I think in this instance reflection on an internal member is safe as that method has to be there in order for the behavior to be created by the runtime. I don't see how it can be changed since that would break custom behaviors. I snagged this simple extension method from the aforementioned thread, it uses reflection to invoke the internal CreateBehavior method.</p><pre class="code"><span style="color: blue">public static object </span>CreateBehavior(<span style="color: blue">this </span><span style="color: #2b91af">BehaviorExtensionElement </span>extensionElement)
+{
+    <span style="color: blue">return </span>extensionElement.GetType().
+        GetMethod(
+            <span style="color: #a31515">"CreateBehavior"</span>,
+            System.Reflection.<span style="color: #2b91af">BindingFlags</span>.Instance |
+            System.Reflection.<span style="color: #2b91af">BindingFlags</span>.NonPublic).
+                Invoke(extensionElement, <span style="color: blue">new object</span>[0] { });
+}</pre><a href="http://11011.net/software/vspaste"></a>
+<p>I also whipped up a few ServiceHost extension methods that add the behaviors (Adapted from some reflected framework code):</p><pre class="code"><span style="color: blue">public static void </span>LoadBehaviors(
+    <span style="color: blue">this </span><span style="color: #2b91af">ServiceHost </span>serviceHost,
+    <span style="color: blue">string </span>behaviorConfiguration)
+{
+    <span style="color: #2b91af">ServiceBehaviorElement </span>serviceBehaviors = 
+        GetServiceBehaviorElement(serviceHost, behaviorConfiguration);
+    <span style="color: blue">if </span>(serviceBehaviors != <span style="color: blue">null</span>)
+    {
+        <span style="color: blue">foreach </span>(<span style="color: #2b91af">BehaviorExtensionElement </span>behaviorExtension <span style="color: blue">in </span>serviceBehaviors)
+        {
+            <span style="color: blue">object </span>extension = behaviorExtension.CreateBehavior();
+            <span style="color: blue">if </span>(extension != <span style="color: blue">null</span>)
+            {
+                <span style="color: #2b91af">Type </span>extensionType = extension.GetType();
+                <span style="color: blue">if </span>(<span style="color: blue">typeof</span>(<span style="color: #2b91af">IServiceBehavior</span>).IsAssignableFrom(extensionType))
+                {
+                    <span style="color: blue">if </span>(serviceHost.Description.Behaviors.Contains(extensionType))
+                    {
+                        serviceHost.Description.Behaviors.Remove(extensionType);
+                    }
+                    serviceHost.Description.Behaviors.Add((<span style="color: #2b91af">IServiceBehavior</span>)extension);
+                }
+            }
+        }
+    }
+}
+
+<span style="color: blue">public static </span><span style="color: #2b91af">ServiceBehaviorElement </span>GetServiceBehaviorElement(
+    <span style="color: blue">this </span><span style="color: #2b91af">ServiceHost </span>serviceHost, <span style="color: blue">string </span>behaviorConfiguration)
+{
+    <span style="color: #2b91af">BehaviorsSection </span>behaviorsSection = 
+        (<span style="color: #2b91af">BehaviorsSection</span>)<span style="color: #2b91af">ConfigurationManager</span>.
+        GetSection(<span style="color: #a31515">"system.serviceModel/behaviors"</span>);
+    <span style="color: blue">foreach </span>(<span style="color: #2b91af">ServiceBehaviorElement </span>behavior <span style="color: blue">in </span>behaviorsSection.ServiceBehaviors)
+    {
+        <span style="color: blue">if </span>(behavior.Name == behaviorConfiguration)
+            <span style="color: blue">return </span>behavior;
+    }
+    <span style="color: blue">return null</span>;
+}</pre><a href="http://11011.net/software/vspaste"></a>
+<p>Then you simply run this on the ServiceHost:</p><pre class="code">serviceHost.LoadBehaviors(<span style="color: #a31515">"myBehaviorConfig"</span>);</pre>
+<p><a href="http://11011.net/software/vspaste"></a>Now if your creating your own service host you can override the ApplyConfiguration method and add them there. In the following example I add a check to see if there is a service element for this service. If not then I apply the behaviors, otherwise I skip it and assume that the service element has the desired configuration.</p><pre class="code"><span style="color: blue">protected override void </span>ApplyConfiguration()
+{
+    <span style="color: blue">base</span>.ApplyConfiguration();
+    <span style="color: blue">if </span>(!<span style="color: blue">this</span>.HasServiceElement())
+        <span style="color: blue">this</span>.LoadBehaviors(<span style="color: #a31515">"myBehaviorConfig"</span>);
+}</pre><a href="http://11011.net/software/vspaste"></a>The following is the HasServiceElement & supporting GetServiceElement ServiceHost extension methods:<pre class="code"><span style="color: blue">public static bool </span>HasServiceElement(<span style="color: blue">this </span><span style="color: #2b91af">ServiceHost </span>serviceHost)
+{
+    <span style="color: blue">return </span>(GetServiceElement(serviceHost) != <span style="color: blue">null</span>);
+}
+
+<span style="color: blue">public static </span><span style="color: #2b91af">ServiceElement </span>GetServiceElement(<span style="color: blue">this </span><span style="color: #2b91af">ServiceHost </span>serviceHost)
+{
+    <span style="color: #2b91af">ServicesSection </span>servicesSection = (<span style="color: #2b91af">ServicesSection</span>)<span style="color: #2b91af">ConfigurationManager</span>.
+        GetSection(<span style="color: #a31515">"system.serviceModel/services"</span>);
+    <span style="color: #2b91af">ServiceElementCollection </span>services = servicesSection.Services;
+    <span style="color: blue">foreach </span>(<span style="color: #2b91af">ServiceElement </span>element <span style="color: blue">in </span>services)
+    {
+        <span style="color: blue">if </span>(element.Name == serviceHost.Description.ConfigurationName)
+            <span style="color: blue">return </span>element;
+    }
+    <span style="color: blue">return null</span>;
+}</pre><a href="http://11011.net/software/vspaste"></a>
