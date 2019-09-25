@@ -1,161 +1,314 @@
----
-layout: chrome
-title: Curriculum Vitae
----
+<html>
+	<head>
 
-<link href="/css/cv.css" rel="stylesheet" type="text/css" />
+		<title>Curriculum Vitae - Mike O'Brien</title>
+        <link rel="shortcut icon" href="/img/favicon.png" />
 
-<script language="javascript">
-    var email = ['c', 'v', '@', 'm', 'i', 'k', 'e', 'o', 'b', 'r', 'i', 'e', 'n', '.', 'n', 'e', 't'].join('');
-    var phone = ['3', '3', '0', '.', '6', '0', '3', '.', '4', '1', '3', '8'].join('');
-    $(function () {
-        $('#email').attr('href', 'mailto:' + email).text(email);
-        $('#phone').text(phone);
-        $('.print-button').click(function () {
-            $('.print-button').hide();
-            $('.header').hide();
-            $('.cv-recruiter-warning').hide();
-            $('.cv-container').css('padding-top', '0');
-            $('.cv-container').css('padding-bottom', '0');
-            $('.footer').hide();
-            $('body').css('background-color', '#fff');
-            $('.cv-container').css('margin', '0 auto');
-            $('.cv-container h3 a').css('color', '#000');
-            window.print();
-        });
-    });
-</script>
+		<style>
+			body {
+				padding: 0;
+				margin: 0;
+				font-family: Arial;
+			}
 
-<!-- <div class="cv-recruiter-warning"><a href="statement">Statement regarding disclosure of salary history and social media login credentials.</a></div>
--->
-<div class="cv-container">
-    <a class="print-button" href="#">print me</a>
-    <h3>Mike O'Brien</h3>
-    <div class="cv-info">
-      <table width="100%"><tr>
-        <td>
-          Software Developer<br/>
-          <!-- <span id="phone">999.999.9999</span><br/> -->
-          <a id="email" href="#">a@b.com</a><br/>
-          Cary, NC<br/>
-        </td>
-        <td align="right">
-          <a href="http://www.mikeobrien.net/cv/">www.mikeobrien.net/cv</a><br/>
-          <a href="http://www.mikeobrien.net/blog">www.mikeobrien.net/blog</a><br/>
-          <a href="https://github.com/mikeobrien">github.com/mikeobrien</a><br/>
-        </td>
-      </tr></table>
-    </div>
+			a {
+				text-decoration: none;
+			}
 
-    <h3>Languages</h3>
-    <div class="tag-cloud">
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/C_Sharp_(programming_language)">C# -5.0</a></span>
-        <span class="tag-cloud-item-3"><a href="http://en.wikipedia.org/wiki/F_Sharp_(programming_language)">F# -3.0</a></span>
-        <span class="tag-cloud-item-4"><a href="http://en.wikipedia.org/wiki/JavaScript">JavaScript</a></span>
-        <span class="tag-cloud-item-4"><a href="http://jashkenas.github.com/coffee-script/">CoffeeScript</a></span>
-        <span class="tag-cloud-item-3"><a href="http://www.ruby-lang.org/en/">Ruby</a></span>
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/HTML">HTML</a></span>
-        <span class="tag-cloud-item-4"><a href="http://en.wikipedia.org/wiki/Cascading_Style_Sheets">CSS</a></span>
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/Transact-SQL">Transact-SQL</a></span>
-    </div>
+			a:link, a:visited, a:hover, a:active {
+				font-family: Arial;
+				font-size: 12pt;
+				color: #000;
+			}
 
-    <h3>Design</h3>
-    <div class="tag-cloud">
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/Object-oriented_programming">OOP</a></span>
-        <span class="tag-cloud-item-4"><a href="http://en.wikipedia.org/wiki/Functional_programming">FP</a></span>
-        <span class="tag-cloud-item-2"><a href="http://en.wikipedia.org/wiki/Domain-driven_design">DDD</a></span>
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/Test-driven_development">TDD</a></span>
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/SOLID_(object-oriented_design)">SOLID</a></span>
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/Don't_repeat_yourself">DRY</a></span>
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/Loose_coupling">Loose coupling</a></span>
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/Cohesion_(computer_science)">High cohesion</a></span>
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/You_ain't_gonna_need_it">YAGNI</a></span>
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/Dependency_injection">DI</a></span>
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/Composition_over_inheritance">Favor composition over inheritance</a></span>
-        <span class="tag-cloud-item-4"><a href="http://en.wikipedia.org/wiki/Design_pattern_(computer_science)">OO design patterns</a></span>
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/Continuous_integration">Continuous integration</a></span>
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/Kaizen">Kaizen</a></span>
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/Code_refactoring">Continuous refactoring</a></span>
-        <span class="tag-cloud-item-4"><a href="http://en.wikipedia.org/wiki/Domain-specific_language">DSL</a></span>
-        <span class="tag-cloud-item-4"><a href="http://en.wikipedia.org/wiki/Representational_state_transfer">REST</a></span>
-    </div>
+			.header {
+				padding: 35px;
+			}
 
-    <h3>Libraries</h3>
-    <div class="tag-cloud">
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/.NET_Framework">.NET -4.5</a></span>
-        <span class="tag-cloud-item-4"><a href="http://mvc.fubu-project.org/">FubuMVC</a></span>
-        <span class="tag-cloud-item-4"><a href="http://structuremap.net/structuremap/">StructureMap</a></span>
-        <span class="tag-cloud-item-4"><a href="http://jquery.com/">jQuery</a></span>
-        <span class="tag-cloud-item-4"><a href="http://angularjs.org/">AngularJS</a></span>
-        <span class="tag-cloud-item-2"><a href="http://expressjs.com/">Express</a></span>
-        <span class="tag-cloud-item-3"><a href="http://gruntjs.com/">Grunt</a></span>
-        <span class="tag-cloud-item-3"><a href="http://karma-runner.github.io/">Karma</a></span>
-        <span class="tag-cloud-item-3"><a href="https://github.com/angular/protractor">Protractor</a></span>
-        <span class="tag-cloud-item-3"><a href="http://visionmedia.github.io/mocha/">mocha</a></span>
-        <span class="tag-cloud-item-4"><a href="http://pivotal.github.com/jasmine/">jasmine</a></span>
-        <span class="tag-cloud-item-3"><a href="https://github.com/LearnBoost/expect.js/">expect.js</a></span>
-        <span class="tag-cloud-item-3"><a href="http://sinonjs.org/">sinon.js</a></span>
-        <span class="tag-cloud-item-4"><a href="http://documentcloud.github.com/backbone/">Backbone.js</a></span>
-        <span class="tag-cloud-item-4"><a href="http://documentcloud.github.com/underscore/">Underscore.js</a></span>
-        <span class="tag-cloud-item-4"><a href="https://github.com/ifandelse/postal.js">postal.js</a></span>
-        <span class="tag-cloud-item-4"><a href="http://requirejs.org/">require.js</a></span>
-        <span class="tag-cloud-item-4"><a href="http://www.phantomjs.org/">phantom.js</a></span>
-        <span class="tag-cloud-item-3"><a href="http://automapper.org/">AutoMapper</a></span>
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/NHibernate">NHibernate</a></span>
-        <span class="tag-cloud-item-5"><a href="http://fluentnhibernate.org/">Fluent NHibernate</a></span>
-        <span class="tag-cloud-item-5"><a href="http://fluentvalidation.codeplex.com/">Fluent Validation</a></span>
-        <span class="tag-cloud-item-5"><a href="http://www.nunit.org/">NUnit</a></span>
-        <span class="tag-cloud-item-5"><a href="http://nsubstitute.github.com/">NSubstitute</a></span>
-        <span class="tag-cloud-item-5"><a href="http://rake.rubyforge.org/">Rake</a></span>
-    </div>
+			.intro {
+				vertical-align: top;
+				padding-left: 30px;
+			}
 
-    <h3>Tools</h3>
-    <div class="tag-cloud">
-        <span class="tag-cloud-item-5"><a href="http://git-scm.com/">Git</a></span>
-        <span class="tag-cloud-item-4"><a href="http://www.jetbrains.com/decompiler/">dotPeek</a></span>
-        <span class="tag-cloud-item-4"><a href="http://nhprof.com/">NHibernate Profiler</a></span>
-        <span class="tag-cloud-item-5"><a href="http://www.innovartis.co.uk/">DB Ghost</a></span>
-        <span class="tag-cloud-item-5"><a href="http://www.jetbrains.com/resharper/">R#</a></span>
-        <span class="tag-cloud-item-5"><a href="http://www.fiddler2.com/fiddler2/">Fiddler</a></span>
-        <span class="tag-cloud-item-3"><a href="https://developers.google.com/chrome-developer-tools/">Chrome DevTools</a></span>
-    </div>
+			.name {
+				font-size: 26pt;
+			}
 
-    <h3>Software</h3>
-    <div class="tag-cloud">
-        <span class="tag-cloud-item-4"><a href="http://www.sublimetext.com/">Sublime Text</a></span>
-        <span class="tag-cloud-item-3"><a href="http://www.jetbrains.com/webstorm/">WebStorm</a></span>
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/Microsoft_Visual_Studio">Visual Studio -2013</a></span>
-        <span class="tag-cloud-item-5"><a href="http://www.jetbrains.com/teamcity/">TeamCity</a></span>
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/Internet_Information_Services">IIS -8.5</a></span>
-        <span class="tag-cloud-item-5"><a href="http://en.wikipedia.org/wiki/Microsoft_SQL_Server">SQL Server -2012</a></span>
-        <span class="tag-cloud-item-4"><a href="http://en.wikipedia.org/wiki/Windows_Server">Windows Server -2012 R2</a></span>
-        <span class="tag-cloud-item-2"><a href="http://nodejs.org/">Node.js</a></span>
-        <span class="tag-cloud-item-2"><a href="http://www.mongodb.org/">MongoDB</a></span>
-    </div>
+			.headshot {
+				border: 1px solid #c0c0c0;
+				width: 135px;
+			}
 
-    <h3><a href="https://github.com/mikeobrien">Open Source</a></h3>
+			.title {
+				color: #7B7B7B;
+				font-size: 16pt;
+				padding: 9px 0;
+			}
 
-    <div class="tag-cloud">
-        <span class="tag-cloud-item-5"><a href="https://github.com/mikeobrien/Bender">Bender</a></span>
-        <span class="tag-cloud-item-5"><a href="https://github.com/mikeobrien/FubuMVC.Swank">Swank</a></span>
-        <span class="tag-cloud-item-5"><a href="https://github.com/mikeobrien/bambino">bambino.js</a></span>
-        <span class="tag-cloud-item-5"><a href="https://github.com/mikeobrien/Gribble">Gribble</a></span>
-        <span class="tag-cloud-item-1"><a href="https://github.com/mikeobrien/TDMSReader">TDMS Reader</a></span>
-        <span class="tag-cloud-item-3"><a href="https://github.com/mikeobrien/WCFDoc">WCF Doc</a></span>
-        <span class="tag-cloud-item-5"><a href="https://github.com/mikeobrien/WcfRestContrib">WCF REST Contrib</a></span>
-        <span class="tag-cloud-item-1"><a href="https://github.com/mikeobrien/DBGhostBuildTools">DB Ghost Build Tools</a></span>
-        <span class="tag-cloud-item-3"><a href="https://github.com/mikeobrien/HidLibrary">Usb Hid</a></span>
-    </div>
+			.summary {
+				font-size: 12pt;
+				font-weight: 500;
+			}
 
-    <h3><a href="experience">Experience (16y)</a></h3>
+			.links {
+				background-color: #F1F1F1;
+				padding: 15px 60px 15px 60px;
+			}
 
-    <div class="tag-cloud">
-        <span class="tag-cloud-item-4"><a href="http://http://sentrichr.com/">Sentric</a></span>
-        <span class="tag-cloud-item-4"><a href="http://www.reachmail.net/">Reachmail</a></span>
-        <span class="tag-cloud-item-1"><a href="http://www.triton-tek.com/">Triton Tek</a></span>
-        <span class="tag-cloud-item-2"><a href="http://www.linkedin.com/company/emerge-digital">Emerge Digital</a></span>
-        <span class="tag-cloud-item-4"><a href="http://www.sentric.net/">Payroll Solutions</a></span>
-        <span class="tag-cloud-item-1"><a href="http://www.roberthalftechnology.com/">RHI Consulting</a></span>
-        <span class="tag-cloud-item-3"><a href="http://www.watchtower.org/">Watchtower</a></span>
-    </div>
-</div>
+			.links table {
+				width: 100%;
+			}
+
+			.links .icon {
+				width: 20px;
+			}
+
+			.links .url {
+			}
+
+			.body {
+				column-count: 2;
+				column-gap: 60px;
+				padding: 35px;
+			}
+
+			.subheading {
+				font-size: 16pt;
+				font-weight: 600;
+				text-transform: uppercase;
+			}
+
+			.subheading:not(:first-child) {
+			    margin-top: 20px;
+			}
+
+			.work {
+				break-inside: avoid;
+			}
+
+			.work-title {
+				font-size: 14pt;
+				font-weight: 600;
+				padding-top: 15px;
+			}
+
+			.work-company {
+				font-size: 14pt;
+			}
+
+			.work-dates {
+				font-size: 11pt;
+				color: #7B7B7B;
+				padding: 10px 0;
+				font-style: italic;
+			}
+
+			.work ul {
+				padding: 0 0 0 15px;
+				margin: 0;
+			}
+
+			.work ul li {
+				font-size: 11.5pt;
+				margin: 0 0 5px 0;
+			}
+
+			.oss-subheading {
+				font-size: 14pt;
+				font-weight: 600;
+				margin-top: 10px;
+			}
+
+			.oss-blurb {
+				margin-top: 5px;
+				padding-left: 15px;
+				font-style: italic;
+			}
+
+			.methodologies {
+				margin-top: 10px;
+			}
+
+			.methodology {
+				border: 1.5px solid #c0c0c0;
+  				border-radius: 5px;
+  				padding: 5px;
+  				margin: 5px;
+  				display: inline-block;
+			}
+
+		</style>
+	</head>
+	<body>
+		<!-- I use tables for layout and I'm proud of it!!! -->
+		<div class="header">
+			<table>
+				<tr>
+					<td>
+						<img class="headshot" src="headshot.png" />
+					</td>
+					<td class="intro">
+						<div class="name">Mike O'Brien</div>
+						<div class="title">Senior Software Developer</div>
+						<div class="summary">Passionate developer focused on continuous improvement. Interested in automation, testing and design principles that lead to easily changeable, reliable and high quality software. Proponent of open source software and giving back to the developer community.</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="links">
+			<table>
+				<tr>
+					<td class="icon">
+						<img src="email.png" style="width: 15px" />
+					</td>
+					<td class="url">
+						<a href="mailto:mob@mikeobrien.net">mob@mikeobrien.net</a>
+					</td>
+
+					<td class="icon">
+						<img src="phone.png" style="height: 17px" />
+					</td>
+					<td class="url">
+						<a href="tel:330-603-4138">330-603-4138</a>
+					</td>
+
+					<td class="icon">
+						<img src="location.png" style="height: 17px" />
+					</td>
+					<td class="url">
+						<a href="https://www.google.com/maps/place/Dover,+OH">Dover, OH</a>
+					</td>
+
+					<td class="icon">
+						<img src="github.png" style="height: 17px" />
+					</td>
+					<td class="url">
+						<a href="https://github.com/mikeobrien">github.com/mikeobrien</a>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="body">
+
+			<div class="subheading">Work Experience</div>
+
+			<div class="work">
+				<div class="work-title">Senior Software Developer</div>
+				<div class="work-company">Reachmail</div>
+				<div class="work-dates">March 2008 to Present</div>
+				<ul>
+					<li><b>Technical Environment:</b> Visual Studio 2017, .NET 4.6.2, C# 7.0, Web API, Git, TeamCity, NHibernate, Fluent NHibernate, NUnit, NSubstitute, Node.js, Gulp, NLog, StructureMap, DBGhost, AngularJS, RabbitMQ, SQL Server 2012, IIS 7.5, PowerMTA, Windows Server 2012.</li>
+					<li>Develop and maintain our flagship product, Reachmail.</li>
+					<li>Designed and built our RESTful API (<a href="https://services.reachmail.net">services.reachmail.net</a>) and billing system.</li>
+					<li>Set up and maintained our CI/CD process using TeamCity & Gulp.</li>
+					<li>Developed and maintained various OSS projects that supported our product.</li>
+				</ul>
+			</div>
+
+			<div class="work">
+				<div class="work-title">Senior Software Developer</div>
+				<div class="work-company">Sentric</div>
+				<div class="work-dates">May 2015 to Feb 2017</div>
+				<ul>
+					<li><b>Technical Environment:</b> Visual Studio 2015, .NET 4.6, C# 6.0, Web API 2, TypeScript, Gulp, Aurelia, Git, GitLab, TeamCity, NHibernate, FluentNHibernate, NUnit, NSubstitute, StructureMap, DBGhost, SQL Server 2012, IIS 7.5, Windows Server 2012.</li>
+					<li>Built a unified internal system to consolidate disparate processes and apps.</li>
+					<li>Built a customer facing RESTful API.</li>
+					<li>Identified and resolved security vulnerabilities in internal and customer facing apps.</li>
+				</ul>
+			</div>
+
+			<div class="work">
+				<div class="work-title">Senior Consultant</div>
+				<div class="work-company">Triton Tek</div>
+				<div class="work-dates">April 2007 to March 2008</div>
+				<ul>
+					<li><b>Technical Environment:</b> C#, ASP.NET, Visual Studio 2005/2008, NUnit, NAnt, Reflector, Microsoft Enterprise Library, Subversion, CruiseControl.Net, Bamboo Build Server, HTML/DHTML/CSS, XML/XSL, Javascript, SQL Server 2005, IIS6, MOSS 2007, Virtual Server 2005, Windows 2000-2003.</li>
+					<li>Developed and maintained data driven, web applications for various clients.</li>
+					<li>Implemented continuous integration/deployment for clients using CC.NET & NAnt.</li>
+				</ul>
+			</div>
+
+			<div class="work">
+				<div class="work-title">Senior Software Architect</div>
+				<div class="work-company">Emerge Digital</div>
+				<div class="work-dates">April 2005 to April 2007</div>
+				<ul>
+					<li><b>Technical Environment:</b> VB.NET/C#, ASP/ASP.NET, Visual Studio 2003/2005, Subversion, HTML/DHTML/CSS, XML/XSL, VBScript, Javascript, SQL Server 2000/2005, IIS5/6, Virtual Server 2005, Windows XP/2K/2K3, PowerMTA.</li>
+					<li>Developed and maintained data driven, web applications for various clients.</li>
+					<li>Implemented continuous integration/deployment using CC.NET & NAnt.</li>
+					<li>Developed a kiosk framework used to run tradeshow kiosks. Integrated peripherals such as bar code scanners and magnetic strip readers using USB HID.</li>
+				</ul>
+			</div>
+
+			<div class="work">
+				<div class="work-title">Application Developer</div>
+				<div class="work-company">Payroll Solutions</div>
+				<div class="work-dates">February 2001 to April 2005</div>
+				<ul>
+					<li><b>Technical Environment:</b> VB.NET/6, ASP/ASP.NET, HTML/DHTML/CSS, XML/DTD, VBScript, Javascript, IIS 6.0, Adobe Live Motion, Crystal Reports 9, SQL Server 2000, SQL Server DTS, Microsoft Access 97/2K/2K3.</li>
+					<li>Developed various data driven, rich client applications for tax and payroll operations.</li>
+					<li>Developed ETL tools to move data between disparate internal systems.</li>
+					<li>Developed company internet and intranet web sites.</li>
+				</ul>
+			</div>
+
+			<div class="work">
+				<div class="work-title">Consultant/Developer</div>
+				<div class="work-company">RHI Consulting</div>
+				<div class="work-dates">October 2000 to June 2001</div>
+				<ul>
+					<li><b>Technical Environment:</b> VB6, ASP, HTML, VBScript, Javascript, Adobe Image Styler, Crystal Reports 8.5, XML, SQL Server, IIS 5.0, Microsoft Access, Windows NT/2K.</li>
+					<li>Developed data driven, rich client applications for chemical and payroll operations.</li>
+				</ul>
+			</div>
+
+			<div class="work">
+				<div class="work-title">Application Developer</div>
+				<div class="work-company">Watchtower</div>
+				<div class="work-dates">October 1997 to October 2000</div>
+				<ul>
+					<li><b>Technical Environment:</b> VB6, ASP, HTML, VBScript, Javascript, Adobe Image Styler, XML, SQL Server 6.5/7.0, IIS 4.0/5.0, Microsoft Exchange Server, Microsoft Access97, Aperture, Erwin, MS-DOS 6.22, Windows 3.51/95/98/ME/NT/2K.</li>
+					<li>Developed and maintained rich client applications for internal operations.</li>
+				</ul>
+			</div>
+
+			<div class="subheading">Methodology</div>
+
+			<div class="methodologies">
+
+				<span class="methodology"><a href="http://en.wikipedia.org/wiki/Test-driven_development">TDD</a></span>
+				<span class="methodology"><a href="http://en.wikipedia.org/wiki/SOLID_(object-oriented_design)">SOLID</a></span>
+				<span class="methodology"><a href="http://en.wikipedia.org/wiki/Don't_repeat_yourself">DRY</a></span>
+				<span class="methodology"><a href="http://en.wikipedia.org/wiki/Domain-driven_design">DDD</a></span>
+				<span class="methodology"><a href="http://en.wikipedia.org/wiki/Dependency_injection">DI</a></span>
+				<span class="methodology"><a href="http://en.wikipedia.org/wiki/Continuous_integration">CI</a></span>
+				<span class="methodology"><a href="https://en.wikipedia.org/wiki/Continuous_delivery">CD</a></span>
+				<span class="methodology"><a href="http://en.wikipedia.org/wiki/Domain-specific_language">DSL's</a></span>
+				<span class="methodology"><a href="http://en.wikipedia.org/wiki/Loose_coupling">Loose coupling</a></span> 
+				<span class="methodology"><a href="http://en.wikipedia.org/wiki/Code_refactoring">Continuous refactoring</a></span>
+				<span class="methodology"><a href="http://en.wikipedia.org/wiki/Composition_over_inheritance">Favor composition over inheritance</a></span>
+
+			</div>
+
+			<div class="subheading">Open Source</div>
+
+			<div class="oss-subheading"><a href="http://graphiteweb.io">Graphite (graphiteweb.io)</a></div>
+			<div class="oss-blurb">Simple, lightweight, convention based web framework built on Web Api 2.</div>
+
+			<div class="oss-subheading"><a href="https://github.com/mikeobrien/Gribble">Gribble (github.com/mikeobrien/Gribble)</a></div>
+			<div class="oss-blurb">Gribble is a simple, Linq enabled ORM that was designed to work with dynamically created tables.</div>
+
+			<div class="oss-subheading"><a href="https://github.com/mikeobrien/swank">Swank (github.com/mikeobrien/swank)</a></div>
+			<div class="oss-blurb">RESTful API Documentation for ASP.NET Web API 2.</div>
+
+			<div class="oss-subheading"><a href="https://github.com/mikeobrien/HidLibrary">HidLibrary (github.com/mikeobrien/HidLibrary)</a></div>
+			<div class="oss-blurb">Library that enables communication with HID compatible USB devices in .NET.</div>
+
+			<div class="oss-subheading"><a href="https://github.com/mikeobrien/Bender">Bender (github.com/mikeobrien/Bender)</a></div>
+			<div class="oss-blurb">Xml and json serializer for .NET</div>
+
+		</div>
+	</body>
+</html>
